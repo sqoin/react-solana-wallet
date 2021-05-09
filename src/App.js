@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import './App.css';
 import Wallet from '@project-serum/sol-wallet-adapter';
 import { Connection, SystemProgram, Transaction, clusterApiUrl } from '@solana/web3.js';
+import { mintToken, createNewAccount , createMintTo , createTransfer} from './cli/makesteps';
 
 function toHex(buffer) {
   return Array.prototype.map
@@ -22,9 +23,10 @@ function App() {
     providerUrl,
     network,
   ]);
+  const [tokenInfo, setTokenInfo] = useState("no Info");
   const injectedWallet = useMemo(() => {
     try {
-      return new Wallet(window.solana, network);
+      return new Wallet(window.sollet, network);
     } catch (e) {
       console.log(`Could not create injected wallet: ${e}`);
       return null;
@@ -76,6 +78,57 @@ function App() {
     }
   }
 
+  function doMintToken() {
+    addLog("loading ... ");
+    try {
+      mintToken(selectedWallet, connection).then(token =>
+        addLog(
+          JSON.stringify(token)))
+        .catch(
+          err => addLog("" + err)
+        )
+    }
+    catch (err) {
+      addLog("" + err);
+    }
+  }
+
+  function doCreateAccout() {
+    addLog("loading ... ");
+
+    createNewAccount(selectedWallet, connection)
+      .then(account =>
+        addLog(
+          JSON.stringify(account)))
+      .catch(
+        err => addLog("" + err)
+      )
+  }
+
+  function doMintTo() {
+    addLog("loading ... ");
+
+    createMintTo(selectedWallet, connection)
+      .then(account =>
+        addLog(
+          JSON.stringify(account)))
+      .catch(
+        err => addLog("" + err)
+      )
+  }
+
+  function doTransfer() {
+    addLog("loading ... ");
+
+    createTransfer(selectedWallet, connection)
+      .then(account =>
+        addLog(
+          JSON.stringify(account)))
+      .catch(
+        err => addLog("" + err)
+      )
+  }
+
   async function signMessage() {
     try {
       const message = "Please sign this message for proof of address ownership.";
@@ -110,7 +163,6 @@ function App() {
         </div>
       ) : (
         <div>
-          <button onClick={() => setSelectedWallet(urlWallet)}>Connect to Wallet</button>
           <button onClick={() => setSelectedWallet(injectedWallet)}>Connect to Injected Wallet</button>
         </div>
       )}
@@ -120,6 +172,22 @@ function App() {
           <div key={i}>{log}</div>
         ))}
       </div>
+      <button onClick={() => doMintToken()}>
+        Mint token
+      </button>
+     <br></br>
+      <button onClick={() => doCreateAccout()}>
+        Create Account
+      </button>
+      <br></br>
+      <button onClick={() => doMintTo()}>
+        Minto Account
+      </button>
+      <br></br>
+      <button onClick={() => doTransfer()}>
+        Transfer
+      </button>
+
     </div>
   );
 }
