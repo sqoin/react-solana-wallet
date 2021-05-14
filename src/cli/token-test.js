@@ -64,7 +64,7 @@ async function getConnection(): Promise<Connection> {
 
 async function GetPrograms(connection: Connection): Promise<void> {
   
-    programId = new PublicKey("9FNxyjTPzR1P4JKiiBHEbAykFBong8mSrQVK78RiCGx3");
+    programId = new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA");
     associatedProgramId = new PublicKey("Fxer83fa7cJF3CBS8EDtbKEbkM1gqnPqLZbRQZZae4Cf");
     let info;
     info = await connection.getAccountInfo(programId);
@@ -87,7 +87,7 @@ export async function createMint(selectedWallet , connection): Promise<void> {
   
   //const payer =  wallet.publicKey; // await newAccountWithLamports(connection, 1000000000 /* wag */);
   testMintAuthority = new Account();
-  programId = new PublicKey("9FNxyjTPzR1P4JKiiBHEbAykFBong8mSrQVK78RiCGx3");
+  programId = new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA");
   associatedProgramId = new PublicKey("Fxer83fa7cJF3CBS8EDtbKEbkM1gqnPqLZbRQZZae4Cf");
   testToken = await Token.createMint(
     connection,

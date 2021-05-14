@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import './App.css';
 import Wallet from '@project-serum/sol-wallet-adapter';
-import { Connection, SystemProgram, Transaction, clusterApiUrl } from '@solana/web3.js';
+import { Connection, SystemProgram, Transaction, clusterApiUrl,PublicKey } from '@solana/web3.js';
 import { mintToken, createNewAccount , createMintTo , createTransfer} from './cli/makesteps';
 
 function toHex(buffer) {
@@ -142,6 +142,19 @@ function App() {
     }
   }
 
+  async function dogetTokensAccount() {
+    let accounts = await connection
+          .getParsedTokenAccountsByOwner(
+            selectedWallet.publicKey,
+            {
+              programId: new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA")
+            },
+            'confirmed'
+          );
+
+      addLog(JSON.stringify(accounts));
+  }
+
   return (
     <div className="App">
       <h1>Wallet Adapter Demo</h1>
@@ -172,6 +185,11 @@ function App() {
           <div key={i}>{log}</div>
         ))}
       </div>
+
+      <button onClick={ () => dogetTokensAccount()}>
+
+          getTokensProgramId
+      </button>
       <button onClick={() => doMintToken()}>
         Mint token
       </button>
