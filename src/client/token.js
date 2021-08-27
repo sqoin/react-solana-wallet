@@ -447,6 +447,73 @@ export class Token {
     return token;
   }
 
+
+  static async createTokenSwapA(
+    connection: Connection,
+    payer,
+    mintAuthority: PublicKey,
+    freezeAuthority: PublicKey | null,
+    decimals: number,
+    programId: PublicKey,
+  ): Promise<Token> {
+    const mintAccount = new Account();
+    const token = new Token(
+      connection,
+      mintAccount.publicKey,
+      programId,
+      payer,
+    );
+
+    // Allocate memory for the account
+    const balanceNeeded = await Token.getMinBalanceRentForExemptMint(
+      connection,
+    );
+
+    const transaction = new Transaction();
+    transaction.add(
+      SystemProgram.createAccount({
+        fromPubkey: payer.publicKey,
+        newAccountPubkey: mintAccount.publicKey,
+        lamports: balanceNeeded,
+        space: MintLayout.span,
+        programId,
+      }),
+    );
+
+    transaction.add(
+      Token.createInitMintInstruction(
+        programId,
+        mintAccount.publicKey,
+        decimals,
+        mintAuthority,
+        freezeAuthority,
+      ),
+    );
+
+    transaction.recentBlockhash = (
+      await connection.getRecentBlockhash()
+    ).blockhash;
+    transaction.feePayer = payer.publicKey;
+    //transaction.setSigners(payer.publicKey, mintAccount.publicKey );
+    transaction.partialSign(mintAccount);
+
+    let signed = await payer.signTransaction(transaction);
+    
+   //   addLog('Got signature, submitting transaction');
+      let signature = await connection.sendRawTransaction(signed.serialize());
+
+      await connection.confirmTransaction(signature, 'max');
+    // Send the two instructions
+ /*   await sendAndConfirmTransaction(
+      'createAccount and InitializeMint',
+      connection,
+      transaction,
+      payer,
+      mintAccount,
+    );*/
+console.log("tkenpublickey"+token.publicKey)
+    return token;
+  }
   /**
    * Create and initialize a new account.
    *
@@ -508,6 +575,59 @@ export class Token {
 
     return newAccount.publicKey;
   }
+  // async createAccountTA(owner: PublicKey ): Promise<PublicKey> {
+  //   // Allocate memory for the account
+  //   const balanceNeeded = await Token.getMinBalanceRentForExemptAccount(
+  //     this.connection,
+  //   );
+
+  //   const newAccount = new Account();
+  //   const transaction = new Transaction();
+  //   transaction.add(
+  //     SystemProgram.createAccount({
+  //       fromPubkey: this.payer.publicKey,
+  //       newAccountPubkey: newAccount.publicKey,
+  //       lamports: balanceNeeded,
+  //       space: AccountLayout.span,
+  //       programId: this.programId,
+  //     }),
+  //   );
+
+  //   const mintPublicKey = this.publicKey;
+  //   transaction.add(
+  //     Token.createInitAccountInstruction(
+  //       this.programId,
+  //       mintPublicKey,
+  //       newAccount.publicKey,
+  //       owner,
+  //     ),
+  //   );
+
+  //   transaction.recentBlockhash = (
+  //     await this.connection.getRecentBlockhash()
+  //   ).blockhash;
+  //   transaction.feePayer = this.payer.publicKey;
+  //   //transaction.setSigners(payer.publicKey, mintAccount.publicKey );
+  //   transaction.partialSign(newAccount);
+
+  //   let signed = await this.payer.signTransaction(transaction);
+    
+  //  //   addLog('Got signature, submitting transaction');
+  //     let signature = await this.connection.sendRawTransaction(signed.serialize());
+
+  //     await this.connection.confirmTransaction(signature, 'max');
+
+  //   // Send the two instructions
+  // /*  await sendAndConfirmTransaction(
+  //     'createAccount and InitializeAccount',
+  //     this.connection,
+  //     transaction,
+  //     this.payer,
+  //     newAccount,
+  //   );*/
+
+  //   return newAccount.publicKey;
+  // }
 
   /**
    * Create and initialize the associated account.

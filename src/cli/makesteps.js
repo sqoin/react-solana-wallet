@@ -23,6 +23,10 @@ import {
   freezeThawAccount,
   closeAccount,
   nativeToken,
+  createTokenSwapA,
+  createAccountTokenSwapA,
+  createMintTokenA,
+  createTokenSwapB
 } from './token-test';
 
 export async function makeSteps(selectedWallet) {
@@ -63,19 +67,40 @@ export async function makeSteps(selectedWallet) {
   console.log('Run test: nativeToken');
   await nativeToken();
   console.log('Success\n');
+  await createTokenA();
+  console.log("suc")
+  await createNewAccountTokenA()
 }
 
 export async function mintToken(selectedWallet , connection) {  
   return createMint(selectedWallet , connection);
 }
 
+export async function mintTokenA(selectedWallet , connection) {  
+  return createMintTokenA(selectedWallet , connection);
+}
+
+export async function createTokenA(selectedWallet , connection) {  
+  return createTokenSwapA(selectedWallet , connection);
+}
+
+
+export async function createTokenB(selectedWallet , connection) {  
+  return createTokenSwapB(selectedWallet , connection);
+}
 export async function createNewAccount(selectedWallet , connection) {  
   return createAccount(selectedWallet , connection);
 }
+export async function createNewAccountTokenA(selectedWallet , connection) {  
+  return createAccountTokenSwapA(selectedWallet , connection);
+}
+
 
 export async function createMintTo(selectedWallet , connection) {  
   return mintTo();
 }
+
+
 
 export async function createTransfer(selectedWallet , connection) {  
   return transfer();

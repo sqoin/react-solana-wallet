@@ -13,28 +13,38 @@ import {
   TOKEN_PROGRAM_ID,
   ASSOCIATED_TOKEN_PROGRAM_ID,
   NATIVE_MINT,
+
 } from '../client/token';
 
 import Wallet from '@project-serum/sol-wallet-adapter';
 
-import {newAccountWithLamports} from '../client/util/new-account-with-lamports';
+import {newAccountWithLamports, newAccountWithLamports1} from '../client/util/new-account-with-lamports';
 import {sleep} from '../client/util/sleep';
 import {Store} from './store';
+const TOKEN_SWAP_PROGRAM_ID: PublicKey = new PublicKey(
+  '5e2zZzHS8P1kkXQFVoBN6tVN15QBUHMDisy6mxVwVYSz',
+);
 
 // Loaded token program's program id
 let programId: PublicKey;
 let associatedProgramId: PublicKey;
 let wallet: Wallet;
-
+let mintA:Token;
+let mintB:Token;
+let minntB:Token;
 // Accounts setup in createMint and used by all subsequent tests
 let testMintAuthority: Account;
+
 let testToken: Token;
+let tokenAccountA:  PublicKey;
+let authority:PublicKey;
+let nonce:Number;
 let testTokenDecimals: number = 2;
 
 // Accounts setup in createAccount and used by all subsequent tests
 let testAccountOwner: Account;
 let testAccount: PublicKey;
-
+let owner:Account;
 function assert(condition, message) {
   if (!condition) {
     console.log(Error().stack + ':token-test.js');
@@ -119,8 +129,161 @@ export async function createMint(selectedWallet , connection): Promise<void> {
   return mintInfo;
 }
 
+// export async function createMintTokenA(selectedWallet , connection): Promise<void> {
+  
+//   //const payer =  wallet.publicKey; // await newAccountWithLamports(connection, 1000000000 /* wag */);
+//   testMintAuthorityA = new Account();
+//   programId = new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA");
+//   associatedProgramId = new PublicKey("Fxer83fa7cJF3CBS8EDtbKEbkM1gqnPqLZbRQZZae4Cf");
+// mintA = await Token.createMint(
+//     connection,
+//     selectedWallet,
+//     testMintAuthorityA.publicKey,
+//     testMintAuthorityA.publicKey,
+//     testTokenDecimals,
+//     programId,
+//   );
+//   // HACK: override hard-coded ASSOCIATED_TOKEN_PROGRAM_ID with corresponding
+//   // custom test fixture
+//   mintA.associatedProgramId = associatedProgramId;
+
+//   const mintInfo = await mintA.getMintInfo();
+//   if (mintInfo.mintAuthority !== null) {
+//     assert(mintInfo.mintAuthority.equals(testMintAuthorityA.publicKey));
+//   } else {
+//     assert(mintInfo.mintAuthority !== null);
+//   }
+//   assert(mintInfo.supply.toNumber() === 0);
+//   assert(mintInfo.decimals === testTokenDecimals);
+//   assert(mintInfo.isInitialized === true);
+//   if (mintInfo.freezeAuthority !== null) {
+//     assert(mintInfo.freezeAuthority.equals(testMintAuthorityA.publicKey));
+//   } else {
+//     assert(mintInfo.freezeAuthority !== null);
+//   }
+
+//   return mintInfo;
+// }
+
+export async function createTokenSwapA(selectedWallet , connection): Promise<void> {
+  
+  //const payer =  wallet.publicKey; // await newAccountWithLamports(connection, 1000000000 /* wag */);
+  owner = await newAccountWithLamports1(connection, 1000000000);
+  testMintAuthority = new Account();
+  programId = new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA");
+  associatedProgramId = new PublicKey("Fxer83fa7cJF3CBS8EDtbKEbkM1gqnPqLZbRQZZae4Cf");
+  mintA = await Token.createTokenSwapA(
+    connection,
+    selectedWallet,
+    owner.publicKey,
+   owner.publicKey,
+    testTokenDecimals,
+    programId,
+  );
+  // HACK: override hard-coded ASSOCIATED_TOKEN_PROGRAM_ID with corresponding
+  // custom test fixture
+  mintA.associatedProgramId = associatedProgramId;
+// let info= await mintA.getAccountInfo()
+  const mintInfo = await mintA.getMintInfo();
+  if (mintInfo.mintAuthority !== null) {
+    assert(mintInfo.mintAuthority.equals(owner.publicKey));
+  } else {
+    assert(mintInfo.mintAuthority !== null);
+  }
+  assert(mintInfo.supply.toNumber() === 0);
+  assert(mintInfo.decimals === testTokenDecimals);
+  assert(mintInfo.isInitialized === true);
+  if (mintInfo.freezeAuthority !== null) {
+    assert(mintInfo.freezeAuthority.equals(owner.publicKey));
+  } else {
+    assert(mintInfo.freezeAuthority !== null);
+  }
+
+  return mintInfo;
+}
+
+export async function createTokenSwapB(selectedWallet , connection): Promise<void> {
+  
+  //const payer =  wallet.publicKey; // await newAccountWithLamports(connection, 1000000000 /* wag */);
+  owner = await newAccountWithLamports1(connection, 1000000000);
+  testMintAuthority = new Account();
+  programId = new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA");
+  associatedProgramId = new PublicKey("Fxer83fa7cJF3CBS8EDtbKEbkM1gqnPqLZbRQZZae4Cf");
+  mintB = await Token.createTokenSwapA(
+    connection,
+    selectedWallet,
+    owner.publicKey,
+   owner.publicKey,
+    testTokenDecimals,
+    programId,
+  );
+  // HACK: override hard-coded ASSOCIATED_TOKEN_PROGRAM_ID with corresponding
+  // custom test fixture
+  mintB.associatedProgramId = associatedProgramId;
+// let info= await mintA.getAccountInfo()
+  const mintInfo = await mintB.getMintInfo();
+  if (mintInfo.mintAuthority !== null) {
+    assert(mintInfo.mintAuthority.equals(owner.publicKey));
+  } else {
+    assert(mintInfo.mintAuthority !== null);
+  }
+  assert(mintInfo.supply.toNumber() === 0);
+  assert(mintInfo.decimals === testTokenDecimals);
+  assert(mintInfo.isInitialized === true);
+  if (mintInfo.freezeAuthority !== null) {
+    assert(mintInfo.freezeAuthority.equals(owner.publicKey));
+  } else {
+    assert(mintInfo.freezeAuthority !== null);
+  }
+
+  return mintInfo;
+}
+export async function createAccountTokenSwapA(): Promise<void> {
+  
+  let createAccountProgramm=new Account([86,  26, 243,  72,  46, 135, 186,  23,  31, 215, 229,43,  54,  89, 206, 222,  82,   6, 231, 212, 212, 226,184, 211, 107, 147, 180, 138,  57, 108, 182,  46, 185,33, 232, 144,  77,  70,  77, 145, 151, 152, 188,  19,78,  73,  32,  89, 236, 171,  90,  44, 120,  71, 202,142, 214, 179,  38,  85,  71, 103, 145, 193]);
+  [authority, nonce] = await PublicKey.findProgramAddress(
+    [createAccountProgramm.publicKey.toBuffer()],
+    TOKEN_SWAP_PROGRAM_ID,
+  )
+  testAccountOwner = new Account();
+  
+  tokenAccountA = await mintA.createAccount(authority );
+  console.log("testAccount"+tokenAccountA)
+  const accountInfo = await mintA.getAccountInfo(tokenAccountA);
+  assert(accountInfo.mint.equals(mintA.publicKey));
+  assert(accountInfo.owner.equals(authority));
+  assert(accountInfo.amount.toNumber() === 0);
+  assert(accountInfo.delegate === null);
+  assert(accountInfo.delegatedAmount.toNumber() === 0);
+  assert(accountInfo.isInitialized === true);
+  assert(accountInfo.isFrozen === false);
+  assert(accountInfo.isNative === false);
+  assert(accountInfo.rentExemptReserve === null);
+  assert(accountInfo.closeAuthority === null);
+
+ /* // you can create as many accounts as with same owner
+  const testAccount2 = await testToken.createAccount(
+    testAccountOwner.publicKey,
+  );
+  assert(!testAccount2.equals(testAccount));*/
+
+  return accountInfo;
+}
+export async function createMintTokenA(): Promise<void> {
+  console.log("tokenAccountA"+tokenAccountA+"authority"+authority)
+  await mintA.mintTo(tokenAccountA, authority, [], 1000);
+
+  const mintInfo = await mintA.getMintInfo();
+  assert(mintInfo.supply.toNumber() === 1000);
+
+  const accountInfo = await mintA.getAccountInfo(tokenAccountA);
+  assert(accountInfo.amount.toNumber() === 1000);
+
+  return mintInfo;
+}
 export async function createAccount(): Promise<void> {
   testAccountOwner = new Account();
+  
   testAccount = await testToken.createAccount(testAccountOwner.publicKey );
   const accountInfo = await testToken.getAccountInfo(testAccount);
   assert(accountInfo.mint.equals(testToken.publicKey));
@@ -142,6 +305,9 @@ export async function createAccount(): Promise<void> {
 
   return accountInfo;
 }
+
+
+
 
 export async function createAssociatedAccount(): Promise<void> {
   let info;
