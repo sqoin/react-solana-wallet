@@ -53,6 +53,7 @@ let nonce:Number;
 let testTokenDecimals: number = 2;
 let createAccountProgramm :Account;
 
+
   // Pool fees
   const TRADING_FEE_NUMERATOR = 25;
   const TRADING_FEE_DENOMINATOR = 10000;
@@ -332,7 +333,7 @@ export async function createAccountTokenSwapB(): Promise<void> {
   console.log("testAccount "+tokenAccountB)
  
   const accountInfoA = await mintA.getAccountInfo(tokenAccountA);
-  
+
 console.log("********************** info account A**************************")
 console.log("owner "+accountInfoA.owner)
 console.log("autorithy "+authority)
