@@ -15,42 +15,68 @@ import {
   NATIVE_MINT,
 
 } from '../client/token';
+import {
+  TokenSwap
+} from '../swap/index'
 
 import Wallet from '@project-serum/sol-wallet-adapter';
 
 import {newAccountWithLamports, newAccountWithLamports1} from '../client/util/new-account-with-lamports';
+
+import {newAccountWithLamports3} from '../swap/util/new-account-with-lamports';
 import {sleep} from '../client/util/sleep';
 import {Store} from './store';
 const TOKEN_SWAP_PROGRAM_ID: PublicKey = new PublicKey(
   '5e2zZzHS8P1kkXQFVoBN6tVN15QBUHMDisy6mxVwVYSz',
 );
+const SWAP_PROGRAM_OWNER_FEE_ADDRESS="HfoTxFR1Tm6kGmWgYWD6J7YHVy1UwqSULUGVLXkJqaKN";
 
 // Loaded token program's program id
-let programId: PublicKey;
-let associatedProgramId: PublicKey;
+const programId = new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA");
+const associatedProgramId = new PublicKey("Fxer83fa7cJF3CBS8EDtbKEbkM1gqnPqLZbRQZZae4Cf");
 let wallet: Wallet;
 let mintA:Token;
 let mintB:Token;
 let minntB:Token;
+let curveParameters: Numberu64;
 // Accounts setup in createMint and used by all subsequent tests
 let testMintAuthority: Account;
-
+let testTokenSwap:TokenSwap;
 let testToken: Token;
+let poolToken:Token;
 let tokenAccountA:  PublicKey;
+let tokenAccountB:PublicKey;
+let feeAccount:PublicKey;
 let authority:PublicKey;
+let accountPool:PublicKey;
 let nonce:Number;
 let testTokenDecimals: number = 2;
+let createAccountProgramm :Account;
 
+  // Pool fees
+  const TRADING_FEE_NUMERATOR = 25;
+  const TRADING_FEE_DENOMINATOR = 10000;
+  const OWNER_TRADING_FEE_NUMERATOR = 5;
+  const OWNER_TRADING_FEE_DENOMINATOR = 10000;
+  const OWNER_WITHDRAW_FEE_NUMERATOR = SWAP_PROGRAM_OWNER_FEE_ADDRESS ? 0 : 1;
+  const OWNER_WITHDRAW_FEE_DENOMINATOR = SWAP_PROGRAM_OWNER_FEE_ADDRESS ? 0 : 6;
+  const HOST_FEE_NUMERATOR = 20;
+  const HOST_FEE_DENOMINATOR = 100;
+  // Initial amount in each swap token
+  let currentSwapTokenA = 1000000;
+  let currentSwapTokenB = 1000000;
 // Accounts setup in createAccount and used by all subsequent tests
 let testAccountOwner: Account;
 let testAccount: PublicKey;
 let owner:Account;
+// let swapPayer:Account;
 function assert(condition, message) {
   if (!condition) {
     console.log(Error().stack + ':token-test.js');
     throw message || 'Assertion failed';
   }
 }
+
 
 async function didThrow(obj, func, args): Promise<boolean> {
   try {
@@ -60,6 +86,8 @@ async function didThrow(obj, func, args): Promise<boolean> {
   }
   return false;
 }
+
+
 
 let connection;
 async function getConnection(): Promise<Connection> {
@@ -128,128 +156,168 @@ export async function createMint(selectedWallet , connection): Promise<void> {
 
   return mintInfo;
 }
+export async function swapToken(selectedWallet , connection): Promise<void>{
+ 
+const swapPayer = await newAccountWithLamports3(connection, 10000000000);
+ 
+// [95,214,128,34,18,164,154,241,35,95,234,185,216,118,40,65,242,115,5,210,130,217,119,39,96,224,165,206,163,227,255,13,109,16,141,79,216,210,106,68,147,152,240,170,137,40,174,195,23,121,207,82,14,68,129,96,180,73,142,49,138,73,209,161]
+ // let createAccountProgramm=new Account([86,  26, 243,  72,  46, 135, 186,  23,  31, 215, 229,43,  54,  89, 206, 222,  82,   6, 231, 212, 212, 226,184, 211, 107, 147, 180, 138,  57, 108, 182,  46, 185,33, 232, 144,  77,  70,  77, 145, 151, 152, 188,  19,78,  73,  32,  89, 236, 171,  90,  44, 120,  71, 202,142, 214, 179,  38,  85,  71, 103, 145, 193]);
+  // swapPayer=new Account([])
+  testTokenSwap = await TokenSwap.createTokenSwap(
+    connection,
+    swapPayer,
+    createAccountProgramm,
+    authority,
+    tokenAccountA,
+    tokenAccountB,
+    poolToken.publicKey,
+    mintA.publicKey,
+    mintB.publicKey,
+    feeAccount,
+    accountPool,
+    TOKEN_SWAP_PROGRAM_ID,
+    TOKEN_PROGRAM_ID,
+    nonce,
+    TRADING_FEE_NUMERATOR,
+    TRADING_FEE_DENOMINATOR,
+    OWNER_TRADING_FEE_NUMERATOR,
+    OWNER_TRADING_FEE_DENOMINATOR,
+    OWNER_WITHDRAW_FEE_NUMERATOR,
+    OWNER_WITHDRAW_FEE_DENOMINATOR,
+    HOST_FEE_NUMERATOR,
+    HOST_FEE_DENOMINATOR,
+    0,
+    curveParameters,
+  );
 
-// export async function createMintTokenA(selectedWallet , connection): Promise<void> {
-  
-//   //const payer =  wallet.publicKey; // await newAccountWithLamports(connection, 1000000000 /* wag */);
-//   testMintAuthorityA = new Account();
-//   programId = new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA");
-//   associatedProgramId = new PublicKey("Fxer83fa7cJF3CBS8EDtbKEbkM1gqnPqLZbRQZZae4Cf");
-// mintA = await Token.createMint(
-//     connection,
-//     selectedWallet,
-//     testMintAuthorityA.publicKey,
-//     testMintAuthorityA.publicKey,
-//     testTokenDecimals,
-//     programId,
-//   );
-//   // HACK: override hard-coded ASSOCIATED_TOKEN_PROGRAM_ID with corresponding
-//   // custom test fixture
-//   mintA.associatedProgramId = associatedProgramId;
+  console.log("token swap ="+testTokenSwap.tokenSwap)
+  console.log('loading token swap');
+  const fetchedTokenSwap = await TokenSwap.loadTokenSwap(
+    connection,
+    createAccountProgramm.publicKey,
+    TOKEN_SWAP_PROGRAM_ID,
+    swapPayer,
+  );
+console.log("**** begin **** info token swap ")
+console.log("address tokenSwap ="+fetchedTokenSwap.tokenSwap+" authority +"+fetchedTokenSwap.authority
++"curveType ="+fetchedTokenSwap.curveType+" feeAccount ="+fetchedTokenSwap.feeAccount+" hostFeeDenominator ="+fetchedTokenSwap.hostFeeDenominator+" hostFeeNumerator ="+fetchedTokenSwap.hostFeeNumerator+" mintA ="+fetchedTokenSwap.mintA+"mintB ="+fetchedTokenSwap.mintB+" tokenAccountA ="+fetchedTokenSwap.tokenAccountA+" tokenAccountB ="+
+fetchedTokenSwap.tokenAccountB+" poolToken "+fetchedTokenSwap.poolToken+" tokenProgrammId ="+fetchedTokenSwap.tokenProgramId+" tokenProgrammSwapId ="+fetchedTokenSwap.swapProgramId);
+console.log("**** End *******")
+ 
 
-//   const mintInfo = await mintA.getMintInfo();
-//   if (mintInfo.mintAuthority !== null) {
-//     assert(mintInfo.mintAuthority.equals(testMintAuthorityA.publicKey));
-//   } else {
-//     assert(mintInfo.mintAuthority !== null);
-//   }
-//   assert(mintInfo.supply.toNumber() === 0);
-//   assert(mintInfo.decimals === testTokenDecimals);
-//   assert(mintInfo.isInitialized === true);
-//   if (mintInfo.freezeAuthority !== null) {
-//     assert(mintInfo.freezeAuthority.equals(testMintAuthorityA.publicKey));
-//   } else {
-//     assert(mintInfo.freezeAuthority !== null);
-//   }
 
-//   return mintInfo;
-// }
 
+}
 export async function createTokenSwapA(selectedWallet , connection): Promise<void> {
   
-  //const payer =  wallet.publicKey; // await newAccountWithLamports(connection, 1000000000 /* wag */);
-  owner = await newAccountWithLamports1(connection, 1000000000);
-  testMintAuthority = new Account();
-  programId = new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA");
-  associatedProgramId = new PublicKey("Fxer83fa7cJF3CBS8EDtbKEbkM1gqnPqLZbRQZZae4Cf");
-  mintA = await Token.createTokenSwapA(
-    connection,
-    selectedWallet,
-    owner.publicKey,
-   owner.publicKey,
-    testTokenDecimals,
-    programId,
-  );
-  // HACK: override hard-coded ASSOCIATED_TOKEN_PROGRAM_ID with corresponding
-  // custom test fixture
-  mintA.associatedProgramId = associatedProgramId;
-// let info= await mintA.getAccountInfo()
-  const mintInfo = await mintA.getMintInfo();
-  if (mintInfo.mintAuthority !== null) {
-    assert(mintInfo.mintAuthority.equals(owner.publicKey));
-  } else {
-    assert(mintInfo.mintAuthority !== null);
-  }
-  assert(mintInfo.supply.toNumber() === 0);
-  assert(mintInfo.decimals === testTokenDecimals);
-  assert(mintInfo.isInitialized === true);
-  if (mintInfo.freezeAuthority !== null) {
-    assert(mintInfo.freezeAuthority.equals(owner.publicKey));
-  } else {
-    assert(mintInfo.freezeAuthority !== null);
-  }
-
-  return mintInfo;
-}
-
-export async function createTokenSwapB(selectedWallet , connection): Promise<void> {
-  
-  //const payer =  wallet.publicKey; // await newAccountWithLamports(connection, 1000000000 /* wag */);
-  owner = await newAccountWithLamports1(connection, 1000000000);
-  testMintAuthority = new Account();
-  programId = new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA");
-  associatedProgramId = new PublicKey("Fxer83fa7cJF3CBS8EDtbKEbkM1gqnPqLZbRQZZae4Cf");
-  mintB = await Token.createTokenSwapA(
-    connection,
-    selectedWallet,
-    owner.publicKey,
-   owner.publicKey,
-    testTokenDecimals,
-    programId,
-  );
-  // HACK: override hard-coded ASSOCIATED_TOKEN_PROGRAM_ID with corresponding
-  // custom test fixture
-  mintB.associatedProgramId = associatedProgramId;
-// let info= await mintA.getAccountInfo()
-  const mintInfo = await mintB.getMintInfo();
-  if (mintInfo.mintAuthority !== null) {
-    assert(mintInfo.mintAuthority.equals(owner.publicKey));
-  } else {
-    assert(mintInfo.mintAuthority !== null);
-  }
-  assert(mintInfo.supply.toNumber() === 0);
-  assert(mintInfo.decimals === testTokenDecimals);
-  assert(mintInfo.isInitialized === true);
-  if (mintInfo.freezeAuthority !== null) {
-    assert(mintInfo.freezeAuthority.equals(owner.publicKey));
-  } else {
-    assert(mintInfo.freezeAuthority !== null);
-  }
-
-  return mintInfo;
-}
-export async function createAccountTokenSwapA(): Promise<void> {
-  
-  let createAccountProgramm=new Account([86,  26, 243,  72,  46, 135, 186,  23,  31, 215, 229,43,  54,  89, 206, 222,  82,   6, 231, 212, 212, 226,184, 211, 107, 147, 180, 138,  57, 108, 182,  46, 185,33, 232, 144,  77,  70,  77, 145, 151, 152, 188,  19,78,  73,  32,  89, 236, 171,  90,  44, 120,  71, 202,142, 214, 179,  38,  85,  71, 103, 145, 193]);
+  createAccountProgramm=new Account();
   [authority, nonce] = await PublicKey.findProgramAddress(
     [createAccountProgramm.publicKey.toBuffer()],
     TOKEN_SWAP_PROGRAM_ID,
   )
+  owner = await newAccountWithLamports1(connection, 1000000000);
+ 
+  mintA = await Token.createMint(
+    connection,
+    selectedWallet,
+    owner.publicKey,
+   null,
+    testTokenDecimals,
+    programId,
+  );
+// let info= await mintA.getAccountInfo()
+  const mintInfo = await mintA.getMintInfo();
+
+  return mintInfo;
+}
+export async function createTokenSwapB(selectedWallet , connection): Promise<void> {
+  
+  //const payer =  wallet.publicKey; // await newAccountWithLamports(connection, 1000000000 /* wag */);
+
+  // testMintAuthority = new Account();
+  // programId = new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA");
+  // associatedProgramId = new PublicKey("Fxer83fa7cJF3CBS8EDtbKEbkM1gqnPqLZbRQZZae4Cf");
+  createAccountProgramm=new Account();
+  [authority, nonce] = await PublicKey.findProgramAddress(
+    [createAccountProgramm.publicKey.toBuffer()],
+    TOKEN_SWAP_PROGRAM_ID,
+  )
+    owner = await newAccountWithLamports1(connection, 1000000000);
+  mintB = await Token.createMint(
+    connection,
+    selectedWallet,
+    owner.publicKey,
+   null,
+    testTokenDecimals,
+    programId,
+  );
+  // HACK: override hard-coded ASSOCIATED_TOKEN_PROGRAM_ID with corresponding
+  // custom test fixture
+  // mintB.associatedProgramId = associatedProgramId;
+// let info= await mintA.getAccountInfo()
+  const mintInfo = await mintB.getMintInfo();
+  
+
+  return mintInfo;
+}
+export async function createPoolTokenSwap(selectedWallet , connection): Promise<void> {
+  // let createAccountProgramm=new Account([86,  26, 243,  72,  46, 135, 186,  23,  31, 215, 229,43,  54,  89, 206, 222,  82,   6, 231, 212, 212, 226,184, 211, 107, 147, 180, 138,  57, 108, 182,  46, 185,33, 232, 144,  77,  70,  77, 145, 151, 152, 188,  19,78,  73,  32,  89, 236, 171,  90,  44, 120,  71, 202,142, 214, 179,  38,  85,  71, 103, 145, 193]);
+  // [authority, nonce] = await PublicKey.findProgramAddress(
+  //   [createAccountProgramm.publicKey.toBuffer()],
+  //   TOKEN_SWAP_PROGRAM_ID,
+  // )
+  //const payer =  wallet.publicKey; // await newAccountWithLamports(connection, 1000000000 /* wag */);
+  const ownerKey = SWAP_PROGRAM_OWNER_FEE_ADDRESS || owner.publicKey.toString();
+  console.log("owner key ="+ownerKey);
+
+  // programId = new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA");
+  // associatedProgramId = new PublicKey("Fxer83fa7cJF3CBS8EDtbKEbkM1gqnPqLZbRQZZae4Cf");
+  poolToken = await Token.createMint(
+    connection,
+    selectedWallet,
+    authority,
+    null,
+    testTokenDecimals,
+    programId,
+  );
+  // HACK: override hard-coded ASSOCIATED_TOKEN_PROGRAM_ID with corresponding
+  // custom test fixture
+  poolToken.associatedProgramId = associatedProgramId;
+  feeAccount = await  poolToken.createAccount(new PublicKey(ownerKey));
+  console.log("feeAccount ="+feeAccount);
+  accountPool = await poolToken.createAccount(owner.publicKey);
+ 
+  let info =poolToken.getAccountInfo(accountPool)
+  console.log("infoPool"+JSON.stringify(info))
+  const mintInfo = await poolToken.getMintInfo();
+  if (mintInfo.mintAuthority !== null) {
+    assert(mintInfo.mintAuthority.equals(authority));
+  } else {
+    assert(mintInfo.mintAuthority !== null);
+  }
+  assert(mintInfo.supply.toNumber() === 0);
+  assert(mintInfo.decimals === testTokenDecimals);
+  assert(mintInfo.isInitialized === true);
+  if (mintInfo.freezeAuthority !== null) {
+    assert(mintInfo.freezeAuthority.equals(authority));
+  } else {
+    assert(mintInfo.freezeAuthority === null);
+  }
+  
+
+  return mintInfo;  
+}
+
+export async function createAccountTokenSwapA(): Promise<void> {
+  
+  // createAccountProgramm=new Account([95,214,128,34,18,164,154,241,35,95,234,185,216,118,40,65,242,115,5,210,130,217,119,39,96,224,165,206,163,227,255,13,109,16,141,79,216,210,106,68,147,152,240,170,137,40,174,195,23,121,207,82,14,68,129,96,180,73,142,49,138,73,209,161]);
+ 
   testAccountOwner = new Account();
   
   tokenAccountA = await mintA.createAccount(authority );
   console.log("testAccount"+tokenAccountA)
   const accountInfo = await mintA.getAccountInfo(tokenAccountA);
+
   assert(accountInfo.mint.equals(mintA.publicKey));
   assert(accountInfo.owner.equals(authority));
   assert(accountInfo.amount.toNumber() === 0);
@@ -269,18 +337,89 @@ export async function createAccountTokenSwapA(): Promise<void> {
 
   return accountInfo;
 }
-export async function createMintTokenA(): Promise<void> {
-  console.log("tokenAccountA"+tokenAccountA+"authority"+authority)
-  await mintA.mintTo(tokenAccountA, authority, [], 1000);
 
+
+export async function createAccountTokenSwapB(): Promise<void> {
+ 
+  tokenAccountB= await mintB.createAccount(authority);
+  console.log("testAccount "+tokenAccountB)
+ 
+  const accountInfoA = await mintA.getAccountInfo(tokenAccountA);
+console.log("********************** info account A**************************")
+console.log("owner accountA"+accountInfoA.owner)
+console.log("autorithy accountA"+accountInfoA.authority)
+console.log("********************** end info account A**************************")
+const accountInfo = await mintB.getAccountInfo(tokenAccountB);
+console.log("********************** info account B**************************")
+console.log("owner accountB"+accountInfo.owner)
+console.log("autorithy accountB"+accountInfo.authority)
+console.log("********************** end info accountB**************************")
+  return accountInfo;
+}
+export async function createMintTokenA(): Promise<void> {
+  let accountInfo;
+  accountInfo = await mintA.getAccountInfo(tokenAccountA);
+  console.log("****************** before MintA ***********************")
+  console.log("The address of this account "+accountInfo.address);
+  console.log("The mint associated with this account "+accountInfo.mint)
+  console.log("Owner of this account "+accountInfo.owner);
+  console.log("Amount of tokens this account holds "+accountInfo.amount);
+  console.log("The delegate for this account "+accountInfo.delegate)
+  console.log("The delegate for this account "+accountInfo.delegatedAmount)
+ 
+  console.log("****************** end before MintA ***********************")
+  await mintA.mintTo(tokenAccountA, owner, [], 1000);
+  console.log("****************** after MintA ***********************")
+  accountInfo = await mintA.getAccountInfo(tokenAccountA);
+  console.log("****************** after ***********************")
+  console.log("The address of this account "+accountInfo.address);
+  console.log("The mint associated with this account "+accountInfo.mint)
+  console.log("Owner of this account "+accountInfo.owner);
+  console.log("Amount of tokens this account holds "+accountInfo.amount);
+  console.log("The delegate for this account "+accountInfo.delegate)
+  console.log("The delegate for this account "+accountInfo.delegatedAmount)
+  console.log("****************** end afterMintA ***********************")
   const mintInfo = await mintA.getMintInfo();
   assert(mintInfo.supply.toNumber() === 1000);
 
-  const accountInfo = await mintA.getAccountInfo(tokenAccountA);
+
+ 
   assert(accountInfo.amount.toNumber() === 1000);
 
   return mintInfo;
 }
+export async function createMintTokenB(): Promise<void> {
+  let accountInfo;
+ accountInfo = await mintB.getAccountInfo(tokenAccountB);
+  console.log("****************** before MintB ***********************")
+  console.log("The address of this account "+accountInfo.address);
+  console.log("The mint associated with this account "+accountInfo.mint)
+  console.log("Owner of this account "+accountInfo.owner);
+  console.log("Amount of tokens this account holds "+accountInfo.amount);
+  console.log("The delegate for this account "+accountInfo.delegate)
+  console.log("The delegate for this account "+accountInfo.delegatedAmount)
+  console.log("****************** end before MintB ***********************")
+  await mintB.mintTo(tokenAccountB, owner, [], 1000);
+  
+  const mintInfo = await mintB.getMintInfo();
+  assert(mintInfo.supply.toNumber() === 1000);
+
+   accountInfo = await mintB.getAccountInfo(tokenAccountB);
+  console.log("****************** afterMintB ***********************")
+  console.log("The address of this account "+accountInfo.address);
+  console.log("The mint associated with this account "+accountInfo.mint)
+  console.log("Owner of this account "+accountInfo.owner);
+  console.log("Amount of tokens this account holds "+accountInfo.amount);
+  console.log("The delegate for this account "+accountInfo.delegate)
+  console.log("The delegate for this account "+accountInfo.delegatedAmount)
+  console.log("****************** end afterMintB ***********************")
+  assert(accountInfo.amount.toNumber() === 1000);
+
+  return mintInfo;
+}
+
+
+/************************************************************************************************** */
 export async function createAccount(): Promise<void> {
   testAccountOwner = new Account();
   

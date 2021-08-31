@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import './App.css';
 import Wallet from '@project-serum/sol-wallet-adapter';
 import { Connection, SystemProgram, Transaction, clusterApiUrl,PublicKey } from '@solana/web3.js';
-import {createTokenA,createNewAccountTokenA,mintTokenA,createTokenB} from "./cli/makesteps"
+import {createTokenA,createNewAccountTokenA,mintTokenA,createTokenB,createNewAccountTokenB,mintTokenB,createPoolToken,createSwapNToken} from "./cli/makesteps"
 
 function toHex(buffer) {
   return Array.prototype.map
@@ -104,7 +104,7 @@ function App() {
   }
  //create token A
 async function createTokenASwap(){
-    addLog("loading ... ");
+    addLog("loading create Mint A... ");
     try {
         createTokenA(selectedWallet, connection).then(token =>
         addLog(
@@ -117,12 +117,10 @@ async function createTokenASwap(){
       addLog("" + err);
     }
 
-
-
 }
  //create token B
  async function createTokenBSwap(){
-  addLog("loading ... ");
+  addLog("loading create mint B ... ");
   try {
       createTokenB(selectedWallet, connection).then(token =>
       addLog(
@@ -140,7 +138,7 @@ async function createTokenASwap(){
 }
   
 function createAccountA() {
-    addLog("loading ... ");
+    addLog("loading create account A... ");
 
     createNewAccountTokenA(selectedWallet, connection)
       .then(account =>
@@ -152,7 +150,7 @@ function createAccountA() {
   }
   
  async function mintTokenSwapA(){
-    addLog("loading ... ");
+    addLog("loading mint A... ");
     try {
       mintTokenA(selectedWallet, connection).then(token =>
         addLog(
@@ -169,8 +167,68 @@ function createAccountA() {
 
   }
 
+  async function mintTokenSwapB(){
+    addLog("loading mint B... ");
+    try {
+      mintTokenB(selectedWallet, connection).then(token =>
+        addLog(
+          JSON.stringify(token)))
+        .catch(
+          err => addLog("" + err)
+        )
+    }
+    catch (err) {
+      addLog("" + err);
+    }
   
+    
 
+  }
+
+  async function createAccountB(){
+    addLog("loading create account B ... ");
+
+    createNewAccountTokenB(selectedWallet, connection)
+      .then(account =>
+        addLog(
+          JSON.stringify(account)))
+      .catch(
+        err => addLog("" + err)
+      )
+
+
+  }
+async function createPool(){
+  addLog("loading create pool... ");
+  try {
+    createPoolToken(selectedWallet, connection)
+    .then(token =>
+    addLog(
+      JSON.stringify(token)))
+    .catch(
+      err => addLog("" + err)
+    )
+}
+catch (err) {
+  addLog("" + err);
+}
+}
+async function swapNToken(){
+  addLog("loading swap token... ");
+  try {
+    createSwapNToken(selectedWallet, connection)
+    .then(token =>
+    addLog(
+      JSON.stringify(token)))
+    .catch(
+      err => addLog("" + err)
+    )
+}
+catch (err) {
+  addLog("" + err);
+}
+
+}
   return (
     <div className="App">
       <h1>Wallet Adapter Demo</h1>
@@ -222,6 +280,26 @@ MintTokenA
 <button onClick={ () => createTokenBSwap()}>
 createTokenB
 
+</button>
+<br></br>
+<button onClick={ () => createAccountB()}>
+         
+
+         createAccountB
+         </button>
+         <br></br>
+<button onClick={ () => mintTokenSwapB()}>
+
+MintTokenB
+</button>
+<br></br>
+<button onClick={ () => createPool()}>
+
+createPool
+</button>
+<br></br>
+<button onClick={ () => swapNToken()}>
+swap Token
 </button>
     </div>
   );

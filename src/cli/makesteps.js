@@ -26,7 +26,11 @@ import {
   createTokenSwapA,
   createAccountTokenSwapA,
   createMintTokenA,
-  createTokenSwapB
+  createTokenSwapB,
+  createAccountTokenSwapB,
+  createMintTokenB,
+  createPoolTokenSwap,
+  swapToken
 } from './token-test';
 
 export async function makeSteps(selectedWallet) {
@@ -79,6 +83,10 @@ export async function mintToken(selectedWallet , connection) {
 export async function mintTokenA(selectedWallet , connection) {  
   return createMintTokenA(selectedWallet , connection);
 }
+export async function mintTokenB(selectedWallet , connection) {  
+  return createMintTokenB(selectedWallet , connection);
+}
+
 
 export async function createTokenA(selectedWallet , connection) {  
   return createTokenSwapA(selectedWallet , connection);
@@ -94,8 +102,17 @@ export async function createNewAccount(selectedWallet , connection) {
 export async function createNewAccountTokenA(selectedWallet , connection) {  
   return createAccountTokenSwapA(selectedWallet , connection);
 }
+export async function createNewAccountTokenB(selectedWallet , connection) {  
+  return createAccountTokenSwapB(selectedWallet , connection);
+}
 
 
+export async function createPoolToken(selectedWallet , connection) {  
+  return createPoolTokenSwap(selectedWallet , connection);
+}
+export async function createSwapNToken(selectedWallet , connection) {  
+  return swapToken(selectedWallet , connection);
+}
 export async function createMintTo(selectedWallet , connection) {  
   return mintTo();
 }
