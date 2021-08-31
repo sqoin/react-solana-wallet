@@ -209,12 +209,12 @@ console.log("**** End *******")
 
 }
 export async function createTokenSwapA(selectedWallet , connection): Promise<void> {
-  
   createAccountProgramm=new Account();
   [authority, nonce] = await PublicKey.findProgramAddress(
     [createAccountProgramm.publicKey.toBuffer()],
     TOKEN_SWAP_PROGRAM_ID,
   )
+
   owner = await newAccountWithLamports1(connection, 1000000000);
  
   mintA = await Token.createMint(
@@ -237,12 +237,8 @@ export async function createTokenSwapB(selectedWallet , connection): Promise<voi
   // testMintAuthority = new Account();
   // programId = new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA");
   // associatedProgramId = new PublicKey("Fxer83fa7cJF3CBS8EDtbKEbkM1gqnPqLZbRQZZae4Cf");
-  createAccountProgramm=new Account();
-  [authority, nonce] = await PublicKey.findProgramAddress(
-    [createAccountProgramm.publicKey.toBuffer()],
-    TOKEN_SWAP_PROGRAM_ID,
-  )
-    owner = await newAccountWithLamports1(connection, 1000000000);
+  
+    //owner = await newAccountWithLamports1(connection, 1000000000);
   mintB = await Token.createMint(
     connection,
     selectedWallet,
@@ -312,22 +308,13 @@ export async function createAccountTokenSwapA(): Promise<void> {
   
   // createAccountProgramm=new Account([95,214,128,34,18,164,154,241,35,95,234,185,216,118,40,65,242,115,5,210,130,217,119,39,96,224,165,206,163,227,255,13,109,16,141,79,216,210,106,68,147,152,240,170,137,40,174,195,23,121,207,82,14,68,129,96,180,73,142,49,138,73,209,161]);
  
-  testAccountOwner = new Account();
+  // testAccountOwner = new Account();
   
   tokenAccountA = await mintA.createAccount(authority );
   console.log("testAccount"+tokenAccountA)
   const accountInfo = await mintA.getAccountInfo(tokenAccountA);
 
-  assert(accountInfo.mint.equals(mintA.publicKey));
-  assert(accountInfo.owner.equals(authority));
-  assert(accountInfo.amount.toNumber() === 0);
-  assert(accountInfo.delegate === null);
-  assert(accountInfo.delegatedAmount.toNumber() === 0);
-  assert(accountInfo.isInitialized === true);
-  assert(accountInfo.isFrozen === false);
-  assert(accountInfo.isNative === false);
-  assert(accountInfo.rentExemptReserve === null);
-  assert(accountInfo.closeAuthority === null);
+console.log(authority+" 1 " +accountInfo.owner+ " ")
 
  /* // you can create as many accounts as with same owner
   const testAccount2 = await testToken.createAccount(
@@ -345,14 +332,15 @@ export async function createAccountTokenSwapB(): Promise<void> {
   console.log("testAccount "+tokenAccountB)
  
   const accountInfoA = await mintA.getAccountInfo(tokenAccountA);
+  
 console.log("********************** info account A**************************")
-console.log("owner accountA"+accountInfoA.owner)
-console.log("autorithy accountA"+accountInfoA.authority)
+console.log("owner "+accountInfoA.owner)
+console.log("autorithy "+authority)
 console.log("********************** end info account A**************************")
 const accountInfo = await mintB.getAccountInfo(tokenAccountB);
 console.log("********************** info account B**************************")
-console.log("owner accountB"+accountInfo.owner)
-console.log("autorithy accountB"+accountInfo.authority)
+console.log("owner "+accountInfo.owner)
+console.log("autorithy B "+authority)
 console.log("********************** end info accountB**************************")
   return accountInfo;
 }
