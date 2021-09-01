@@ -35,6 +35,8 @@ const[poolToken,setPoolToken]=useState("")
 const[accountPool,setAccountPool]=useState("")
 const [owner,setOwner]=useState("")
 const [autorithy,setAuthority]=useState("")
+const [tokenSwap,setTokenSwap]=useState("")
+const[feeAccount,setFeeAccount]=useState("")
   const injectedWallet = useMemo(() => {
     try {
       return new Wallet(window.sollet, network);
@@ -230,6 +232,7 @@ async function createPool(){
 
       setAccountPool(token[0].accountPool)
       setPoolToken(token[0].poolToken)
+      setFeeAccount(token[0].feeAccount)
     
     addLog( "accountPool" +token[0].accountPool +" tokenPool"+token[0].poolToken
      )})
@@ -245,9 +248,12 @@ async function swapNToken(){
   addLog("loading swap token... ");
   try {
     createSwapNToken(selectedWallet, connection)
-    .then(token =>
+    .then(token =>{
+      setTokenSwap(token.tokenSwap)
+      
     addLog(
-      JSON.stringify(token)))
+      JSON.stringify(token.tokenSwap))}
+      )
     .catch(
       err => addLog("" + err)
     )
@@ -260,7 +266,7 @@ catch (err) {
 async function swap(){
   addLog("loading swap ......");
   try{
-    createSwap(selectedWallet,connection).then(
+    createSwap(selectedWallet,connection,).then(
       token=>
       addLog(JSON.stringify(token)))
     

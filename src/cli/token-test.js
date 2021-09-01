@@ -260,6 +260,7 @@ export async function createTokenSwapB(selectedWallet , connection): Promise<voi
   // custom test fixture
   // mintB.associatedProgramId = associatedProgramId;
 // let info= await mintA.getAccountInfo()
+console.log("test")
   const mintInfo = await mintB.getMintInfo();
   
 
@@ -295,22 +296,10 @@ export async function createPoolTokenSwap(selectedWallet , connection): Promise<
   let info =poolToken.getAccountInfo(accountPool)
   console.log("infoPool"+JSON.stringify(info))
   const mintInfo = await poolToken.getMintInfo();
-  if (mintInfo.mintAuthority !== null) {
-    assert(mintInfo.mintAuthority.equals(authority));
-  } else {
-    assert(mintInfo.mintAuthority !== null);
-  }
-  assert(mintInfo.supply.toNumber() === 0);
-  assert(mintInfo.decimals === testTokenDecimals);
-  assert(mintInfo.isInitialized === true);
-  if (mintInfo.freezeAuthority !== null) {
-    assert(mintInfo.freezeAuthority.equals(authority));
-  } else {
-    assert(mintInfo.freezeAuthority === null);
-  }
+
 
   let infoPool =[];
-  infoPool.push({"poolToken":poolToken,"accountPool":accountPool})
+  infoPool.push({"poolToken":poolToken,"accountPool":accountPool,"feeAccount":feeAccount})
  
 console.log(infoPool)
   return infoPool;  
