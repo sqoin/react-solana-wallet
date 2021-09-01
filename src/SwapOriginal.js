@@ -29,6 +29,12 @@ function SwapOriginal() {
   
 const [mintA,setMintA]=useState("")
 const [accountA,setAccountA]=useState("")
+const [mintB,setMintB]=useState("");
+const [accountB,setAccountB]=useState("")
+const[poolToken,setPoolToken]=useState("")
+const[accountPool,setAccountPool]=useState("")
+const [owner,setOwner]=useState("")
+const [autorithy,setAuthority]=useState("")
   const injectedWallet = useMemo(() => {
     try {
       return new Wallet(window.sollet, network);
@@ -113,8 +119,11 @@ async function createTokenASwap(){
     try {
         createTokenA(selectedWallet, connection).then(token =>{
         
-          setMintA(token.publicKey.toBase58())
-         addLog("publickey tokenA"+token.publicKey.toBase58())
+          setMintA(token[0].mintA.publicKey.toBase58())
+          setOwner(token[0].owner.publicKey.toBase58())
+          setAuthority(token[0].authority.publicKey)
+         console.log("token "+token[0].mintA.publicKey.toBase58())
+         addLog("publickey tokenA   "+token[0].mintA.publicKey.toBase58()+ " authorty = "+token[0].authority + " owner ="+token[0].owner.publicKey.toBase58())
 
         } )
         .catch(
@@ -131,9 +140,11 @@ async function createTokenASwap(){
  async function createTokenBSwap(){
   addLog("loading create mint B ... ");
   try {
-      createTokenB(selectedWallet, connection).then(token =>
-      addLog(
-        JSON.stringify(token)))
+      createTokenB(selectedWallet, connection).then(token =>{
+        setMintB(token.publicKey.toBase58())
+        addLog("publickey tokenB   "+token.publicKey.toBase58())
+      }
+     )
       .catch(
         err => addLog("" + err)
       )
@@ -145,7 +156,7 @@ async function createTokenASwap(){
 
 
 }
-  
+ // create Account A 
 function createAccountA() {
     addLog("loading create account A... ");
 
@@ -158,16 +169,28 @@ function createAccountA() {
         err => addLog("" + err)
       )
   }
-  
+  // create Account B
+  async function createAccountB(){
+    addLog("loading create account B ... ");
+
+    createNewAccountTokenB(selectedWallet, connection)
+      .then(account =>{
+        setAccountB(account)
+        addLog(
+          JSON.stringify(account))}
+          )
+      .catch(
+        err => addLog("" + err)
+      )
+
+
+  }
  async function mintTokenSwapA(){
     addLog("loading mint A... ");
     try {
       mintTokenA(selectedWallet, connection).then(token =>
         addLog(
-          JSON.stringify(token))
-         
-          )
-         
+          "amount "  + token.amount+ "addres " +token.address))
         .catch(
           err => addLog("" + err)
         )
@@ -185,7 +208,7 @@ function createAccountA() {
     try {
       mintTokenB(selectedWallet, connection).then(token =>
         addLog(
-          JSON.stringify(token)))
+       "amount"  + token.amount+ "  addres"+token.address))
         .catch(
           err => addLog("" + err)
         )
@@ -198,26 +221,18 @@ function createAccountA() {
 
   }
 
-  async function createAccountB(){
-    addLog("loading create account B ... ");
-
-    createNewAccountTokenB(selectedWallet, connection)
-      .then(account =>
-        addLog(
-          JSON.stringify(account)))
-      .catch(
-        err => addLog("" + err)
-      )
-
-
-  }
+ 
 async function createPool(){
   addLog("loading create pool... ");
   try {
     createPoolToken(selectedWallet, connection)
-    .then(token =>
-    addLog(
-      JSON.stringify(token)))
+    .then(token =>{
+
+      setAccountPool(token[0].accountPool)
+      setPoolToken(token[0].poolToken)
+    
+    addLog( "accountPool" +token[0].accountPool +" tokenPool"+token[0].poolToken
+     )})
     .catch(
       err => addLog("" + err)
     )
@@ -314,8 +329,9 @@ MintTokenA
 <br></br>
 <button onClick={ () => createTokenBSwap()}>
 createTokenB
-
 </button>
+<br></br>
+<input onChange={(e)=>setMintB(e.target.value) } value={mintB}></input>
 <br></br>
 <button onClick={ () => createAccountB()}>
          
@@ -323,14 +339,16 @@ createTokenB
          createAccountB
          </button>
          <br></br>
+         <input onChange={(e)=>setAccountB(e.target.value)} value={accountB}></input>
+         <br></br>
 <button onClick={ () => mintTokenSwapB()}>
 
 MintTokenB
 </button>
 <br></br>
+***{poolToken}*****{accountPool}
 <button onClick={ () => createPool()}>
 
-Amal Fathallah, [01.09.21 11:53]
 createPool
 </button>
 <br></br>

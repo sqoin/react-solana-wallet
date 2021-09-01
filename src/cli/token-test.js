@@ -230,12 +230,14 @@ export async function createTokenSwapA(selectedWallet , connection): Promise<voi
     testTokenDecimals,
     programId,
   );
-  
+  let ret =[];
+  ret.push({"mintA":mintA,"authority":authority.toBase58(),"owner":owner})
   console.log("mintA"+mintA.publicKey.toBase58())
 // let info= await mintA.getAccountInfo()
   // const mintInfo = await mintA.getMintInfo();
   // console.log("mintA"+mintInfo.publicKey)
-  return mintA;
+  console.log(ret)
+  return ret;
 }
 export async function createTokenSwapB(selectedWallet , connection): Promise<void> {
   
@@ -261,7 +263,7 @@ export async function createTokenSwapB(selectedWallet , connection): Promise<voi
   const mintInfo = await mintB.getMintInfo();
   
 
-  return mintInfo;
+  return mintB;
 }
 export async function createPoolTokenSwap(selectedWallet , connection): Promise<void> {
   // let createAccountProgramm=new Account([86,  26, 243,  72,  46, 135, 186,  23,  31, 215, 229,43,  54,  89, 206, 222,  82,   6, 231, 212, 212, 226,184, 211, 107, 147, 180, 138,  57, 108, 182,  46, 185,33, 232, 144,  77,  70,  77, 145, 151, 152, 188,  19,78,  73,  32,  89, 236, 171,  90,  44, 120,  71, 202,142, 214, 179,  38,  85,  71, 103, 145, 193]);
@@ -306,9 +308,12 @@ export async function createPoolTokenSwap(selectedWallet , connection): Promise<
   } else {
     assert(mintInfo.freezeAuthority === null);
   }
-  
 
-  return mintInfo;  
+  let infoPool =[];
+  infoPool.push({"poolToken":poolToken,"accountPool":accountPool})
+ 
+console.log(infoPool)
+  return infoPool;  
 }
 
 export async function createAccountTokenSwapA(): Promise<void> {
@@ -349,7 +354,7 @@ console.log("********************** info account B**************************")
 console.log("owner "+accountInfo.owner)
 console.log("autorithy B "+authority)
 console.log("********************** end info accountB**************************")
-  return accountInfo;
+  return tokenAccountB;
 }
 export async function createMintTokenA(): Promise<void> {
   let accountInfo;
@@ -375,13 +380,9 @@ export async function createMintTokenA(): Promise<void> {
   console.log("The delegate for this account "+accountInfo.delegatedAmount)
   console.log("****************** end afterMintA ***********************")
   const mintInfo = await mintA.getMintInfo();
-  assert(mintInfo.supply.toNumber() === 1000);
-
-
  
-  assert(accountInfo.amount.toNumber() === 1000);
 
-  return mintInfo;
+  return accountInfo;
 }
 export async function createMintTokenB(): Promise<void> {
   let accountInfo;
@@ -410,7 +411,7 @@ export async function createMintTokenB(): Promise<void> {
   console.log("****************** end afterMintB ***********************")
   assert(accountInfo.amount.toNumber() === 1000);
 
-  return mintInfo;
+  return accountInfo ;
 }
 
 export async function swap(){
