@@ -434,7 +434,7 @@ export class Token {
    //   addLog('Got signature, submitting transaction');
       let signature = await connection.sendRawTransaction(signed.serialize());
 
-      await connection.confirmTransaction(signature, 'max');
+      await connection.confirmTransaction(signature, 'confirmed');
     // Send the two instructions
  /*   await sendAndConfirmTransaction(
       'createAccount and InitializeMint',

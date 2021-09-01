@@ -293,7 +293,7 @@ async function swap(){
           createTokenA
       </button>
       <br></br>
-      ****{mintA}***
+      
       <input type="text" onChange={(e) => setMintA(e.target.value) } value={mintA}/>
       <br></br>
       
@@ -303,7 +303,7 @@ async function swap(){
 createAccountA
 </button>
 <br></br>
-****{accountA}***
+
       <input type="text" onChange={(e) => setAccountA(e.target.value) } value={accountA}/>
       
 <br></br>
