@@ -30,7 +30,8 @@ import {
   createAccountTokenSwapB,
   createMintTokenB,
   createPoolTokenSwap,
-  swapToken
+  swapToken,
+  swap
 } from './token-test';
 
 export async function makeSteps(selectedWallet) {
@@ -76,16 +77,7 @@ export async function makeSteps(selectedWallet) {
   await createNewAccountTokenA()
 }
 
-export async function mintToken(selectedWallet , connection) {  
-  return createMint(selectedWallet , connection);
-}
 
-export async function mintTokenA(selectedWallet , connection) {  
-  return createMintTokenA(selectedWallet , connection);
-}
-export async function mintTokenB(selectedWallet , connection) {  
-  return createMintTokenB(selectedWallet , connection);
-}
 
 
 export async function createTokenA(selectedWallet , connection) {  
@@ -96,16 +88,19 @@ export async function createTokenA(selectedWallet , connection) {
 export async function createTokenB(selectedWallet , connection) {  
   return createTokenSwapB(selectedWallet , connection);
 }
-export async function createNewAccount(selectedWallet , connection) {  
-  return createAccount(selectedWallet , connection);
-}
+
 export async function createNewAccountTokenA(selectedWallet , connection) {  
   return createAccountTokenSwapA(selectedWallet , connection);
 }
 export async function createNewAccountTokenB(selectedWallet , connection) {  
   return createAccountTokenSwapB(selectedWallet , connection);
 }
-
+export async function mintTokenA(selectedWallet , connection) {  
+  return createMintTokenA(selectedWallet , connection);
+}
+export async function mintTokenB(selectedWallet , connection) {  
+  return createMintTokenB(selectedWallet , connection);
+}
 
 export async function createPoolToken(selectedWallet , connection) {  
   return createPoolTokenSwap(selectedWallet , connection);
@@ -113,10 +108,19 @@ export async function createPoolToken(selectedWallet , connection) {
 export async function createSwapNToken(selectedWallet , connection) {  
   return swapToken(selectedWallet , connection);
 }
+
+export async function createSwap(selectedWallet,connection){
+
+  return swap(selectedWallet,connection)
+}
+
+/************************************************************************************************ */
 export async function createMintTo(selectedWallet , connection) {  
   return mintTo();
 }
-
+export async function createNewAccount(selectedWallet , connection) {  
+  return createAccount(selectedWallet , connection);
+}
 
 
 export async function createTransfer(selectedWallet , connection) {  
@@ -124,4 +128,7 @@ export async function createTransfer(selectedWallet , connection) {
 }
 
 
+export async function mintToken(selectedWallet , connection) {  
+  return createMint(selectedWallet , connection);
+}
 

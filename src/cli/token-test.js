@@ -205,7 +205,7 @@ console.log("address tokenSwap ="+fetchedTokenSwap.tokenSwap+" authority +"+fetc
 fetchedTokenSwap.tokenAccountB+" poolToken "+fetchedTokenSwap.poolToken+" tokenProgrammId ="+fetchedTokenSwap.tokenProgramId+" tokenProgrammSwapId ="+fetchedTokenSwap.swapProgramId);
 console.log("**** End *******")
  
-
+return testTokenSwap;
 
 
 }
@@ -407,6 +407,21 @@ export async function createMintTokenB(): Promise<void> {
   return mintInfo;
 }
 
+export async function swap(){
+  let userAccountA=mintA.createAccount(owner.publicKey)
+  await mintA.mintTo(userAccountA,owner,[],10000);
+  /***GHOST */
+  let userTransfertAuthority= new Account
+  mintA.approve(userAccountA,userTransfertAuthority,owner,[],100)
+  let userAccountB=mintB.createAccount(owner.publicKey)
+  // await mintB.mintTo(userAccountB,owner,1000)
+  // mintB.approve(userAccountB,userTransfertAuthority,owner,[],10)
+  let poolAccount = SWAP_PROGRAM_OWNER_FEE_ADDRESS
+    ? await  poolToken.createAccount(owner.publicKey)
+    : null;
+  testTokenSwap.swap(userAccountA,tokenAccountA,tokenAccountB,userAccountB,poolAccount,userTransfertAuthority,10,0)
+  
+}
 
 /************************************************************************************************** */
 export async function createAccount(): Promise<void> {

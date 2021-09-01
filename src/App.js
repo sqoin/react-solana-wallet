@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import './App.css';
 import Wallet from '@project-serum/sol-wallet-adapter';
 import { Connection, SystemProgram, Transaction, clusterApiUrl,PublicKey } from '@solana/web3.js';
-import {createTokenA,createNewAccountTokenA,mintTokenA,createTokenB,createNewAccountTokenB,mintTokenB,createPoolToken,createSwapNToken} from "./cli/makesteps"
+import {createTokenA,createNewAccountTokenA,mintTokenA,createTokenB,createNewAccountTokenB,mintTokenB,createPoolToken,createSwapNToken,createSwap} from "./cli/makesteps"
 
 function toHex(buffer) {
   return Array.prototype.map
@@ -229,6 +229,20 @@ catch (err) {
 }
 
 }
+async function swap(){
+  addLog("loading swap ......");
+  try{
+    createSwap(selectedWallet,connection).then(
+      token=>
+      addLog(JSON.stringify(token)))
+    
+  }
+  catch(err){
+    addLog(""+err)
+  }
+ 
+
+}
   return (
     <div className="App">
       <h1>Wallet Adapter Demo</h1>
@@ -301,6 +315,8 @@ createPool
 <button onClick={ () => swapNToken()}>
 swap Token
 </button>
+<br></br>
+<button onClick={()=>swap()}>Swap</button>
     </div>
   );
    
