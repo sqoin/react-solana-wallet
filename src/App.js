@@ -24,6 +24,10 @@ function App() {
     network,
   ]);
   const [tokenInfo, setTokenInfo] = useState("no Info");
+  
+  
+const [mintA,setMintA]=useState("")
+const [accountA,setAccountA]=useState("")
   const injectedWallet = useMemo(() => {
     try {
       return new Wallet(window.sollet, network);
@@ -106,16 +110,21 @@ function App() {
 async function createTokenASwap(){
     addLog("loading create Mint A... ");
     try {
-        createTokenA(selectedWallet, connection).then(token =>
-        addLog(
-          JSON.stringify(token)))
+        createTokenA(selectedWallet, connection).then(token =>{
+        
+          setMintA(token.publicKey.toBase58())
+         addLog("publickey tokenA"+token.publicKey.toBase58())
+
+        } )
         .catch(
           err => addLog("" + err)
         )
+       
     }
     catch (err) {
       addLog("" + err);
     }
+    
 
 }
  //create token B
@@ -141,9 +150,10 @@ function createAccountA() {
     addLog("loading create account A... ");
 
     createNewAccountTokenA(selectedWallet, connection)
-      .then(account =>
-        addLog(
-          JSON.stringify(account)))
+      .then(account =>{
+       
+          setAccountA(account)
+        })
       .catch(
         err => addLog("" + err)
       )
@@ -154,7 +164,10 @@ function createAccountA() {
     try {
       mintTokenA(selectedWallet, connection).then(token =>
         addLog(
-          JSON.stringify(token)))
+          JSON.stringify(token))
+         
+          )
+         
         .catch(
           err => addLog("" + err)
         )
@@ -280,11 +293,19 @@ async function swap(){
           createTokenA
       </button>
       <br></br>
+      ****{mintA}***
+      <input type="text" onChange={(e) => setMintA(e.target.value) } value={mintA}/>
+      <br></br>
+      
       <button onClick={ () => createAccountA()}>
          
 
 createAccountA
 </button>
+<br></br>
+****{accountA}***
+      <input type="text" onChange={(e) => setAccountA(e.target.value) } value={accountA}/>
+      
 <br></br>
 <button onClick={ () => mintTokenSwapA()}>
 

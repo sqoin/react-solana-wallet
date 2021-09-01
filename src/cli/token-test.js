@@ -230,10 +230,12 @@ export async function createTokenSwapA(selectedWallet , connection): Promise<voi
     testTokenDecimals,
     programId,
   );
+  
+  console.log("mintA"+mintA.publicKey.toBase58())
 // let info= await mintA.getAccountInfo()
-  const mintInfo = await mintA.getMintInfo();
-
-  return mintInfo;
+  // const mintInfo = await mintA.getMintInfo();
+  // console.log("mintA"+mintInfo.publicKey)
+  return mintA;
 }
 export async function createTokenSwapB(selectedWallet , connection): Promise<void> {
   
@@ -316,18 +318,18 @@ export async function createAccountTokenSwapA(): Promise<void> {
   // testAccountOwner = new Account();
   
   tokenAccountA = await mintA.createAccount(authority );
-  console.log("testAccount"+tokenAccountA)
+ 
   const accountInfo = await mintA.getAccountInfo(tokenAccountA);
 
-console.log(authority+" 1 " +accountInfo.owner+ " ")
 
  /* // you can create as many accounts as with same owner
   const testAccount2 = await testToken.createAccount(
     testAccountOwner.publicKey,
   );
   assert(!testAccount2.equals(testAccount));*/
-
-  return accountInfo;
+  console.log("accounta"+tokenAccountA)
+  return tokenAccountA;
+ 
 }
 
 
