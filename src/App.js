@@ -1,6 +1,6 @@
 import React from "react";
 import SerumSwap from "./SerumSwap";
-import SwapOriginl from "./SwapOriginal";
+import SwapOriginal from "./SwapOriginal";
 
 import {
   BrowserRouter as Router,
@@ -18,8 +18,8 @@ export default function App() {
         <Route exact path="/SerumSwap">
           <SerumSwapLink />
         </Route>
-        <Route exact path="/SwapOriginl">
-          <SwapOriginlLink />
+        <Route exact path="/SwapOriginal">
+          <SwapOriginalLink />
         </Route>
       </Switch>
     </div>
@@ -34,9 +34,9 @@ function SerumSwapLink() {
    <SerumSwap/>
   );
 }
-function SwapOriginlLink() {
+function SwapOriginalLink() {
   return (
-   <SwapOriginl/>
+   <SwapOriginal/>
   );
 }
 

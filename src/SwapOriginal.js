@@ -1,3 +1,4 @@
+
 import React, { useEffect, useMemo, useState } from 'react';
 import './App.css';
 import Wallet from '@project-serum/sol-wallet-adapter';
@@ -24,11 +25,15 @@ function SwapOriginal() {
     network,
   ]);
   const [tokenInfo, setTokenInfo] = useState("no Info");
+  
+  
+const [mintA,setMintA]=useState("")
+const [accountA,setAccountA]=useState("")
   const injectedWallet = useMemo(() => {
     try {
       return new Wallet(window.sollet, network);
     } catch (e) {
-      console.log(`Could not create injected wallet: ${e}`);
+     
       return null;
     }
   }, [network]);
@@ -106,12 +111,16 @@ function SwapOriginal() {
 async function createTokenASwap(){
     addLog("loading create Mint A... ");
     try {
-        createTokenA(selectedWallet, connection).then(token =>
-        addLog(
-          JSON.stringify(token)))
+        createTokenA(selectedWallet, connection).then(token =>{
+        
+          setMintA(token.publicKey.toBase58())
+         addLog("publickey tokenA"+token.publicKey.toBase58())
+
+        } )
         .catch(
           err => addLog("" + err)
         )
+       
     }
     catch (err) {
       addLog("" + err);
@@ -141,9 +150,10 @@ function createAccountA() {
     addLog("loading create account A... ");
 
     createNewAccountTokenA(selectedWallet, connection)
-      .then(account =>
-        addLog(
-          JSON.stringify(account)))
+      .then(account =>{
+       
+          setAccountA(account)
+        })
       .catch(
         err => addLog("" + err)
       )
@@ -154,7 +164,10 @@ function createAccountA() {
     try {
       mintTokenA(selectedWallet, connection).then(token =>
         addLog(
-          JSON.stringify(token)))
+          JSON.stringify(token))
+         
+          )
+         
         .catch(
           err => addLog("" + err)
         )
@@ -280,11 +293,19 @@ async function swap(){
           createTokenA
       </button>
       <br></br>
+      
+      <input type="text" onChange={(e) => setMintA(e.target.value) } value={mintA}/>
+      <br></br>
+      
       <button onClick={ () => createAccountA()}>
          
 
 createAccountA
 </button>
+<br></br>
+
+      <input type="text" onChange={(e) => setAccountA(e.target.value) } value={accountA}/>
+      
 <br></br>
 <button onClick={ () => mintTokenSwapA()}>
 
@@ -309,6 +330,7 @@ MintTokenB
 <br></br>
 <button onClick={ () => createPool()}>
 
+Amal Fathallah, [01.09.21 11:53]
 createPool
 </button>
 <br></br>
