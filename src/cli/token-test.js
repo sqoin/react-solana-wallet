@@ -6,6 +6,9 @@ import {
   Connection,
   PublicKey,
   clusterApiUrl,
+  TransactionInstruction,
+  Transaction,
+  sendAndConfirmTransaction,
 } from '@solana/web3.js';
 
 import {
@@ -50,6 +53,7 @@ let feeAccount:PublicKey;
 let authority:PublicKey;
 let accountPool:PublicKey;
 let nonce:Number;
+let payer:Account;
 let testTokenDecimals: number = 2;
 let createAccountProgramm :Account;
 
@@ -408,19 +412,50 @@ export async function createMintTokenB(): Promise<void> {
 }
 
 export async function swap(){
-  let userAccountA=mintA.createAccount(owner.publicKey)
+  let userAccountA=await mintA.createAccount(owner.publicKey)
   await mintA.mintTo(userAccountA,owner,[],10000);
   /***GHOST */
-  let userTransfertAuthority= new Account
-  mintA.approve(userAccountA,userTransfertAuthority,owner,[],100)
+  let userTransferAuthority= new Account
+  mintA.approve(userAccountA,userTransferAuthority,owner,[],100)
   let userAccountB=mintB.createAccount(owner.publicKey)
   // await mintB.mintTo(userAccountB,owner,1000)
   // mintB.approve(userAccountB,userTransfertAuthority,owner,[],10)
   let poolAccount = SWAP_PROGRAM_OWNER_FEE_ADDRESS
     ? await  poolToken.createAccount(owner.publicKey)
     : null;
-  testTokenSwap.swap(userAccountA,tokenAccountA,tokenAccountB,userAccountB,poolAccount,userTransfertAuthority,10,0)
+    let programIdHello=new PublicKey("8H1ShZJeQAcDWAYcDY7LACe7aMS4GWQGVWAMWTLJrAY4")
+    let [programAddress, nonce1] = await PublicKey.findProgramAddress(
+      [createAccountProgramm.publicKey.toBuffer()],
+      programIdHello,
+     );
+  //testTokenSwap.swap(userAccountA,tokenAccountA,tokenAccountB,userAccountB,poolAccount,userTransfertAuthority,10,0)
+  const keys=[{pubkey: testTokenSwap, isSigner: false, isWritable: true},
+    {pubkey: authority, isSigner: false, isWritable: true},  //authority 
+    {pubkey: userTransferAuthority.publicKey, isSigner: true, isWritable: true},
+    {pubkey: userAccountA, isSigner: false, isWritable: true},
+    {pubkey: tokenAccountA, isSigner: false, isWritable: true},
+    {pubkey: tokenAccountB, isSigner: false, isWritable: true},
+    {pubkey: userAccountB, isSigner: false, isWritable: true},
+    {pubkey: poolToken, isSigner: false, isWritable: true},
+    {pubkey: feeAccount, isSigner: false, isWritable: true},
+    {pubkey: TOKEN_PROGRAM_ID, isSigner: false, isWritable: true},
+    {pubkey: poolAccount, isSigner: false, isWritable: true},
+    {pubkey: programAddress, isSigner: false, isWritable: true},
+    {pubkey: TOKEN_SWAP_PROGRAM_ID, isSigner: false, isWritable: true},
+    {pubkey:createAccountProgramm.publicKey,isSigner:false,isWritable:false},
+  ]
+  const instruction = new TransactionInstruction({
+    keys,
+    programIdHello,
+    data: Buffer.from([nonce1]), // All instructions are hellos
   
+  });
+  await sendAndConfirmTransaction(
+    connection,
+    new Transaction().add(instruction),
+    [payer,userTransferAuthority],
+    
+  );
 }
 
 /************************************************************************************************** */
@@ -874,7 +909,8 @@ export async function nativeToken(): Promise<void> {
   const connection = await getConnection();
   // this user both pays for the creation of the new token account
   // and provides the lamports to wrap
-  const payer = await newAccountWithLamports(connection, 2000000000 /* wag */);
+  payer=new Account([154,155,110,10,215,247,77,101,78,22,138,92,50,193,239,103,198,82,67,161,255,3,76,5,142,6,49,166,75,110,109,247,56,64,177,222,238,169,65,249,178,65,251,34,236,93,194,184,113,65,164,76,25,238,12,188,93,192,45,7,241,146,222,241]);
+
   const lamportsToWrap = 1000000000;
 
   const token = new Token(connection, NATIVE_MINT, programId, payer);
