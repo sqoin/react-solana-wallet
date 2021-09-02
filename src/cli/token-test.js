@@ -248,6 +248,9 @@ export async function createTokenSwapB(selectedWallet , connection): Promise<voi
   // associatedProgramId = new PublicKey("Fxer83fa7cJF3CBS8EDtbKEbkM1gqnPqLZbRQZZae4Cf");
   
     //owner = await newAccountWithLamports1(connection, 1000000000);
+
+
+    console.log("owner"+owner.publicKey)
   mintB = await Token.createMint(
     connection,
     selectedWallet,
@@ -260,9 +263,9 @@ export async function createTokenSwapB(selectedWallet , connection): Promise<voi
   // custom test fixture
   // mintB.associatedProgramId = associatedProgramId;
 // let info= await mintA.getAccountInfo()
-console.log("test")
-  const mintInfo = await mintB.getMintInfo();
-  
+// console.log("test")
+//   const mintInfo = await mintB.getMintInfo();
+console.log("mintA"+mintB.publicKey.toBase58())
 
   return mintB;
 }
@@ -273,8 +276,10 @@ export async function createPoolTokenSwap(selectedWallet , connection): Promise<
   //   TOKEN_SWAP_PROGRAM_ID,
   // )
   //const payer =  wallet.publicKey; // await newAccountWithLamports(connection, 1000000000 /* wag */);
+
+
   const ownerKey = SWAP_PROGRAM_OWNER_FEE_ADDRESS || owner.publicKey.toString();
-  console.log("owner key ="+ownerKey);
+  console.log("owner key = "+ownerKey);
 
   // programId = new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA");
   // associatedProgramId = new PublicKey("Fxer83fa7cJF3CBS8EDtbKEbkM1gqnPqLZbRQZZae4Cf");
@@ -288,21 +293,20 @@ export async function createPoolTokenSwap(selectedWallet , connection): Promise<
   );
   // HACK: override hard-coded ASSOCIATED_TOKEN_PROGRAM_ID with corresponding
   // custom test fixture
-  poolToken.associatedProgramId = associatedProgramId;
-  feeAccount = await  poolToken.createAccount(new PublicKey(ownerKey));
-  console.log("feeAccount ="+feeAccount);
+  // poolToken.associatedProgramId = associatedProgramId;
+  // feeAccount = await  poolToken.createAccount(new PublicKey(ownerKey));
+  
   accountPool = await poolToken.createAccount(owner.publicKey);
  
-  let info =poolToken.getAccountInfo(accountPool)
-  console.log("infoPool"+JSON.stringify(info))
-  const mintInfo = await poolToken.getMintInfo();
+  // console.log("feeAccount ="+feeAccount);
+  
+  // console.log("accountPool ="+accountPool);
+  console.log("poolToken ="+poolToken);
 
-
-  let infoPool =[];
-  infoPool.push({"poolToken":poolToken,"accountPool":accountPool,"feeAccount":feeAccount})
+  // let infoPool={"poolToken":poolToken,"accountPool":accountPool,"feeAccount":feeAccount};
  
-console.log(infoPool)
-  return infoPool;  
+  // return infoPool; 
+  return {} 
 }
 
 export async function createAccountTokenSwapA(): Promise<void> {
@@ -310,7 +314,7 @@ export async function createAccountTokenSwapA(): Promise<void> {
   // createAccountProgramm=new Account([95,214,128,34,18,164,154,241,35,95,234,185,216,118,40,65,242,115,5,210,130,217,119,39,96,224,165,206,163,227,255,13,109,16,141,79,216,210,106,68,147,152,240,170,137,40,174,195,23,121,207,82,14,68,129,96,180,73,142,49,138,73,209,161]);
  
   // testAccountOwner = new Account();
-  
+  console.log("authority"+authority)
   tokenAccountA = await mintA.createAccount(authority );
  
   const accountInfo = await mintA.getAccountInfo(tokenAccountA);
@@ -330,19 +334,12 @@ export async function createAccountTokenSwapA(): Promise<void> {
 export async function createAccountTokenSwapB(): Promise<void> {
  
   tokenAccountB= await mintB.createAccount(authority);
-  console.log("testAccount "+tokenAccountB)
- 
-  const accountInfoA = await mintA.getAccountInfo(tokenAccountA);
 
-console.log("********************** info account A**************************")
-console.log("owner "+accountInfoA.owner)
-console.log("autorithy "+authority)
-console.log("********************** end info account A**************************")
+ 
+
+
 const accountInfo = await mintB.getAccountInfo(tokenAccountB);
-console.log("********************** info account B**************************")
-console.log("owner "+accountInfo.owner)
-console.log("autorithy B "+authority)
-console.log("********************** end info accountB**************************")
+
   return tokenAccountB;
 }
 export async function createMintTokenA(): Promise<void> {

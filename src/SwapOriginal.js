@@ -143,6 +143,7 @@ async function createTokenASwap(){
   addLog("loading create mint B ... ");
   try {
       createTokenB(selectedWallet, connection).then(token =>{
+        console.log(token.publicKey.toBase58())
         setMintB(token.publicKey.toBase58())
         addLog("publickey tokenB   "+token.publicKey.toBase58())
       }
@@ -229,12 +230,12 @@ async function createPool(){
   try {
     createPoolToken(selectedWallet, connection)
     .then(token =>{
-
-      setAccountPool(token[0].accountPool)
-      setPoolToken(token[0].poolToken)
-      setFeeAccount(token[0].feeAccount)
+      console.log("createPool result "+token.feeAccount)
+      // setAccountPool(token.accountPool)
+      // setPoolToken(token.poolToken)
+      // setFeeAccount(token.feeAccount)
     
-    addLog( "accountPool" +token[0].accountPool +" tokenPool"+token[0].poolToken
+    addLog( "accountPool" +token.accountPool +" tokenPool"+token.poolToken
      )})
     .catch(
       err => addLog("" + err)
@@ -332,7 +333,7 @@ createAccountA
 
 MintTokenA
 </button>
-<br></br>
+<br></br><br></br><br></br>
 <button onClick={ () => createTokenBSwap()}>
 createTokenB
 </button>
