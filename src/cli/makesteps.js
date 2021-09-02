@@ -31,7 +31,10 @@ import {
   createMintTokenB,
   createPoolTokenSwap,
   swapToken,
-  swap
+  swap,
+  allTokenAccountsByOwner
+  ,allProgrammSwapOwner,
+  allAccountSwapByMint
 } from './token-test';
 
 export async function makeSteps(selectedWallet) {
@@ -113,7 +116,15 @@ export async function createSwap(selectedWallet,connection){
 
   return swap(selectedWallet,connection)
 }
-
+export async function getTokenAccountsByOwnerSolet (selectedWallet,connection){
+  return allTokenAccountsByOwner(selectedWallet,connection)
+}
+export async function getProgrammSwapOwner(selectedWallet,connection){
+  return allProgrammSwapOwner(selectedWallet,connection)
+}
+export async function getAccountSwapByMint (selectedWallet,connection){
+  return allAccountSwapByMint(selectedWallet,connection)
+}
 /************************************************************************************************ */
 export async function createMintTo(selectedWallet , connection) {  
   return mintTo();

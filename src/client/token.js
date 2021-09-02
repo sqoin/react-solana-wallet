@@ -1075,22 +1075,38 @@ console.log("tkenpublickey"+token.publicKey)
       ownerPublicKey = owner;
       signers = multiSigners;
     }
-    await sendAndConfirmTransaction(
-      'Approve',
-      this.connection,
-      new Transaction().add(
-        Token.createApproveInstruction(
-          this.programId,
-          account,
-          delegate,
-          ownerPublicKey,
-          multiSigners,
-          amount,
-        ),
+
+    let transaction = new Transaction();
+
+    transaction.add(
+      Token.createApproveInstruction(
+        this.programId,
+        account,
+        delegate,
+        owner.publicKey,
+        multiSigners,
+        amount,
       ),
-      this.payer,
-      ...signers,
     );
+
+    transaction.recentBlockhash = (
+      await this.connection.getRecentBlockhash()
+    ).blockhash;
+
+
+    transaction.feePayer = owner.publicKey;
+    //transaction.setSigners(payer.publicKey, mintAccount.publicKey );
+   
+
+    let signed = await owner.signTransaction(transaction);
+
+    //   addLog('Got signature, submitting transaction');
+    let signature = await this.connection.sendRawTransaction(signed.serialize());
+
+    await this.connection.confirmTransaction(signature, 'max');
+
+
+    
   }
 
   /**
