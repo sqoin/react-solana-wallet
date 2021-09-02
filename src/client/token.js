@@ -2451,4 +2451,61 @@ console.log("tkenpublickey"+token.publicKey)
       data,
     });
   }
+
+  async createAccount1(
+    TOKEN_PROGRAM_ID,
+        vaultA,
+        tokenA,
+        marketMakerTokenA,
+        selectedWallet,
+        amount,
+        decimals
+   ): Promise<PublicKey> {
+    // Allocate memory for the account
+    const balanceNeeded = await Token.getMinBalanceRentForExemptAccount(
+      this.connection,
+    );
+
+    const newAccount = new Account();
+    const transaction = new Transaction();
+    transaction.add(
+      Token.createTransferCheckedInstruction(
+        TOKEN_PROGRAM_ID,
+        vaultA,
+        tokenA,
+        marketMakerTokenA,
+        selectedWallet,
+        [],
+        amount,
+        decimals
+      )
+    );
+
+  
+
+    transaction.recentBlockhash = (
+      await this.connection.getRecentBlockhash()
+    ).blockhash;
+    transaction.feePayer = this.payer.publicKey;
+    //transaction.setSigners(payer.publicKey, mintAccount.publicKey );
+    transaction.partialSign(newAccount);
+
+    let signed = await this.payer.signTransaction(transaction);
+    
+   //   addLog('Got signature, submitting transaction');
+      let signature = await this.connection.sendRawTransaction(signed.serialize());
+
+      await this.connection.confirmTransaction(signature, 'max');
+
+    // Send the two instructions
+  /*  await sendAndConfirmTransaction(
+      'createAccount and InitializeAccount',
+      this.connection,
+      transaction,
+      this.payer,
+      newAccount,
+    );*/
+
+    return newAccount.publicKey;
+  }
 }
