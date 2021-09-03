@@ -349,7 +349,7 @@ export class TokenSwap {
    */
   static async createTokenSwap(
     connection: Connection,
-    payer: Account,
+    payer:any,
     tokenSwapAccount: Account,
     authority: PublicKey,
     tokenAccountA: PublicKey,
@@ -437,13 +437,24 @@ export class TokenSwap {
     );
 
     transaction.add(instruction);
-    await sendAndConfirmTransaction(
-      'createAccount and InitializeSwap',
-      connection,
-      transaction,
-      payer,
-      tokenSwapAccount,
-    );
+    // await sendAndConfirmTransaction(
+    //   'createAccount and InitializeSwap',
+    //   connection,
+    //   transaction,
+    //   payer,
+    //   tokenSwapAccount,
+    // );
+    transaction.recentBlockhash = (
+      await connection.getRecentBlockhash()
+    ).blockhash;
+    transaction.feePayer = payer.publicKey;
+    //transaction.setSigners(payer.publicKey, mintAccount.publicKey );
+   
+
+    let signed = await payer.signTransaction(transaction);
+      let signature = await connection.sendRawTransaction(signed.serialize());
+
+      await connection.confirmTransaction(signature, 'confirmed');
 
     return tokenSwap;
   }

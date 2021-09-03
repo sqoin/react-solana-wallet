@@ -4,6 +4,7 @@
  * @flow
  */
 
+import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
 import {
   loadTokenProgram,
   createMint,
@@ -31,7 +32,10 @@ import {
   createMintTokenB,
   createPoolTokenSwap,
   swapToken,
-  swap
+  swap,
+  allTokenAccountsByOwner
+  ,allProgrammSwapOwner,
+  allAccountSwapByMint
 } from './token-test';
 
 export async function makeSteps(selectedWallet) {
@@ -102,8 +106,8 @@ export async function mintTokenB(selectedWallet , connection) {
   return createMintTokenB(selectedWallet , connection);
 }
 
-export async function createPoolToken(selectedWallet , connection) {  
-  return createPoolTokenSwap(selectedWallet , connection);
+export async function createPoolToken(selectedWallet , connection,autorithy) {  
+  return createPoolTokenSwap(selectedWallet , connection,autorithy);
 }
 export async function createSwapNToken(selectedWallet , connection) {  
   return swapToken(selectedWallet , connection);
@@ -113,7 +117,15 @@ export async function createSwap(selectedWallet,connection){
 
   return swap(selectedWallet,connection)
 }
-
+export async function getTokenAccountsByOwnerSolet (selectedWallet,connection){
+  return allTokenAccountsByOwner(selectedWallet,connection)
+}
+export async function getProgrammSwapOwner(selectedWallet,connection){
+  return allProgrammSwapOwner(selectedWallet,connection)
+}
+export async function getAccountSwapByMint (selectedWallet,connection){
+  return allAccountSwapByMint(selectedWallet,connection)
+}
 /************************************************************************************************ */
 export async function createMintTo(selectedWallet , connection) {  
   return mintTo();
