@@ -23,7 +23,7 @@ export default function App() {
         <Route exact path="/SwapOriginal">
           <SwapOriginalLink />
         </Route>
-        <Route exact path="/Portfolio">
+        <Route exact path="/">
           <PortfolioLink />
         </Route>
         <Route exact path="/TransferMultisig">
