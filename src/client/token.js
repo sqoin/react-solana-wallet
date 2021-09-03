@@ -1222,8 +1222,49 @@ console.log("tkenpublickey"+token.publicKey)
    * @param multiSigners Signing accounts if `authority` is a multiSig
    * @param amount Amount to mint
    */
+  // async mintTo(
+  //   dest: PublicKey,
+  //   authority: any,
+  //   multiSigners: Array<Account>,
+  //   amount: number | u64,
+  // ): Promise<void> {
+  //   let ownerPublicKey;
+  //   let signers;
+  //   if (isAccount(authority)) {
+  //     ownerPublicKey = authority.publicKey;
+  //     signers = [authority];
+  //   } else {
+  //     ownerPublicKey = authority;
+  //     signers = multiSigners;
+  //   }
+  //   const transaction = new Transaction();
+  //   transaction.add(
+  //     Token.createMintToInstruction(
+  //       this.programId,
+  //       this.publicKey,
+  //       dest,
+  //       ownerPublicKey,
+  //       multiSigners,
+  //       amount,
+  //     ),
+  //   );
+    
+  //   transaction.recentBlockhash = (
+  //     await this.connection.getRecentBlockhash()
+  //   ).blockhash;
+  //   transaction.feePayer = this.payer.publicKey;
+  //   //transaction.setSigners(payer.publicKey, mintAccount.publicKey );
+  //   transaction.partialSign(...signers);
+
+  //   let signed = await this.payer.signTransaction(transaction);
+
+  //   //   addLog('Got signature, submitting transaction');
+  //   let signature = await this.connection.sendRawTransaction(signed.serialize());
+
+  //   await this.connection.confirmTransaction(signature, 'max');
+  // }
   async mintTo(
-    dest: PublicKey,
+    dest: any,
     authority: any,
     multiSigners: Array<Account>,
     amount: number | u64,
@@ -1248,15 +1289,14 @@ console.log("tkenpublickey"+token.publicKey)
         amount,
       ),
     );
-    
+
     transaction.recentBlockhash = (
       await this.connection.getRecentBlockhash()
     ).blockhash;
-    transaction.feePayer = this.payer.publicKey;
+    transaction.feePayer = authority.publicKey;
     //transaction.setSigners(payer.publicKey, mintAccount.publicKey );
-    transaction.partialSign(...signers);
 
-    let signed = await this.payer.signTransaction(transaction);
+    let signed = await authority.signTransaction(transaction);
 
     //   addLog('Got signature, submitting transaction');
     let signature = await this.connection.sendRawTransaction(signed.serialize());

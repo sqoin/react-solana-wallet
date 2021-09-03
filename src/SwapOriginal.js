@@ -3,7 +3,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import './App.css';
 import Wallet from '@project-serum/sol-wallet-adapter';
 import { Connection, SystemProgram, Transaction, clusterApiUrl, PublicKey } from '@solana/web3.js';
-import { createTokenA, createNewAccountTokenA, mintTokenA, createTokenB, createNewAccountTokenB, mintTokenB, createPoolToken, createSwapNToken, createSwap, getTokenAccountsByOwnerSolet, getProgrammSwapOwner, getAccountSwapByMint } from "./cli/makesteps"
+import { createTokenA, createNewAccountTokenA, mintTokenA, createTokenB, createNewAccountTokenB, mintTokenB, createPoolToken, createSwapTokens, createSwap, getTokenAccountsByOwnerSolet, getProgrammSwapOwner, getAccountSwapByMint } from "./cli/makesteps"
 
 function toHex(buffer) {
   return Array.prototype.map
@@ -120,24 +120,25 @@ function SwapOriginal() {
   //create token A
   async function createTokenASwap() {
     addLog("loading create Mint A... ");
-    try {
+    // try {
       createTokenA(selectedWallet, connection).then(token => {
-        setAuthority(token[0].authority.publicKey)
-        setMintA(token[0].mintA.publicKey.toBase58())
-        setOwner(token[0].owner.publicKey.toBase58())
+        console.log("create mintA " + JSON.stringify(token))
+        // setAuthority(token[0].authority.publicKey)
+         setMintA(token.mintA)
+        // setOwner(token[0].owner.publicKey.toBase58())
 
-        console.log("token " + token[0].mintA.publicKey.toBase58())
-        addLog("publickey tokenA   " + token[0].mintA.publicKey.toBase58() + " authorty = " + token[0].authority + " owner =" + token[0].owner.publicKey.toBase58())
+        // console.log("token " + token[0].mintA.publicKey.toBase58())
+         addLog("publickey tokenA   " + token.mintA + " authorty = " + token.authority )
 
       })
-        .catch(
-          err => addLog("" + err)
-        )
+        // .catch(
+        //   err => addLog("" + err)
+        // )
 
-    }
-    catch (err) {
-      addLog("" + err);
-    }
+    // }
+    // catch (err) {
+    //   addLog("" + err);
+    // }
 
   }
   //create token B
@@ -194,27 +195,41 @@ function SwapOriginal() {
 
   }
   async function mintTokenSwapA() {
-    addLog("loading mint A... ");
-    try {
-      mintTokenA(selectedWallet, connection).then(token =>
-        addLog(
-          "amount " + token.amount + "addres " + token.address))
-        .catch(
-          err => addLog("" + err)
-        )
-    }
-    catch (err) {
-      addLog("" + err);
-    }
+       
+    addLog("loading ... ");
+    let  MINT_ADDRESS=mintA
+    let ACCOUNT_ADDRESS=accountA
+    mintTokenA(
+      selectedWallet,
+      connection,
+      MINT_ADDRESS,
+      ACCOUNT_ADDRESS
+    ).then((account) =>  addLog(
+      "amount" + account.amount + "  addres" + account.address));
+    // addLog("loading mint A... ");
+    // try {
+    //   mintTokenA(selectedWallet, connection).then(token =>
+    //     addLog(
+    //       "amount " + token.amount + "addres " + token.address))
+    //     .catch(
+    //       err => addLog("" + err)
+    //     )
+    // }
+    // catch (err) {
+    //   addLog("" + err);
+    // }
 
 
 
   }
 
   async function mintTokenSwapB() {
+    let  MINT_ADDRESS=mintB
+    let ACCOUNT_ADDRESS=accountB
     addLog("loading mint B... ");
     try {
-      mintTokenB(selectedWallet, connection).then(token =>
+      mintTokenB(selectedWallet, connection,MINT_ADDRESS,
+        ACCOUNT_ADDRESS).then(token =>
         addLog(
           "amount" + token.amount + "  addres" + token.address))
         .catch(
@@ -225,7 +240,9 @@ function SwapOriginal() {
       addLog("" + err);
     }
 
-
+ 
+     
+  
 
   }
 
@@ -235,12 +252,12 @@ function SwapOriginal() {
     // try {
     createPoolToken(selectedWallet, connection, autorithy)
       .then(token => {
-        console.log("createPool result " + JSON.stringify(token))
-        // setAccountPool(token.accountPool)
-        // setPoolToken(token.poolToken)
-        // setFeeAccount(token.feeAccount)
+        console.log("createPool result " + token)
+        setAccountPool(token.accountPool)
+        setPoolToken(token.poolToken)
+        setFeeAccount(token.feeAccount)
 
-        // addLog("accountPool" + token.accountPool + " tokenPool" + token.poolToken + "feeAccount" + token.feeAccount)
+        addLog("accountPool" + token.accountPool + " tokenPool" + token.poolToken + "feeAccount" + token.feeAccount)
       })
     // .catch(
     //   err => addLog("" + err)
@@ -249,10 +266,10 @@ function SwapOriginal() {
     //   addLog("" + err);
     // }
   }
-  async function swapNToken() {
+  async function swapTokens() {
     addLog("loading swap token... ");
-    try {
-      createSwapNToken(selectedWallet, connection)
+    // try {
+      createSwapTokens(selectedWallet, connection,mintA,mintB,accountA,accountB,poolToken,feeAccount,accountPool,autorithy)
         .then(token => {
           setTokenSwap(token.tokenSwap)
 
@@ -260,13 +277,13 @@ function SwapOriginal() {
             JSON.stringify(token.tokenSwap))
         }
         )
-        .catch(
-          err => addLog("" + err)
-        )
-    }
-    catch (err) {
-      addLog("" + err);
-    }
+        // .catch(
+        //   err => addLog("" + err)
+        // )
+    // }
+    // catch (err) {
+    //   addLog("" + err);
+    // }
 
   }
   async function swap() {
@@ -376,7 +393,7 @@ function SwapOriginal() {
       </button>
       <br></br>
 
-      <input type="text" onChange={(e) => setMintA(e.target.value)} value={mintA} />
+      {/* <input type="text" onChange={(e) => setMintA(e.target.value)} value={mintA} /> */}
       <br></br>
 
       <button onClick={() => createAccountA()}>
@@ -386,10 +403,10 @@ function SwapOriginal() {
       </button>
       <br></br>
 
-      <input type="text" onChange={(e) => setAccountA(e.target.value)} value={accountA} />
+      {/* <input type="text" onChange={(e) => setAccountA(e.target.value)} value={accountA} /> */}
 
       <br></br>
-      <button onClick={() => mintTokenSwapA()}>
+      <input type="text" onChange={(e) => setMintA(e.target.value)} value={mintA} />  <input type="text" onChange={(e) => setAccountA(e.target.value)} value={accountA} />  <button onClick={() => mintTokenSwapA()}>
 
         MintTokenA
       </button>
@@ -398,7 +415,7 @@ function SwapOriginal() {
         createTokenB
       </button>
       <br></br>
-      <input onChange={(e) => setMintB(e.target.value)} value={mintB}></input>
+      
       <br></br>
       <button onClick={() => createAccountB()}>
 
@@ -406,9 +423,9 @@ function SwapOriginal() {
         createAccountB
       </button>
       <br></br>
-      <input onChange={(e) => setAccountB(e.target.value)} value={accountB}></input>
+      
       <br></br>
-      <button onClick={() => mintTokenSwapB()}>
+      <input onChange={(e) => setMintB(e.target.value)} value={mintB}></input>   <input onChange={(e) => setAccountB(e.target.value)} value={accountB}></input> <button onClick={() => mintTokenSwapB()}>
 
         MintTokenB
       </button>
@@ -419,7 +436,8 @@ function SwapOriginal() {
         createPool
       </button>
       <br></br>
-      <button onClick={() => swapNToken()}>
+    mintA :<input onChange={(e) => setMintA(e.target.value)} value={mintA} />  
+    AccountA  <input type="text" onChange={(e) => setAccountA(e.target.value)} value={accountA}/>   mintB<input onChange={(e) => setMintB(e.target.value)} value={mintB}/>accountB <input onChange={(e) => setAccountB(e.target.value)} value={accountB}/> Authority<input type="text" onChange={(e) => setAuthority(e.target.value)} value={autorithy}/> poolToken <input type="text" onChange={(e) => setPoolToken(e.target.value)} value={poolToken}/> feeAccount <input type="text" onChange={(e) => setFeeAccount(e.target.value)} value={feeAccount}/>  AccountPool:<input type="text" onChange={(e) => setAccountPool(e.target.value)} value={accountPool}/>  <button onClick={() => swapNToken()}>
         swap Token
       </button>
       <br></br>

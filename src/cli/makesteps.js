@@ -99,18 +99,18 @@ export async function createNewAccountTokenA(selectedWallet , connection) {
 export async function createNewAccountTokenB(selectedWallet , connection) {  
   return createAccountTokenSwapB(selectedWallet , connection);
 }
-export async function mintTokenA(selectedWallet , connection) {  
-  return createMintTokenA(selectedWallet , connection);
+export async function mintTokenA(selectedWallet , connection,mintAddress, accountAddress) {  
+  return createMintTokenA(selectedWallet , connection,mintAddress,accountAddress);
 }
-export async function mintTokenB(selectedWallet , connection) {  
-  return createMintTokenB(selectedWallet , connection);
+export async function mintTokenB(selectedWallet , connection,mintAddress, accountAddress) {  
+  return createMintTokenB(selectedWallet , connection,mintAddress, accountAddress);
 }
 
 export async function createPoolToken(selectedWallet , connection,autorithy) {  
   return createPoolTokenSwap(selectedWallet , connection,autorithy);
 }
-export async function createSwapNToken(selectedWallet , connection) {  
-  return swapToken(selectedWallet , connection);
+export async function createSwapTokens(selectedWallet, connection,mintA,mintB,accountA,accountB,poolToken,feeAccount,accountPool,autorithy) {  
+  return swapToken(selectedWallet, connection,mintA,mintB,accountA,accountB,poolToken,feeAccount,accountPool,autorithy);
 }
 
 export async function createSwap(selectedWallet,connection){
