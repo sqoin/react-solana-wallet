@@ -2,6 +2,7 @@ import React from "react";
 import SerumSwap from "./SerumSwap";
 import SwapOriginal from "./SwapOriginal";
 import Portfolio from "./Portfolio";
+import TransferMultisig from "./TransferMultisig";
 
 import {
   BrowserRouter as Router,
@@ -25,6 +26,9 @@ export default function App() {
         <Route exact path="/Portfolio">
           <PortfolioLink />
         </Route>
+        <Route exact path="/TransferMultisig">
+          <TransferMultisigLink />
+        </Route>
 
       </Switch>
     </div>
@@ -47,6 +51,11 @@ function SwapOriginalLink() {
 function PortfolioLink() {
   return (
    <Portfolio/>
+  );
+}
+function TransferMultisigLink() {
+  return (
+   <TransferMultisig/>
   );
 }
 

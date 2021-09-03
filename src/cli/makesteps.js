@@ -31,7 +31,9 @@ import {
   createMintTokenB,
   createPoolTokenSwap,
   swapToken,
-  swap
+  swap,
+  createMintMulti,
+  createAccountMulti
 } from './token-test';
 
 export async function makeSteps(selectedWallet) {
@@ -85,6 +87,8 @@ export async function createTokenA(selectedWallet , connection) {
 }
 
 
+
+
 export async function createTokenB(selectedWallet , connection) {  
   return createTokenSwapB(selectedWallet , connection);
 }
@@ -130,5 +134,19 @@ export async function createTransfer(selectedWallet , connection) {
 
 export async function mintToken(selectedWallet , connection) {  
   return createMint(selectedWallet , connection);
+}
+
+
+
+
+/***********************transfer multisigner ******************/
+
+export async function createMintMultisigner(selectedWallet , connection) {  
+  return createMintMulti(selectedWallet , connection);
+}
+
+
+export async function createAccountMultisigner(selectedWallet , connection) {  
+  return createAccountMulti(selectedWallet , connection);
 }
 

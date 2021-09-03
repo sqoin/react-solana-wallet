@@ -2,7 +2,8 @@ import React, { useEffect, useMemo, useState } from 'react';
 import './App.css';
 import Wallet from '@project-serum/sol-wallet-adapter';
 import { Connection, SystemProgram, Transaction, clusterApiUrl, PublicKey } from '@solana/web3.js';
-import { createNewPortfolio } from './Portfolio/cli/makeStepsPortfolio';
+import { createMintMultisigner , createAccountMultisigner} from './cli/makesteps';
+
 
 
 
@@ -13,9 +14,14 @@ function toHex(buffer) {
       .join('');
   }
 
-function Portfolio() {
+function TransferMultisig() {
 
     const [logs, setLogs] = useState([]);
+    const [accountDest, setAccountDest] = useState("");
+    const [amount, setAmount] = useState("");
+    const [rawTransaction, setRawTransaction] = useState("");
+    const [accountA, setAccountA] = useState("");
+    const [accountB, setAccountB] = useState("");
     function addLog(log) {
       setLogs((logs) => [...logs, log]);
     }
@@ -73,24 +79,30 @@ function Portfolio() {
   }
 
 
-  async function createPortfolio () {
-    addLog("loading create portfolio ... ");
+  async function partialSignature () {
+      try{
+        addLog('waiting first signature to confirmed ... ');
 
-    try {createNewPortfolio(selectedWallet, connection)
-      .then(account =>{
-       
-        setPortfolioAccount(account)
-        addLog("address of new portfolio :  ", account.publicKey);
-        })
-      .catch(
-        err => addLog("" + err)
-      )
-           
-    }
-    catch (err) {
-      addLog("" + err);
-    }
+      }
+      catch(e){
+        console.warn(e);
+        addLog('Error: ' + e.message);
+      }
   }
+
+  async function secondSignature () {
+      try{
+        addLog('waiting second signature to confirmed ... ');
+
+      }
+      catch(e){
+        console.warn(e);
+        addLog('Error: ' + e.message);
+      }
+  }
+
+
+
 
     async function sendTransaction() {
         try {
@@ -118,6 +130,63 @@ function Portfolio() {
             addLog('Error: ' + e.message);
         }
     }
+
+    async function createMint() {
+        try {
+            createMintMultisigner(selectedWallet, connection).then(token =>{
+              console.log(token)
+              
+              addLog("publickey tokenB   "+token)
+            }
+           )
+            .catch(
+              err => addLog("" + err)
+            )
+        }
+        catch (err) {
+          addLog("" + err);
+        }
+
+    }
+    async function createAccountA() {
+        try {
+            createAccountMultisigner(selectedWallet, connection).then(tokenAccount =>{
+              console.log(tokenAccount)
+              setAccountA(tokenAccount);
+              addLog("publickey of account   "+tokenAccount)
+            }
+           )
+            .catch(
+              err => addLog("" + err)
+            )
+        }
+        catch (err) {
+          addLog("" + err);
+        }
+
+      
+
+    }
+    async function createAccountB() {
+        try {
+            createAccountMultisigner(selectedWallet, connection).then(tokenAccount =>{
+              console.log(tokenAccount)
+              setAccountB(tokenAccount);
+              addLog("publickey of account   "+tokenAccount)
+            }
+           )
+            .catch(
+              err => addLog("" + err)
+            )
+        }
+        catch (err) {
+          addLog("" + err);
+        }
+
+      
+
+    }
+
 
 
     return (
@@ -151,13 +220,50 @@ function Portfolio() {
                 ))}
             </div>
 
+            <div>
+                <div>
+                     <button onClick={() => createMint()}>Create mint</button>
+                </div>
 
-            <br></br>
-            <br></br>
-            <br></br>
-            Create portfolio account :
-            <br></br>
-            <button onClick={() => createPortfolio()}>Create portfolio account</button> 
+                <div>
+                     <button onClick={() => createAccountA()}>Create account A </button>
+                </div>
+                <div>
+                     <button onClick={() => createAccountB()}>Create account B </button>
+                </div>
+                <div>
+                    Account destination :{' '}
+                    <input
+                        type="text"
+                        value={accountDest}
+                        onChange={(e) => setAccountDest(e.target.value.trim())}
+                    />
+
+                    {' '} Amount : {' '}
+                    <input
+                        type="text"
+                        value={amount}
+                        onChange={(e) => setAmount(e.target.value.trim())}
+                    />
+                </div>
+                <div >
+                <button onClick={() => partialSignature()}>First signature</button>
+                </div>
+
+                <div>
+                    Raw transaction:{' '}
+                    <input
+                        type="text"
+                        value={rawTransaction}
+                        onChange={(e) => setRawTransaction(e.target.value.trim())}
+                    />
+                    <button onClick={() => secondSignature()}>second signature</button>
+                 </div>
+
+            </div>
+
+
+        
 
 
 
@@ -167,4 +273,4 @@ function Portfolio() {
 
 }
 
-export default Portfolio;
+export default TransferMultisig;
