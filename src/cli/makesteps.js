@@ -4,6 +4,7 @@
  * @flow
  */
 
+import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
 import {
   loadTokenProgram,
   createMint,
@@ -105,8 +106,8 @@ export async function mintTokenB(selectedWallet , connection) {
   return createMintTokenB(selectedWallet , connection);
 }
 
-export async function createPoolToken(selectedWallet , connection) {  
-  return createPoolTokenSwap(selectedWallet , connection);
+export async function createPoolToken(selectedWallet , connection,autorithy) {  
+  return createPoolTokenSwap(selectedWallet , connection,autorithy);
 }
 export async function createSwapNToken(selectedWallet , connection) {  
   return swapToken(selectedWallet , connection);

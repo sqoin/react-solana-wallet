@@ -38,6 +38,7 @@ function SwapOriginal() {
   const [tokenSwap, setTokenSwap] = useState("")
   const [feeAccount, setFeeAccount] = useState("")
   const [accountInfo, setAccountInfo] = useState()
+  // const[authority,setAuthority]=useState()
   const injectedWallet = useMemo(() => {
     try {
       return new Wallet(window.sollet, network);
@@ -121,10 +122,10 @@ function SwapOriginal() {
     addLog("loading create Mint A... ");
     try {
       createTokenA(selectedWallet, connection).then(token => {
-
+        setAuthority(token[0].authority.publicKey)
         setMintA(token[0].mintA.publicKey.toBase58())
         setOwner(token[0].owner.publicKey.toBase58())
-        setAuthority(token[0].authority.publicKey)
+
         console.log("token " + token[0].mintA.publicKey.toBase58())
         addLog("publickey tokenA   " + token[0].mintA.publicKey.toBase58() + " authorty = " + token[0].authority + " owner =" + token[0].owner.publicKey.toBase58())
 
@@ -231,24 +232,22 @@ function SwapOriginal() {
 
   async function createPool() {
     addLog("loading create pool... ");
-    try {
-      createPoolToken(selectedWallet, connection)
-        .then(token => {
-          console.log("createPool result " + token.feeAccount)
-          setAccountPool(token[0].accountPool)
-          setPoolToken(token[0].poolToken)
-          setFeeAccount(token[0].feeAccount)
+    // try {
+    createPoolToken(selectedWallet, connection, autorithy)
+      .then(token => {
+        console.log("createPool result " + JSON.stringify(token))
+        // setAccountPool(token.accountPool)
+        // setPoolToken(token.poolToken)
+        // setFeeAccount(token.feeAccount)
 
-          addLog("accountPool" + token[0].accountPool + " tokenPool" + token[0].poolToken + "feeAccount" + token[0].feeAccount
-          )
-        })
-        .catch(
-          err => addLog("" + err)
-        )
-    }
-    catch (err) {
-      addLog("" + err);
-    }
+        // addLog("accountPool" + token.accountPool + " tokenPool" + token.poolToken + "feeAccount" + token.feeAccount)
+      })
+    // .catch(
+    //   err => addLog("" + err)
+    // )
+    // }catch (err) {
+    //   addLog("" + err);
+    // }
   }
   async function swapNToken() {
     addLog("loading swap token... ");
@@ -414,8 +413,8 @@ function SwapOriginal() {
         MintTokenB
       </button>
       <br></br><br></br><br></br>
-
-      <button onClick={() => createPool()}>
+      *********{autorithy}
+      <input onChange={(e) => setAuthority(e.target.value)} value={autorithy}></input> <button onClick={() => createPool()}>
 
         createPool
       </button>
@@ -443,7 +442,7 @@ function SwapOriginal() {
         {
           accountInfo && accountInfo.map(item =>
             <tr>
-            
+
               <td >{item.pubkey.toBase58()}</td>
               <td >{item.account.lamports}</td>
               <td >{item.account.owner.publicKey}</td>
