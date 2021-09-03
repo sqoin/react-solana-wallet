@@ -162,19 +162,22 @@ export async function createMint(selectedWallet, connection): Promise<void> {
 
   return mintInfo;
 }
-export async function swapToken(selectedWallet, connection): Promise<void> {
+export async function swapToken(selectedWallet, connection,mintA,mintB,accountA,accountB,poolToken,feeAccount,accountPool,autorithy): Promise<void> {
 
 
   // [95,214,128,34,18,164,154,241,35,95,234,185,216,118,40,65,242,115,5,210,130,217,119,39,96,224,165,206,163,227,255,13,109,16,141,79,216,210,106,68,147,152,240,170,137,40,174,195,23,121,207,82,14,68,129,96,180,73,142,49,138,73,209,161]
   // let createAccountProgramm=new Account([86,  26, 243,  72,  46, 135, 186,  23,  31, 215, 229,43,  54,  89, 206, 222,  82,   6, 231, 212, 212, 226,184, 211, 107, 147, 180, 138,  57, 108, 182,  46, 185,33, 232, 144,  77,  70,  77, 145, 151, 152, 188,  19,78,  73,  32,  89, 236, 171,  90,  44, 120,  71, 202,142, 214, 179,  38,  85,  71, 103, 145, 193]);
   // swapPayer=new Account([])
+  console.log("poolToken:"+poolToken.publicKey,
+    "mintA:"+mintA.publicKey,
+    "mintB"+mintB.publicKey,)
   testTokenSwap = await TokenSwap.createTokenSwap(
     connection,
     selectedWallet,
     createAccountProgramm,
-    authority,
-    tokenAccountA,
-    tokenAccountB,
+    autorithy,
+    accountA,
+    accountB,
     poolToken.publicKey,
     mintA.publicKey,
     mintB.publicKey,
@@ -220,18 +223,34 @@ export async function createTokenSwapA(selectedWallet, connection): Promise<void
     TOKEN_SWAP_PROGRAM_ID,
   )
 
-  owner = await newAccountWithLamports1(connection, 1000000000);
+  let token = new Token(
+    connection,
+    selectedWallet.publicKey,
+    TOKEN_PROGRAM_ID,
+    selectedWallet)
 
-  mintA = await Token.createMint(
+  // let poolToken = await token.createMint(
+  //   connection,
+  //   selectedWallet,
+  //   selectedWallet.publicKey,
+  //   null,
+  //   testTokenDecimals,
+  //   TOKEN_PROGRAM_ID,
+  // );
+  // owner = await newAccountWithLamports1(connection, 1000000000);
+
+  mintA = await token.createMint(
     connection,
     selectedWallet,
-    owner.publicKey,
+    
+    selectedWallet.publicKey,
     null,
-    testTokenDecimals,
+    TOKEN_PROGRAM_ID,
     programId,
   );
-  let ret = [];
-  ret.push({ "mintA": mintA, "authority": authority.toBase58(), "owner": owner })
+  // let ret = [];
+  let ret= { "mintA": mintA.publicKey.toBase58(), "authority": authority.toBase58() }
+  // ret.push({ "mintA": mintA, "authority": authority.toBase58(), "owner": owner })
   console.log("mintA" + mintA.publicKey.toBase58())
   // let info= await mintA.getAccountInfo()
   // const mintInfo = await mintA.getMintInfo();
@@ -241,22 +260,22 @@ export async function createTokenSwapA(selectedWallet, connection): Promise<void
 }
 export async function createTokenSwapB(selectedWallet, connection): Promise<void> {
 
-  //const payer =  wallet.publicKey; // await newAccountWithLamports(connection, 1000000000 /* wag */);
+ 
+  
+  let token = new Token(
+    connection,
+    selectedWallet.publicKey,
+    TOKEN_PROGRAM_ID,
+    selectedWallet)
 
-  // testMintAuthority = new Account();
-  // programId = new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA");
-  // associatedProgramId = new PublicKey("Fxer83fa7cJF3CBS8EDtbKEbkM1gqnPqLZbRQZZae4Cf");
 
-  //owner = await newAccountWithLamports1(connection, 1000000000);
-
-
-  console.log("owner" + owner.publicKey)
-  mintB = await Token.createMint(
+  mintB = await token.createMint(
     connection,
     selectedWallet,
-    owner.publicKey,
+    
+    selectedWallet.publicKey,
     null,
-    testTokenDecimals,
+    TOKEN_PROGRAM_ID,
     programId,
   );
   // HACK: override hard-coded ASSOCIATED_TOKEN_PROGRAM_ID with corresponding
@@ -265,7 +284,7 @@ export async function createTokenSwapB(selectedWallet, connection): Promise<void
   // let info= await mintA.getAccountInfo()
   // console.log("test")
   //   const mintInfo = await mintB.getMintInfo();
-  console.log("mintA" + mintB.publicKey.toBase58())
+  // console.log("mintB" + mintB.publicKey.toBase58())
 
   return mintB;
 }
@@ -356,62 +375,74 @@ export async function createAccountTokenSwapB(): Promise<void> {
 
   return tokenAccountB;
 }
-export async function createMintTokenA(): Promise<void> {
-  let accountInfo;
-  accountInfo = await mintA.getAccountInfo(tokenAccountA);
-  console.log("****************** before MintA ***********************")
-  console.log("The address of this account " + accountInfo.address);
-  console.log("The mint associated with this account " + accountInfo.mint)
-  console.log("Owner of this account " + accountInfo.owner);
-  console.log("Amount of tokens this account holds " + accountInfo.amount);
-  console.log("The delegate for this account " + accountInfo.delegate)
-  console.log("The delegate for this account " + accountInfo.delegatedAmount)
+export async function createMintTokenA(selectedWallet,connection,mintAddress,accountAddress): Promise<void> {
+  
+ 
+    let testToken = new Token(
+      connection,
+      new PublicKey(mintAddress),
+      new PublicKey( TOKEN_PROGRAM_ID),
+      selectedWallet
+  );
+  
+    // await testToken.mintTo(testAccount, testMintAuthority, [], 1000);
+    await testToken.mintTo(accountAddress, selectedWallet, [], 1000);
+    const mintInfo = await testToken.getAccountInfo(new PublicKey(accountAddress))
+    console.log(mintInfo)
+  
+    return  mintInfo;
+  
+  // console.log("wallet"+selectedWallet.publicKey)
+  // await mintA.mintTo(tokenAccountA, selectedWallet.publicKey, [], 1000);
+  
+  // // const mintInfo = await mintA.getMintInfo();
 
-  console.log("****************** end before MintA ***********************")
-  await mintA.mintTo(tokenAccountA, owner, [], 1000);
-  console.log("****************** after MintA ***********************")
-  accountInfo = await mintA.getAccountInfo(tokenAccountA);
-  console.log("****************** after ***********************")
-  console.log("The address of this account " + accountInfo.address);
-  console.log("The mint associated with this account " + accountInfo.mint)
-  console.log("Owner of this account " + accountInfo.owner);
-  console.log("Amount of tokens this account holds " + accountInfo.amount);
-  console.log("The delegate for this account " + accountInfo.delegate)
-  console.log("The delegate for this account " + accountInfo.delegatedAmount)
-  console.log("****************** end afterMintA ***********************")
-  // const mintInfo = await mintA.getMintInfo();
-
-
-  return accountInfo;
+  // let accountInfo;
+  // accountInfo = await mintA.getAccountInfo(tokenAccountA);
+  // return accountInfo;
 }
-export async function createMintTokenB(): Promise<void> {
-  let accountInfo;
-  accountInfo = await mintB.getAccountInfo(tokenAccountB);
-  console.log("****************** before MintB ***********************")
-  console.log("The address of this account " + accountInfo.address);
-  console.log("The mint associated with this account " + accountInfo.mint)
-  console.log("Owner of this account " + accountInfo.owner);
-  console.log("Amount of tokens this account holds " + accountInfo.amount);
-  console.log("The delegate for this account " + accountInfo.delegate)
-  console.log("The delegate for this account " + accountInfo.delegatedAmount)
-  console.log("****************** end before MintB ***********************")
-  await mintB.mintTo(tokenAccountB, owner, [], 1000);
+export async function createMintTokenB(selectedWallet,connection,mintAddress,accountAddress): Promise<void> {
+   
+  let testToken = new Token(
+    connection,
+    new PublicKey(mintAddress),
+    new PublicKey( TOKEN_PROGRAM_ID),
+    selectedWallet
+);
 
-  const mintInfo = await mintB.getMintInfo();
-  assert(mintInfo.supply.toNumber() === 1000);
+  // await testToken.mintTo(testAccount, testMintAuthority, [], 1000);
+  await testToken.mintTo(accountAddress, selectedWallet, [], 1000);
+  const mintInfo = await testToken.getAccountInfo(new PublicKey(accountAddress))
+  console.log(mintInfo)
 
-  accountInfo = await mintB.getAccountInfo(tokenAccountB);
-  console.log("****************** afterMintB ***********************")
-  console.log("The address of this account " + accountInfo.address);
-  console.log("The mint associated with this account " + accountInfo.mint)
-  console.log("Owner of this account " + accountInfo.owner);
-  console.log("Amount of tokens this account holds " + accountInfo.amount);
-  console.log("The delegate for this account " + accountInfo.delegate)
-  console.log("The delegate for this account " + accountInfo.delegatedAmount)
-  console.log("****************** end afterMintB ***********************")
-  assert(accountInfo.amount.toNumber() === 1000);
+  return  mintInfo;
+  // let accountInfo;
+  // accountInfo = await mintB.getAccountInfo(tokenAccountB);
+  // console.log("****************** before MintB ***********************")
+  // console.log("The address of this account " + accountInfo.address);
+  // console.log("The mint associated with this account " + accountInfo.mint)
+  // console.log("Owner of this account " + accountInfo.owner);
+  // console.log("Amount of tokens this account holds " + accountInfo.amount);
+  // console.log("The delegate for this account " + accountInfo.delegate)
+  // console.log("The delegate for this account " + accountInfo.delegatedAmount)
+  // console.log("****************** end before MintB ***********************")
+  // await mintB.mintTo(tokenAccountB, owner, [], 1000);
 
-  return accountInfo;
+  // const mintInfo = await mintB.getMintInfo();
+  // assert(mintInfo.supply.toNumber() === 1000);
+
+  // accountInfo = await mintB.getAccountInfo(tokenAccountB);
+  // console.log("****************** afterMintB ***********************")
+  // console.log("The address of this account " + accountInfo.address);
+  // console.log("The mint associated with this account " + accountInfo.mint)
+  // console.log("Owner of this account " + accountInfo.owner);
+  // console.log("Amount of tokens this account holds " + accountInfo.amount);
+  // console.log("The delegate for this account " + accountInfo.delegate)
+  // console.log("The delegate for this account " + accountInfo.delegatedAmount)
+  // console.log("****************** end afterMintB ***********************")
+  // assert(accountInfo.amount.toNumber() === 1000);
+
+  // return accountInfo;
 }
 
 export async function swap(selectedWallet) {
