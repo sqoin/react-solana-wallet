@@ -397,7 +397,7 @@ export class TokenSwap {
       curveType,
       payer,
     );
-
+console.log("test swap token ")
     // Allocate memory for the account
     const balanceNeeded = await TokenSwap.getMinBalanceRentForExemptTokenSwap(
       connection,

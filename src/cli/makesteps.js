@@ -117,9 +117,9 @@ export async function createSwapTokens(selectedWallet, connection,mintA,mintB,ac
   return swapToken(selectedWallet, connection,mintA,mintB,accountA,accountB,poolToken,feeAccount,accountPool,autorithy);
 }
 
-export async function createSwap(selectedWallet,connection){
+export async function createSwap(selectedWallet,connection,feeAccount,tokenSwapPubkey){
 
-  return swap(selectedWallet,connection)
+  return swap(selectedWallet,connection,feeAccount,tokenSwapPubkey)
 }
 export async function getTokenAccountsByOwnerSolet (selectedWallet,connection){
   return allTokenAccountsByOwner(selectedWallet,connection)
