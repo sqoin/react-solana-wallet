@@ -22,13 +22,14 @@ const DEX_PID = new PublicKey("9xQeWvG816bUx9EPjHmaT23yvVM2ZWbrrpZb9PusVFin");
 const decimals=2
 const options = Provider.defaultOptions();
 let TOKEN_PROGRAM_ID1= new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA");
-let tokenA: Token;
+let tokenA:Token;
 let vaultA=undefined
 let tokenB=undefined
 let vaultB=undefined
 let marketMaker=undefined
 let mintedAmount=100
 let sentAmount=10
+let owner
 
 
 
@@ -58,30 +59,54 @@ export async function mintTokenBApi(selectedWallet , connection) {
          return {"tokenB":tokenB,"vaultB":vaultB}
 }*/
 export async function createTokenAApi(selectedWallet, connection) {
-  let owner = await newAccountWithLamports1(connection, 1000000000);
- 
-  tokenA = await Token.createMint(
-    connection,
-    selectedWallet,
-    owner.publicKey,
-    null,
-    decimals,
-    TOKEN_PROGRAM_ID1,
-  );
-  
+
+ let token = new Token(
+  connection,
+  selectedWallet.publicKey,
+  TOKEN_PROGRAM_ID1,
+  selectedWallet)
+
+tokenA = await token.createMint(
+  connection,
+  selectedWallet, 
+  selectedWallet.publicKey,
+  null,
+  decimals,
+  TOKEN_PROGRAM_ID1
+);  
   console.log("mintA =>"+tokenA.publicKey.toBase58())
   return tokenA;
 }
 
-export async function createVaultAApi(selectedWallet) {
-  vaultA = await tokenA.createAccount(selectedWallet.publicKey);
-  const accountInfo = await tokenA.getAccountInfo(vaultA);
+export async function createVaultAApi(selectedWallet, connection, tokenPk) {
+  let testToken = new Token(
+    connection,
+    tokenPk,
+    TOKEN_PROGRAM_ID1,
+    selectedWallet
+);
+  vaultA = await testToken.createAccount(selectedWallet.publicKey);
+  const accountInfo = await testToken.getAccountInfo(vaultA);
   return vaultA
 }
 
-export async function mintTokenAToVaultAApi(selectedWallet) {
-  await tokenA.mintTo(vaultA, selectedWallet.publicKey, [], mintedAmount); 
-  const mintInfo = await tokenA.getMintInfo();
+export async function mintTokenAToVaultAApi(selectedWallet, connection, vault, tokenPk) {
+  let testToken = new Token(
+    connection,
+    tokenPk,
+    TOKEN_PROGRAM_ID1,
+    selectedWallet
+);
+
+  // await testToken.mintTo(testAccount, testMintAuthority, [], 1000);
+  console.log("token pk => "+ tokenPk)
+  console.log("selected Wallet pk => "+ selectedWallet.publicKey)
+  console.log("vault => "+ vault.publicKey)
+  await testToken.mintTo(vault, selectedWallet, [], mintedAmount);
+  const mintInfo = await testToken.getAccountInfo(tokenPk)
+  return  mintInfo;
+/*  await tokenA.mintTo(vaultA, selectedWallet.publicKey, [], mintedAmount); 
+  const mintInfo = await tokenA.getMintInfo();*/
 }
 
 export async function createTokenBApi(selectedWallet, connection) {

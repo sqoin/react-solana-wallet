@@ -26,8 +26,10 @@ function SerumSwap() {
     network,
   ]);
   const [tokenInfo, setTokenInfo] = useState("no Info");
-  
-  
+const [tokenAPk,setTokenAPk]=useState("")
+const [tokenBPk,setTokenBPk]=useState("")
+const [vaultA,setVaultA]=useState(null)
+const [vaultBPk,setVaultBPk]=useState("")
 const [mintA,setMintA]=useState("")
 const [accountA,setAccountA]=useState("")
   const injectedWallet = useMemo(() => {
@@ -61,6 +63,7 @@ const [accountA,setAccountA]=useState("")
   addLog("loading create and initialize token A ... "+selectedWallet.publicKey.toBase58());
   try {
       createTokenAStep(selectedWallet, connection).then(result =>{
+       setTokenAPk(result.publicKey)
        addLog("token A successfully created")
        addLog("token A pk => "+result.publicKey)
       } )
@@ -74,11 +77,12 @@ const [accountA,setAccountA]=useState("")
   }
 
   async function createVaultA(){
-    addLog("loading create and vault A ... ");
+    addLog("loading create vault A ... ");
     try {
-        createVaultAStep(selectedWallet).then(result =>{
+        createVaultAStep(selectedWallet, connection, tokenAPk).then(result =>{
+          setVaultA(result)
          addLog("vault A successfully created")
-         addLog("vault A pk => "+result.publicKey)
+         addLog("vault A pk => "+result)
         } )
         .catch(
           err => addLog("" + err)
@@ -92,7 +96,7 @@ const [accountA,setAccountA]=useState("")
     async function mintTokenAToVaultA(){
       addLog("loading mint token A to vault A ... ");
       try {
-        mintTokenAToVaultAStep(selectedWallet).then(result =>{
+        mintTokenAToVaultAStep(selectedWallet, connection, vaultA, tokenAPk).then(result =>{
            addLog("token A successfully minted")
            addLog("mint info => "+JSON.stringify(result))
           } )
@@ -231,7 +235,7 @@ const [accountA,setAccountA]=useState("")
         ))}
       </div>
       <button onClick={ () => createTokenA()}>
-          mint token A
+          create token A
       </button>
       <br></br>
       <button onClick={ () => createVaultA()}>
@@ -243,7 +247,7 @@ const [accountA,setAccountA]=useState("")
       </button>
       <br></br>
       <button onClick={ () => createTokenB()}>
-          mint token B
+          create token B
       </button>
       <br></br>
       <button onClick={ () => createVaultB()}>

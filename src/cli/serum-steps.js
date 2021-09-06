@@ -9,11 +9,11 @@ export async function mintTokenBStep(selectedWallet , connection) {
 export async function createTokenAStep(selectedWallet , connection) {  
     return createTokenAApi(selectedWallet , connection);
 }
-export async function createVaultAStep(selectedWallet) {  
-    return createVaultAApi(selectedWallet);
+export async function createVaultAStep(selectedWallet,connection,tokenPk) {  
+    return createVaultAApi(selectedWallet,connection,tokenPk);
 }
-export async function mintTokenAToVaultAStep(selectedWallet) {  
-    return mintTokenAToVaultAApi(selectedWallet );
+export async function mintTokenAToVaultAStep(selectedWallet, connection, vault, tokenPk) {  
+    return mintTokenAToVaultAApi(selectedWallet, connection, vault, tokenPk );
 }
 export async function createTokenBStep(selectedWallet , connection) {  
     return createTokenBApi(selectedWallet , connection);
