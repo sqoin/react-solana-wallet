@@ -4,6 +4,7 @@
  * @flow
  */
 
+import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
 import {
   loadTokenProgram,
   createMint,
@@ -31,7 +32,12 @@ import {
   createMintTokenB,
   createPoolTokenSwap,
   swapToken,
-  swap
+  swap,
+  createMintMulti,
+  createAccountMulti,
+  allTokenAccountsByOwner
+  ,allProgrammSwapOwner,
+  allAccountSwapByMint
 } from './token-test';
 
 export async function makeSteps(selectedWallet) {
@@ -85,6 +91,8 @@ export async function createTokenA(selectedWallet , connection) {
 }
 
 
+
+
 export async function createTokenB(selectedWallet , connection) {  
   return createTokenSwapB(selectedWallet , connection);
 }
@@ -95,25 +103,33 @@ export async function createNewAccountTokenA(selectedWallet , connection) {
 export async function createNewAccountTokenB(selectedWallet , connection) {  
   return createAccountTokenSwapB(selectedWallet , connection);
 }
-export async function mintTokenA(selectedWallet , connection) {  
-  return createMintTokenA(selectedWallet , connection);
+export async function mintTokenA(selectedWallet , connection,mintAddress, accountAddress) {  
+  return createMintTokenA(selectedWallet , connection,mintAddress,accountAddress);
 }
-export async function mintTokenB(selectedWallet , connection) {  
-  return createMintTokenB(selectedWallet , connection);
+export async function mintTokenB(selectedWallet , connection,mintAddress, accountAddress) {  
+  return createMintTokenB(selectedWallet , connection,mintAddress, accountAddress);
 }
 
-export async function createPoolToken(selectedWallet , connection) {  
-  return createPoolTokenSwap(selectedWallet , connection);
+export async function createPoolToken(selectedWallet , connection,autorithy) {  
+  return createPoolTokenSwap(selectedWallet , connection,autorithy);
 }
-export async function createSwapNToken(selectedWallet , connection) {  
-  return swapToken(selectedWallet , connection);
+export async function createSwapTokens(selectedWallet, connection,mintA,mintB,accountA,accountB,poolToken,feeAccount,accountPool,autorithy) {  
+  return swapToken(selectedWallet, connection,mintA,mintB,accountA,accountB,poolToken,feeAccount,accountPool,autorithy);
 }
 
 export async function createSwap(selectedWallet,connection){
 
   return swap(selectedWallet,connection)
 }
-
+export async function getTokenAccountsByOwnerSolet (selectedWallet,connection){
+  return allTokenAccountsByOwner(selectedWallet,connection)
+}
+export async function getProgrammSwapOwner(selectedWallet,connection){
+  return allProgrammSwapOwner(selectedWallet,connection)
+}
+export async function getAccountSwapByMint (selectedWallet,connection){
+  return allAccountSwapByMint(selectedWallet,connection)
+}
 /************************************************************************************************ */
 export async function createMintTo(selectedWallet , connection) {  
   return mintTo();
@@ -130,5 +146,19 @@ export async function createTransfer(selectedWallet , connection) {
 
 export async function mintToken(selectedWallet , connection) {  
   return createMint(selectedWallet , connection);
+}
+
+
+
+
+/***********************transfer multisigner ******************/
+
+export async function createMintMultisigner(selectedWallet , connection) {  
+  return createMintMulti(selectedWallet , connection);
+}
+
+
+export async function createAccountMultisigner(selectedWallet , connection) {  
+  return createAccountMulti(selectedWallet , connection);
 }
 

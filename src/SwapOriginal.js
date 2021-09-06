@@ -2,8 +2,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import './App.css';
 import Wallet from '@project-serum/sol-wallet-adapter';
-import { Connection, SystemProgram, Transaction, clusterApiUrl,PublicKey } from '@solana/web3.js';
-import {createTokenA,createNewAccountTokenA,mintTokenA,createTokenB,createNewAccountTokenB,mintTokenB,createPoolToken,createSwapNToken,createSwap} from "./cli/makesteps"
+import { Connection, SystemProgram, Transaction, clusterApiUrl, PublicKey } from '@solana/web3.js';
+import { createTokenA, createNewAccountTokenA, mintTokenA, createTokenB, createNewAccountTokenB, mintTokenB, createPoolToken, createSwapTokens, createSwap, getTokenAccountsByOwnerSolet, getProgrammSwapOwner, getAccountSwapByMint } from "./cli/makesteps"
 
 function toHex(buffer) {
   return Array.prototype.map
@@ -25,15 +25,25 @@ function SwapOriginal() {
     network,
   ]);
   const [tokenInfo, setTokenInfo] = useState("no Info");
-  
-  
-const [mintA,setMintA]=useState("")
-const [accountA,setAccountA]=useState("")
+
+
+  const [mintA, setMintA] = useState("")
+  const [accountA, setAccountA] = useState("")
+  const [mintB, setMintB] = useState("");
+  const [accountB, setAccountB] = useState("")
+  const [poolToken, setPoolToken] = useState("")
+  const [accountPool, setAccountPool] = useState("")
+  const [owner, setOwner] = useState("")
+  const [autorithy, setAuthority] = useState("")
+  const [tokenSwap, setTokenSwap] = useState("")
+  const [feeAccount, setFeeAccount] = useState("")
+  const [accountInfo, setAccountInfo] = useState()
+  // const[authority,setAuthority]=useState()
   const injectedWallet = useMemo(() => {
     try {
       return new Wallet(window.sollet, network);
     } catch (e) {
-     
+
       return null;
     }
   }, [network]);
@@ -89,11 +99,11 @@ const [accountA,setAccountA]=useState("")
 
 
 
-  
- 
-  
 
-  
+
+
+
+
 
   async function signMessage() {
     try {
@@ -107,85 +117,122 @@ const [accountA,setAccountA]=useState("")
       addLog('Error: ' + e.message);
     }
   }
- //create token A
-async function createTokenASwap(){
+  //create token A
+  async function createTokenASwap() {
     addLog("loading create Mint A... ");
-    try {
-        createTokenA(selectedWallet, connection).then(token =>{
-        
-          setMintA(token.publicKey.toBase58())
-         addLog("publickey tokenA"+token.publicKey.toBase58())
+    // try {
+      createTokenA(selectedWallet, connection).then(token => {
+        console.log("create mintA " + JSON.stringify(token))
+        // setAuthority(token[0].authority.publicKey)
+         setMintA(token.mintA)
+         setAuthority(token.authority)
+        // setOwner(token[0].owner.publicKey.toBase58())
 
-        } )
+        // console.log("token " + token[0].mintA.publicKey.toBase58())
+         addLog("publickey tokenA   " + token.mintA + " authorty = " + token.authority )
+
+      })
+        // .catch(
+        //   err => addLog("" + err)
+        // )
+
+    // }
+    // catch (err) {
+    //   addLog("" + err);
+    // }
+
+  }
+  //create token B
+  async function createTokenBSwap() {
+    addLog("loading create mint B ... ");
+    try {
+      createTokenB(selectedWallet, connection).then(token => {
+        console.log(token.publicKey.toBase58())
+        setMintB(token.publicKey)
+        addLog("publickey tokenB   " + token.publicKey.toBase58())
+      }
+      )
         .catch(
           err => addLog("" + err)
         )
-       
     }
     catch (err) {
       addLog("" + err);
     }
 
-}
- //create token B
- async function createTokenBSwap(){
-  addLog("loading create mint B ... ");
-  try {
-      createTokenB(selectedWallet, connection).then(token =>
-      addLog(
-        JSON.stringify(token)))
-      .catch(
-        err => addLog("" + err)
-      )
+
+
   }
-  catch (err) {
-    addLog("" + err);
-  }
-
-
-
-}
-  
-function createAccountA() {
+  // create Account A 
+  function createAccountA() {
     addLog("loading create account A... ");
+    try {
+      createNewAccountTokenA(selectedWallet, connection)
+        .then(account => {
 
-    createNewAccountTokenA(selectedWallet, connection)
-      .then(account =>{
-       
           setAccountA(account)
         })
-      .catch(
-        err => addLog("" + err)
-      )
-  }
-  
- async function mintTokenSwapA(){
-    addLog("loading mint A... ");
-    try {
-      mintTokenA(selectedWallet, connection).then(token =>
-        addLog(
-          JSON.stringify(token))
-         
-          )
-         
         .catch(
           err => addLog("" + err)
         )
-    }
-    catch (err) {
+    } catch (err) {
       addLog("" + err);
     }
-  
-    
+  }
+  // create Account B
+  async function createAccountB() {
+    addLog("loading create account B ... ");
+    try {
+      createNewAccountTokenB(selectedWallet, connection)
+        .then(account => {
+          setAccountB(account)
+        })
+        .catch(
+          err => addLog("" + err)
+        )
+    } catch (err) {
+      addLog("" + err);
+    }
+
+  }
+  async function mintTokenSwapA() {
+       
+    addLog("loading ... ");
+    let  MINT_ADDRESS=mintA
+    let ACCOUNT_ADDRESS=accountA
+    mintTokenA(
+      selectedWallet,
+      connection,
+      MINT_ADDRESS,
+      ACCOUNT_ADDRESS
+    ).then((account) =>  addLog(
+      "amount" + account.amount + "  addres" + account.address));
+    // addLog("loading mint A... ");
+    // try {
+    //   mintTokenA(selectedWallet, connection).then(token =>
+    //     addLog(
+    //       "amount " + token.amount + "addres " + token.address))
+    //     .catch(
+    //       err => addLog("" + err)
+    //     )
+    // }
+    // catch (err) {
+    //   addLog("" + err);
+    // }
+
+
 
   }
 
-  async function mintTokenSwapB(){
+  async function mintTokenSwapB() {
+    let  MINT_ADDRESS=mintB
+    let ACCOUNT_ADDRESS=accountB
     addLog("loading mint B... ");
     try {
-      mintTokenB(selectedWallet, connection).then(token =>
+      mintTokenB(selectedWallet, connection,MINT_ADDRESS,
+        ACCOUNT_ADDRESS).then(token =>
         addLog(
-          JSON.stringify(token)))
+          "amount" + token.amount + "  addres" + token.address))
         .catch(
           err => addLog("" + err)
         )
@@ -193,72 +240,125 @@ function createAccountA() {
     catch (err) {
       addLog("" + err);
     }
-  
-    
 
-  }
-
-  async function createAccountB(){
-    addLog("loading create account B ... ");
-
-    createNewAccountTokenB(selectedWallet, connection)
-      .then(account =>
-        addLog(
-          JSON.stringify(account)))
-      .catch(
-        err => addLog("" + err)
-      )
-
-
-  }
-async function createPool(){
-  addLog("loading create pool... ");
-  try {
-    createPoolToken(selectedWallet, connection)
-    .then(token =>
-    addLog(
-      JSON.stringify(token)))
-    .catch(
-      err => addLog("" + err)
-    )
-}
-catch (err) {
-  addLog("" + err);
-}
-}
-async function swapNToken(){
-  addLog("loading swap token... ");
-  try {
-    createSwapNToken(selectedWallet, connection)
-    .then(token =>
-    addLog(
-      JSON.stringify(token)))
-    .catch(
-      err => addLog("" + err)
-    )
-}
-catch (err) {
-  addLog("" + err);
-}
-
-}
-async function swap(){
-  addLog("loading swap ......");
-  try{
-    createSwap(selectedWallet,connection).then(
-      token=>
-      addLog(JSON.stringify(token)))
-    
-  }
-  catch(err){
-    addLog(""+err)
-  }
  
+     
+  
 
-}
+  }
+
+
+  async function createPool() {
+    addLog("loading create pool... ");
+    // try {
+    createPoolToken(selectedWallet, connection, autorithy)
+      .then(token => {
+        console.log("createPool result " + token)
+        setAccountPool(token.accountPool)
+        setPoolToken(token.poolToken)
+        setFeeAccount(token.feeAccount)
+
+        addLog("accountPool" + token.accountPool + " tokenPool" + token.poolToken + "feeAccount" + token.feeAccount)
+      })
+    // .catch(
+    //   err => addLog("" + err)
+    // )
+    // }catch (err) {
+    //   addLog("" + err);
+    // }
+  }
+  async function swapTokens() {
+    addLog("loading swap token... ");
+    // try {
+      createSwapTokens(selectedWallet, connection,mintA,mintB,accountA,accountB,poolToken,feeAccount,accountPool,autorithy)
+        .then(token => {
+          setTokenSwap(token.tokenSwap)
+
+          addLog(
+            JSON.stringify(token.tokenSwap))
+        }
+        )
+        // .catch(
+        //   err => addLog("" + err)
+        // )
+    // }
+    // catch (err) {
+    //   addLog("" + err);
+    // }
+
+  }
+  async function swap() {
+    addLog("loading swap ......");
+    try {
+      createSwap(selectedWallet, connection).then(
+        token =>
+          addLog(JSON.stringify(token)))
+
+    }
+    catch (err) {
+      addLog("" + err)
+    }
+
+
+  }
+  /////************ get Account Info */
+
+  async function getTokenAccountsByOwner() {
+    addLog("loading  token   account by owner");
+    try {
+      getTokenAccountsByOwnerSolet(selectedWallet, connection).then(
+        accountInfo => {
+          setAccountInfo(accountInfo.value)
+          addLog("************" + accountInfo.value)
+        }
+      )
+    }
+    catch (err) {
+      addLog(err)
+    }
+
+  }
+  /**************** get programm owner */
+  async function getProgrammOwner() {
+
+    addLog("loading get Programm Owner")
+    try {
+
+      getProgrammSwapOwner(selectedWallet, connection).then(token =>
+        addLog(token))
+
+
+
+
+    }
+    catch (err) {
+      addLog("" + err)
+    }
+  }
+
+  /************************get programma account by mint  */
+
+
+  async function getProgrammaAccountByMint() {
+    addLog("Loading get programm account by mint")
+
+
+    try {
+      getAccountSwapByMint(selectedWallet, connection).then(token => addLog(token))
+
+    }
+    catch (err) {
+      addLog(err)
+    }
+
+  }
+  function renderInfoAccounts() {
+
+
+  }
   return (
     <div className="App">
-      <h1>Wallet Adapter Demo</h1>
+      <h1>Nova Finance Test Interface</h1>
       <div>Network: {network}</div>
       <div>
         Waller provider:{' '}
@@ -277,7 +377,7 @@ async function swap(){
         </div>
       ) : (
         <div>
-          <button onClick={() => setSelectedWallet(injectedWallet)}>Connect to Injected Wallet</button>
+          <button onClick={() => setSelectedWallet(injectedWallet)}>Connect using sollet plugin</button>
         </div>
       )}
       <hr />
@@ -287,63 +387,99 @@ async function swap(){
         ))}
       </div>
 
-      
-      <button onClick={ () => createTokenASwap()}>
 
-          createTokenA
+      <button onClick={() => createTokenASwap()}>
+
+        createTokenA
+      </button>
+      <br></br>
+
+      {/* <input type="text" onChange={(e) => setMintA(e.target.value)} value={mintA} /> */}
+      <br></br>
+
+      <button onClick={() => createAccountA()}>
+
+
+        createAccountA
+      </button>
+      <br></br>
+
+      {/* <input type="text" onChange={(e) => setAccountA(e.target.value)} value={accountA} /> */}
+
+      <br></br>
+      <input type="text" onChange={(e) => setMintA(e.target.value)} value={mintA} />  <input type="text" onChange={(e) => setAccountA(e.target.value)} value={accountA} />  <button onClick={() => mintTokenSwapA()}>
+
+        MintTokenA
+      </button>
+      <br></br><br></br><br></br>
+      <button onClick={() => createTokenBSwap()}>
+        createTokenB
       </button>
       <br></br>
       
-      <input type="text" onChange={(e) => setMintA(e.target.value) } value={mintA}/>
+      <br></br>
+      <button onClick={() => createAccountB()}>
+
+
+        createAccountB
+      </button>
       <br></br>
       
-      <button onClick={ () => createAccountA()}>
-         
+      <br></br>
+      <input onChange={(e) => setMintB(e.target.value)} value={mintB}></input>   <input onChange={(e) => setAccountB(e.target.value)} value={accountB}></input> <button onClick={() => mintTokenSwapB()}>
 
-createAccountA
-</button>
-<br></br>
+        MintTokenB
+      </button>
+      <br></br><br></br><br></br>
+      *********{autorithy}
+      <input onChange={(e) => setAuthority(e.target.value)} value={autorithy}></input> <button onClick={() => createPool()}>
 
-      <input type="text" onChange={(e) => setAccountA(e.target.value) } value={accountA}/>
-      
-<br></br>
-<button onClick={ () => mintTokenSwapA()}>
+        createPool
+      </button>
+      <br></br>
+    mintA :<input onChange={(e) => setMintA(e.target.value)} value={mintA} />  
+    AccountA  <input type="text" onChange={(e) => setAccountA(e.target.value)} value={accountA}/>   mintB<input onChange={(e) => setMintB(e.target.value)} value={mintB}/>accountB <input onChange={(e) => setAccountB(e.target.value)} value={accountB}/> Authority<input type="text" onChange={(e) => setAuthority(e.target.value)} value={autorithy}/> poolToken <input type="text" onChange={(e) => setPoolToken(e.target.value)} value={poolToken}/> feeAccount <input type="text" onChange={(e) => setFeeAccount(e.target.value)} value={feeAccount}/>  AccountPool:<input type="text" onChange={(e) => setAccountPool(e.target.value)} value={accountPool}/>  <button onClick={() => swapTokens()}>
+        swap Token
+      </button>
+      <br></br>
+      <button onClick={() => swap()}>Swap</button>
+      <br></br>
+      <hr />
+      <button onClick={() => getTokenAccountsByOwner()}>get Token Accounts By Owner</button>
+      <table >
 
-MintTokenA
-</button>
-<br></br>
-<button onClick={ () => createTokenBSwap()}>
-createTokenB
 
-</button>
-<br></br>
-<button onClick={ () => createAccountB()}>
-         
 
-         createAccountB
-         </button>
-         <br></br>
-<button onClick={ () => mintTokenSwapB()}>
 
-MintTokenB
-</button>
-<br></br>
-<button onClick={ () => createPool()}>
+        <tr>
+          <th>publickey</th>
+          <th>amount</th>
+          <th>owner</th>
+        </tr>
 
-Amal Fathallah, [01.09.21 11:53]
-createPool
-</button>
-<br></br>
-<button onClick={ () => swapNToken()}>
-swap Token
-</button>
-<br></br>
-<button onClick={()=>swap()}>Swap</button>
+
+        {
+          accountInfo && accountInfo.map(item =>
+            <tr>
+
+              <td >{item.pubkey.toBase58()}</td>
+              <td >{item.account.lamports}</td>
+              <td >{item.account.owner.publicKey}</td>
+            </tr>
+          )
+        }
+
+
+
+
+      </table>
+      <button onClick={() => getProgrammOwner()} > get Programm owner</button>
+      <button onClick={() => getProgrammaAccountByMint()}> get programm Account By Mint</button>
     </div>
   );
-   
 
-   
+
+
 }
 
 export default SwapOriginal;
