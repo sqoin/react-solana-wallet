@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import './App.css';
 import Wallet from '@project-serum/sol-wallet-adapter';
 import { Connection, SystemProgram, Transaction, clusterApiUrl, PublicKey } from '@solana/web3.js';
-import { createMintMultisigner , createAccountMultisigner} from './cli/makesteps';
+import { createMintMultisigner , createAccountMultisigner,createTokenA} from './cli/makesteps';
 
 
 
@@ -188,7 +188,27 @@ function TransferMultisig() {
     }
 
 
-
+    async function createTokenASwap() {
+        addLog("loading create Mint A... ");
+        // try {
+          createTokenA(selectedWallet, connection).then(token => {
+            console.log("create mintA " + JSON.stringify(token))
+      
+    
+            // console.log("token " + token[0].mintA.publicKey.toBase58())
+             addLog("publickey tokenA   " + token.mintA + " authorty = " + token.authority )
+    
+          })
+            // .catch(
+            //   err => addLog("" + err)
+            // )
+    
+        // }
+        // catch (err) {
+        //   addLog("" + err);
+        // }
+    
+      }
     return (
         <div className="App">
             <h1>PORTFOLIO Adapter Demo</h1>
@@ -221,7 +241,10 @@ function TransferMultisig() {
             </div>
 
             <div>
+          
                 <div>
+
+     
                      <button onClick={() => createMint()}>Create mint</button>
                 </div>
 
