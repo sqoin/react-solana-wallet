@@ -125,6 +125,7 @@ function SwapOriginal() {
         console.log("create mintA " + JSON.stringify(token))
         // setAuthority(token[0].authority.publicKey)
          setMintA(token.mintA)
+         setAuthority(token.authority)
         // setOwner(token[0].owner.publicKey.toBase58())
 
         // console.log("token " + token[0].mintA.publicKey.toBase58())
@@ -147,7 +148,7 @@ function SwapOriginal() {
     try {
       createTokenB(selectedWallet, connection).then(token => {
         console.log(token.publicKey.toBase58())
-        setMintB(token.publicKey.toBase58())
+        setMintB(token.publicKey)
         addLog("publickey tokenB   " + token.publicKey.toBase58())
       }
       )
@@ -254,7 +255,7 @@ function SwapOriginal() {
       .then(token => {
         console.log("createPool result " + token)
         setAccountPool(token.accountPool)
-        setPoolToken(token.poolToken)
+        setPoolToken(token.poolToken.publicKey)
         setFeeAccount(token.feeAccount)
 
         addLog("accountPool" + token.accountPool + " tokenPool" + token.poolToken + "feeAccount" + token.feeAccount)
