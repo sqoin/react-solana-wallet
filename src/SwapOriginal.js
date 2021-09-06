@@ -255,7 +255,7 @@ function SwapOriginal() {
       .then(token => {
         console.log("createPool result " + token)
         setAccountPool(token.accountPool)
-        setPoolToken(token.poolToken.publicKey)
+        setPoolToken(token.poolToken)
         setFeeAccount(token.feeAccount)
 
         addLog("accountPool" + token.accountPool + " tokenPool" + token.poolToken + "feeAccount" + token.feeAccount)

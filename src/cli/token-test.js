@@ -167,9 +167,9 @@ export async function swapToken(selectedWallet, connection,mintA,mintB,accountA,
   // [95,214,128,34,18,164,154,241,35,95,234,185,216,118,40,65,242,115,5,210,130,217,119,39,96,224,165,206,163,227,255,13,109,16,141,79,216,210,106,68,147,152,240,170,137,40,174,195,23,121,207,82,14,68,129,96,180,73,142,49,138,73,209,161]
   // let createAccountProgramm=new Account([86,  26, 243,  72,  46, 135, 186,  23,  31, 215, 229,43,  54,  89, 206, 222,  82,   6, 231, 212, 212, 226,184, 211, 107, 147, 180, 138,  57, 108, 182,  46, 185,33, 232, 144,  77,  70,  77, 145, 151, 152, 188,  19,78,  73,  32,  89, 236, 171,  90,  44, 120,  71, 202,142, 214, 179,  38,  85,  71, 103, 145, 193]);
   // swapPayer=new Account([])
-  console.log("poolToken:"+poolToken.publicKey,
-    "mintA:"+mintA.publicKey,
-    "mintB"+mintB.publicKey,)
+  console.log("poolToken:"+poolToken,
+    "mintA:"+mintA,
+    "mintB"+mintB)
   testTokenSwap = await TokenSwap.createTokenSwap(
     connection,
     selectedWallet,
