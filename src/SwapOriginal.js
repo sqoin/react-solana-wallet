@@ -38,6 +38,7 @@ function SwapOriginal() {
   const [tokenSwap, setTokenSwap] = useState("")
   const [feeAccount, setFeeAccount] = useState("")
   const [accountInfo, setAccountInfo] = useState()
+  const [nonce,setNonce]=useState()
   // const[authority,setAuthority]=useState()
   const injectedWallet = useMemo(() => {
     try {
@@ -123,12 +124,13 @@ function SwapOriginal() {
     // try {
       createTokenA(selectedWallet, connection).then(token => {
         console.log("create mintA " + JSON.stringify(token))
-        // setAuthority(token[0].authority.publicKey)
+       
          setMintA(token.mintA)
          setAuthority(token.authority)
-        // setOwner(token[0].owner.publicKey.toBase58())
+         setNonce(token.nonce)
+        
 
-        // console.log("token " + token[0].mintA.publicKey.toBase58())
+    
          addLog("publickey tokenA   " + token.mintA + " authorty = " + token.authority )
 
       })
@@ -290,7 +292,9 @@ function SwapOriginal() {
   async function swap() {
     addLog("loading swap ......");
     try {
-      createSwap(selectedWallet, connection).then(
+      let fee=new PublicKey(feeAccount)
+      let tokenSwapPubkey=new PublicKey(tokenSwap)
+      createSwap(selectedWallet, connection,fee,tokenSwapPubkey).then(
         token =>
           addLog(JSON.stringify(token)))
 
@@ -397,7 +401,7 @@ function SwapOriginal() {
       {/* <input type="text" onChange={(e) => setMintA(e.target.value)} value={mintA} /> */}
       <br></br>
 
-      <button onClick={() => createAccountA()}>
+ mint A:     <input type="text" onChange={(e) => setMintA(e.target.value)} value={mintA} />    <button onClick={() => createAccountA()}>
 
 
         createAccountA
@@ -438,7 +442,7 @@ function SwapOriginal() {
       </button>
       <br></br>
     mintA :<input onChange={(e) => setMintA(e.target.value)} value={mintA} />  
-    AccountA  <input type="text" onChange={(e) => setAccountA(e.target.value)} value={accountA}/>   mintB<input onChange={(e) => setMintB(e.target.value)} value={mintB}/>accountB <input onChange={(e) => setAccountB(e.target.value)} value={accountB}/> Authority<input type="text" onChange={(e) => setAuthority(e.target.value)} value={autorithy}/> poolToken <input type="text" onChange={(e) => setPoolToken(e.target.value)} value={poolToken}/> feeAccount <input type="text" onChange={(e) => setFeeAccount(e.target.value)} value={feeAccount}/>  AccountPool:<input type="text" onChange={(e) => setAccountPool(e.target.value)} value={accountPool}/>  <button onClick={() => swapTokens()}>
+    AccountA  <input type="text" onChange={(e) => setAccountA(e.target.value)} value={accountA}/>   mintB<input onChange={(e) => setMintB(e.target.value)} value={mintB}/>accountB <input onChange={(e) => setAccountB(e.target.value)} value={accountB}/> Authority<input type="text" onChange={(e) => setAuthority(e.target.value)} value={autorithy}/> nonce<input type="text" onChange={(e) => setNonce(e.target.value)} value={nonce}/> poolToken <input type="text" onChange={(e) => setPoolToken(e.target.value)} value={poolToken}/> feeAccount <input type="text" onChange={(e) => setFeeAccount(e.target.value)} value={feeAccount}/>  AccountPool:<input type="text" onChange={(e) => setAccountPool(e.target.value)} value={accountPool}/>  <button onClick={() => swapTokens()}>
         swap Token
       </button>
       <br></br>
@@ -454,7 +458,7 @@ function SwapOriginal() {
         <tr>
           <th>publickey</th>
           <th>amount</th>
-          <th>owner</th>
+          <th></th>
         </tr>
 
 
@@ -464,7 +468,7 @@ function SwapOriginal() {
 
               <td >{item.pubkey.toBase58()}</td>
               <td >{item.account.lamports}</td>
-              <td >{item.account.owner.publicKey}</td>
+          
             </tr>
           )
         }
@@ -473,8 +477,8 @@ function SwapOriginal() {
 
 
       </table>
-      <button onClick={() => getProgrammOwner()} > get Programm owner</button>
-      <button onClick={() => getProgrammaAccountByMint()}> get programm Account By Mint</button>
+      {/* <button onClick={() => getProgrammOwner()} > get Programm owner</button>
+      <button onClick={() => getProgrammaAccountByMint()}> get programm Account By Mint</button> */}
     </div>
   );
 
