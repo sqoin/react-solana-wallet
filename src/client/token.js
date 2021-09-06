@@ -544,7 +544,6 @@ console.log("tkenpublickey"+token.publicKey)
     transaction.add(
       Token.createInitAccountInstruction(
         this.programId,
-        mintPublicKey,
         newAccount.publicKey,
         owner,
       ),
@@ -2162,7 +2161,7 @@ console.log("tkenpublickey"+token.publicKey)
       Layout.uint64('amount'),
       BufferLayout.u8('decimals'),
     ]);
-
+console.log("ok1")
     const data = Buffer.alloc(dataLayout.span);
     dataLayout.encode(
       {
@@ -2194,6 +2193,7 @@ console.log("tkenpublickey"+token.publicKey)
         }),
       );
     }
+    console.log("ok2")
     return new TransactionInstruction({
       keys,
       programId: programId,
