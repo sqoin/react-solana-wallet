@@ -242,7 +242,6 @@ export async function createTokenSwapA(selectedWallet, connection): Promise<void
   mintA = await token.createMint(
     connection,
     selectedWallet,
-    
     selectedWallet.publicKey,
     null,
     TOKEN_PROGRAM_ID,
@@ -1033,7 +1032,12 @@ export async function createMintMulti(selectedWallet , connection): Promise<void
 
 let multisigAccount = new PublicKey("7owzsQm3T8rirScNC8RDEd3qdJJTzGETKqte6eHL1XTG") ;
   owner = await newAccountWithLamports1(connection, 1000000000);
-  tokenMint = await Token.createMint(
+  let token = new Token(
+    connection,
+    selectedWallet.publicKey,
+    TOKEN_PROGRAM_ID,
+    selectedWallet)
+  tokenMint = await token.createMint(
   connection,
   selectedWallet,
   multisigAccount,
