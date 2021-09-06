@@ -55,21 +55,22 @@ let accountPool: PublicKey;
 let nonce: Number;
 let payer: Account;
 let testTokenDecimals: number = 2;
-let createAccountProgramm: Account;
+let createAccountProgramm :Account;
+let tokenMint : Token;
 
 
-// Pool fees
-const TRADING_FEE_NUMERATOR = 25;
-const TRADING_FEE_DENOMINATOR = 10000;
-const OWNER_TRADING_FEE_NUMERATOR = 5;
-const OWNER_TRADING_FEE_DENOMINATOR = 10000;
-const OWNER_WITHDRAW_FEE_NUMERATOR = SWAP_PROGRAM_OWNER_FEE_ADDRESS ? 0 : 1;
-const OWNER_WITHDRAW_FEE_DENOMINATOR = SWAP_PROGRAM_OWNER_FEE_ADDRESS ? 0 : 6;
-const HOST_FEE_NUMERATOR = 20;
-const HOST_FEE_DENOMINATOR = 100;
-// Initial amount in each swap token
-let currentSwapTokenA = 1000000;
-let currentSwapTokenB = 1000000;
+  // Pool fees
+  const TRADING_FEE_NUMERATOR = 25;
+  const TRADING_FEE_DENOMINATOR = 10000;
+  const OWNER_TRADING_FEE_NUMERATOR = 5;
+  const OWNER_TRADING_FEE_DENOMINATOR = 10000;
+  const OWNER_WITHDRAW_FEE_NUMERATOR = SWAP_PROGRAM_OWNER_FEE_ADDRESS ? 0 : 1;
+  const OWNER_WITHDRAW_FEE_DENOMINATOR = SWAP_PROGRAM_OWNER_FEE_ADDRESS ? 0 : 6;
+  const HOST_FEE_NUMERATOR = 20;
+  const HOST_FEE_DENOMINATOR = 100;
+  // Initial amount in each swap token
+  let currentSwapTokenA = 1000000;
+  let currentSwapTokenB = 1000000;
 // Accounts setup in createAccount and used by all subsequent tests
 let testAccountOwner: Account;
 let testAccount: PublicKey;
@@ -360,6 +361,7 @@ export async function createAccountTokenSwapA(): Promise<void> {
   return tokenAccountA;
 
 }
+
 
 
 export async function createAccountTokenSwapB(): Promise<void> {
@@ -1020,4 +1022,48 @@ export async function nativeToken(): Promise<void> {
   } else {
     throw new Error('Account not found');
   }
+}
+
+
+
+
+// create mint multisignature 
+
+export async function createMintMulti(selectedWallet , connection): Promise<void> {
+
+let multisigAccount = new PublicKey("7owzsQm3T8rirScNC8RDEd3qdJJTzGETKqte6eHL1XTG") ;
+  owner = await newAccountWithLamports1(connection, 1000000000);
+  tokenMint = await Token.createMint(
+  connection,
+  selectedWallet,
+  multisigAccount,
+ null,
+  testTokenDecimals,
+  programId,
+);
+console.log ("tokenMint : " +tokenMint.publicKey);
+  
+  return tokenMint.publicKey;
+}
+
+
+export async function createAccountMulti(): Promise<void> {
+  
+  // createAccountProgramm=new Account([95,214,128,34,18,164,154,241,35,95,234,185,216,118,40,65,242,115,5,210,130,217,119,39,96,224,165,206,163,227,255,13,109,16,141,79,216,210,106,68,147,152,240,170,137,40,174,195,23,121,207,82,14,68,129,96,180,73,142,49,138,73,209,161]);
+  let Accountowner  = new Account([253, 105, 193, 173, 55, 108, 145, 101, 186, 22, 187, 172, 156, 119, 173, 35, 25, 99, 80, 68, 92, 204, 232, 243, 67, 169, 199, 7, 218, 94, 225, 17, 173, 31, 39, 116, 250, 166, 211, 3, 213, 13, 179, 50, 47, 240, 7, 164, 48, 110, 143, 141, 244, 242, 74, 210, 185, 203, 0, 4, 138, 99, 110, 251]);
+  // testAccountOwner = new Account();
+ // console.log("authority"+authority)
+  tokenAccountA = await tokenMint.createAccount(Accountowner.publicKey );
+ 
+  //const accountInfo = await mintA.getAccountInfo(tokenAccountA);
+
+
+ /* // you can create as many accounts as with same owner
+  const testAccount2 = await testToken.createAccount(
+    testAccountOwner.publicKey,
+  );
+  assert(!testAccount2.equals(testAccount));*/
+  console.log("accounta"+tokenAccountA);
+  return tokenAccountA;
+ 
 }
