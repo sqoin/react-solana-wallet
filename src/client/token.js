@@ -380,7 +380,8 @@ export class Token {
    * @param programId Optional token programId, uses the system programId by default
    * @return Token object for the newly minted token
    */
-  static async createMint(
+
+   async createMint(
     connection: Connection,
     payer,
     mintAuthority: PublicKey,
@@ -390,31 +391,31 @@ export class Token {
   ): Promise<Token> {
     const mintAccount = new Account();
     const token = new Token(
-      connection,
+      this.connection,
       mintAccount.publicKey,
-      programId,
-      payer,
+      this.programId,
+      this.payer,
     );
 
     // Allocate memory for the account
     const balanceNeeded = await Token.getMinBalanceRentForExemptMint(
-      connection,
+      this.connection,
     );
 
     const transaction = new Transaction();
     transaction.add(
       SystemProgram.createAccount({
-        fromPubkey: payer.publicKey,
+        fromPubkey: this.payer.publicKey,
         newAccountPubkey: mintAccount.publicKey,
         lamports: balanceNeeded,
         space: MintLayout.span,
-        programId,
+        programId:this.programId
       }),
     );
 
     transaction.add(
       Token.createInitMintInstruction(
-        programId,
+        this.programId,
         mintAccount.publicKey,
         decimals,
         mintAuthority,
@@ -425,16 +426,16 @@ export class Token {
     transaction.recentBlockhash = (
       await connection.getRecentBlockhash()
     ).blockhash;
-    transaction.feePayer = payer.publicKey;
+    transaction.feePayer = this.payer.publicKey;
     //transaction.setSigners(payer.publicKey, mintAccount.publicKey );
     transaction.partialSign(mintAccount);
 
-    let signed = await payer.signTransaction(transaction);
+    let signed = await this.payer.signTransaction(transaction);
     
    //   addLog('Got signature, submitting transaction');
       let signature = await connection.sendRawTransaction(signed.serialize());
 
-      await connection.confirmTransaction(signature, 'confirmed');
+      await connection.confirmTransaction(signature, 'max');
     // Send the two instructions
  /*   await sendAndConfirmTransaction(
       'createAccount and InitializeMint',
@@ -443,6 +444,25 @@ export class Token {
       payer,
       mintAccount,
     );*/
+
+    return token;
+  }
+
+   getExistingMint(
+    connection: Connection,
+    payer,
+    mintPublicKey,
+    programId: PublicKey,
+  ): Promise<Token> {
+    
+    const token = new Token(
+      connection,
+      new PublicKey(mintPublicKey),
+      programId,
+      payer,
+    );
+
+
 
     return token;
   }
@@ -528,7 +548,13 @@ console.log("tkenpublickey"+token.publicKey)
       this.connection,
     );
 
+   
+
     const newAccount = new Account();
+
+    console.log("this.payer.publicKey: "+this.payer.publicKey,"newAccount.publicKey: "+newAccount.publicKey,"this.publicKey: "+this.publicKey,"owner: "+owner)
+
+
     const transaction = new Transaction();
     transaction.add(
       SystemProgram.createAccount({
@@ -540,11 +566,10 @@ console.log("tkenpublickey"+token.publicKey)
       }),
     );
 
-    const mintPublicKey = this.publicKey;
     transaction.add(
       Token.createInitAccountInstruction(
         this.programId,
-        mintPublicKey,
+        this.publicKey,
         newAccount.publicKey,
         owner,
       ),
@@ -1197,8 +1222,49 @@ console.log("tkenpublickey"+token.publicKey)
    * @param multiSigners Signing accounts if `authority` is a multiSig
    * @param amount Amount to mint
    */
+  // async mintTo(
+  //   dest: PublicKey,
+  //   authority: any,
+  //   multiSigners: Array<Account>,
+  //   amount: number | u64,
+  // ): Promise<void> {
+  //   let ownerPublicKey;
+  //   let signers;
+  //   if (isAccount(authority)) {
+  //     ownerPublicKey = authority.publicKey;
+  //     signers = [authority];
+  //   } else {
+  //     ownerPublicKey = authority;
+  //     signers = multiSigners;
+  //   }
+  //   const transaction = new Transaction();
+  //   transaction.add(
+  //     Token.createMintToInstruction(
+  //       this.programId,
+  //       this.publicKey,
+  //       dest,
+  //       ownerPublicKey,
+  //       multiSigners,
+  //       amount,
+  //     ),
+  //   );
+    
+  //   transaction.recentBlockhash = (
+  //     await this.connection.getRecentBlockhash()
+  //   ).blockhash;
+  //   transaction.feePayer = this.payer.publicKey;
+  //   //transaction.setSigners(payer.publicKey, mintAccount.publicKey );
+  //   transaction.partialSign(...signers);
+
+  //   let signed = await this.payer.signTransaction(transaction);
+
+  //   //   addLog('Got signature, submitting transaction');
+  //   let signature = await this.connection.sendRawTransaction(signed.serialize());
+
+  //   await this.connection.confirmTransaction(signature, 'max');
+  // }
   async mintTo(
-    dest: PublicKey,
+    dest: any,
     authority: any,
     multiSigners: Array<Account>,
     amount: number | u64,
@@ -1223,15 +1289,14 @@ console.log("tkenpublickey"+token.publicKey)
         amount,
       ),
     );
-    
+
     transaction.recentBlockhash = (
       await this.connection.getRecentBlockhash()
     ).blockhash;
-    transaction.feePayer = this.payer.publicKey;
+    transaction.feePayer = authority.publicKey;
     //transaction.setSigners(payer.publicKey, mintAccount.publicKey );
-    transaction.partialSign(...signers);
 
-    let signed = await this.payer.signTransaction(transaction);
+    let signed = await authority.signTransaction(transaction);
 
     //   addLog('Got signature, submitting transaction');
     let signature = await this.connection.sendRawTransaction(signed.serialize());
