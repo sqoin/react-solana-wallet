@@ -3,7 +3,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import './App.css';
 import Wallet from '@project-serum/sol-wallet-adapter';
 import { Connection, SystemProgram, Transaction, clusterApiUrl,PublicKey } from '@solana/web3.js';
-import { mintTokenAStep, mintTokenBStep, createMMStep, sendLamportToMMStep, sendTokenAToMMStep } from './cli/serum-steps';
+import { mintTokenAStep, mintTokenBStep, createMMStep, sendLamportToMMStep, sendTokenAToMMStep, createTokenAStep, createTokenBStep, createVaultAStep, createVaultBStep, mintTokenBToVaultBStep, mintTokenAToVaultAStep } from './cli/serum-steps';
 import { sendTokenAToMMApi, sendTokenToMMApi } from './cli/serum-api';
 
 function toHex(buffer) {
@@ -57,45 +57,102 @@ const [accountA,setAccountA]=useState("")
     }
   }, [selectedWallet]);
 
- async function mintTokenA(){
-  addLog("loading create and initialize token A ... ");
-  addLog("loading create and initialize vault A account ... ");
-  addLog("loading mint 100 token A into vault A account ... ");
+ async function createTokenA(){
+  addLog("loading create and initialize token A ... "+selectedWallet.publicKey.toBase58());
   try {
-      mintTokenAStep(selectedWallet, connection).then(result =>{
-       addLog("token A successfully minted")
-       addLog("token A pk"+JSON.stringify(result.tokenA))
-       addLog("vault A pk"+JSON.stringify(result.vaultA))
+      createTokenAStep(selectedWallet, connection).then(result =>{
+       addLog("token A successfully created")
+       addLog("token A pk => "+result.publicKey)
       } )
       .catch(
         err => addLog("" + err)
       )
-     
   }
   catch (err) {
     addLog("" + err);
   }
   }
 
-  async function mintTokenB(){
-    addLog("loading create and initialize token B ... ");
-    addLog("loading create and initialize vault B account ... ");
-    addLog("loading mint 100 token B into vault B account ... ");
+  async function createVaultA(){
+    addLog("loading create and vault A ... ");
     try {
-        mintTokenBStep(selectedWallet, connection).then(result =>{
-         addLog("token B successfully minted")
-         addLog("token B pk"+JSON.stringify(result.tokenB))
-         addLog("vault B pk"+JSON.stringify(result.vaultB))
+        createVaultAStep(selectedWallet).then(result =>{
+         addLog("vault A successfully created")
+         addLog("vault A pk => "+result.publicKey)
         } )
         .catch(
           err => addLog("" + err)
         )
-       
     }
     catch (err) {
       addLog("" + err);
     }
     }
+
+    async function mintTokenAToVaultA(){
+      addLog("loading mint token A to vault A ... ");
+      try {
+        mintTokenAToVaultAStep(selectedWallet).then(result =>{
+           addLog("token A successfully minted")
+           addLog("mint info => "+JSON.stringify(result))
+          } )
+          .catch(
+            err => addLog("" + err)
+          )
+      }
+      catch (err) {
+        addLog("" + err);
+      }
+      }
+
+      async function createTokenB(){
+        addLog("loading create and initialize token B ... ");
+        try {
+            createTokenBStep(selectedWallet, connection).then(result =>{
+             addLog("token B successfully created")
+             addLog("token B pk => "+result.publicKey)
+            } )
+            .catch(
+              err => addLog("" + err)
+            )
+        }
+        catch (err) {
+          addLog("" + err);
+        }
+        }
+      
+        async function createVaultB(){
+          addLog("loading create and vault B ... ");
+          try {
+              createVaultBStep(selectedWallet,connection).then(result =>{
+               addLog("vault B successfully created")
+               addLog("vault B pk => "+result.publicKey)
+              } )
+              .catch(
+                err => addLog("" + err)
+              )
+          }
+          catch (err) {
+            addLog("" + err);
+          }
+          }
+      
+          async function mintTokenBToVaultB(){
+            addLog("loading mint token B to vault B ... ");
+            try {
+              mintTokenBToVaultBStep(selectedWallet).then(result =>{
+                 addLog("token B successfully minted")
+                 addLog("mint info => "+JSON.stringify(result))
+                } )
+                .catch(
+                  err => addLog("" + err)
+                )
+            }
+            catch (err) {
+              addLog("" + err);
+            }
+            }
+ 
 
     async function createMM(){
       addLog("loading create Market maker ... ");
@@ -173,12 +230,28 @@ const [accountA,setAccountA]=useState("")
           <div key={i}>{log}</div>
         ))}
       </div>
-      <button onClick={ () => mintTokenA()}>
+      <button onClick={ () => createTokenA()}>
           mint token A
       </button>
       <br></br>
-      <button onClick={ () => mintTokenB()}>
+      <button onClick={ () => createVaultA()}>
+          create vault A
+      </button>
+      <br></br>
+      <button onClick={ () => mintTokenAToVaultA()}>
+          mint token A to vault A
+      </button>
+      <br></br>
+      <button onClick={ () => createTokenB()}>
           mint token B
+      </button>
+      <br></br>
+      <button onClick={ () => createVaultB()}>
+          create vault B
+      </button>
+      <br></br>
+      <button onClick={ () => mintTokenBToVaultB()}>
+          mint token B to vault B
       </button>
       <br></br>
       <button onClick={ () => createMM()}>
