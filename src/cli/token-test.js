@@ -289,7 +289,7 @@ export async function createTokenSwapB(selectedWallet, connection): Promise<void
   // console.log("test")
   //   const mintInfo = await mintB.getMintInfo();
   // console.log("mintB" + mintB.publicKey.toBase58())
-  let ret= { "mintB": mintA.publicKey, "authority": authority.toBase58(),"nonce":nonce};
+  let ret= { "mintB": mintB.publicKey, "authority": authority.toBase58(),"nonce":nonce};
   return ret;
 }
 
@@ -373,14 +373,19 @@ export async function createAccountTokenSwapA(selectedWallet, connection,mint,au
 
 
 
-export async function createAccountTokenSwapB(): Promise<void> {
+export async function createAccountTokenSwapB(selectedWallet, connection,mint,autority): Promise<void> {
+  let token = new Token(
+    connection,
+   mint,
+    TOKEN_PROGRAM_ID,
+    selectedWallet)
 
-  tokenAccountB = await mintB.createAccount(authority);
+  tokenAccountB = await token.createAccount(autority);
 
 
 
 
-  const accountInfo = await mintB.getAccountInfo(tokenAccountB);
+  // const accountInfo = await mintB.getAccountInfo(tokenAccountB);
 
   return tokenAccountB;
 }
@@ -415,7 +420,7 @@ export async function createMintTokenB(selectedWallet,connection,mintAddress,acc
   let testToken = new Token(
     connection,
     new PublicKey(mintAddress),
-    new PublicKey( TOKEN_PROGRAM_ID),
+    TOKEN_PROGRAM_ID,
     selectedWallet
 );
 

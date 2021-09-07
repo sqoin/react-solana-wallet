@@ -152,9 +152,12 @@ function SwapOriginal() {
     addLog("loading create mint B ... ");
     try {
       createTokenB(selectedWallet, connection).then(token => {
-        console.log(token.publicKey.toBase58())
-        setMintB(token.publicKey)
-        addLog("publickey tokenB   " + token.publicKey.toBase58())
+      
+        setMintB(token.mintB)
+        
+         setAuthority(token.authority)
+         setNonce(token.nonce)
+        addLog("publickey tokenB   " + token.mintB+ "authority"+token.authority)
       }
       )
         .catch(
@@ -188,9 +191,11 @@ function SwapOriginal() {
   }
   // create Account B
   async function createAccountB() {
+    let mint=mintB
+    let autority=autorithy
     addLog("loading create account B ... ");
     try {
-      createNewAccountTokenB(selectedWallet, connection)
+      createNewAccountTokenB(selectedWallet, connection,mint,autority)
         .then(account => {
           setAccountB(account)
         })

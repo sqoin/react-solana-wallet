@@ -103,8 +103,8 @@ export async function createTokenB(selectedWallet , connection) {
 export async function createNewAccountTokenA(selectedWallet, connection,mint,autority) {  
   return createAccountTokenSwapA(selectedWallet, connection,mint,autority);
 }
-export async function createNewAccountTokenB(selectedWallet , connection) {  
-  return createAccountTokenSwapB(selectedWallet , connection);
+export async function createNewAccountTokenB(selectedWallet, connection,mint,autority) {  
+  return createAccountTokenSwapB(selectedWallet, connection,mint,autority);
 }
 export async function mintTokenA(selectedWallet , connection,mintAddress, accountAddress) {  
   return createMintTokenA(selectedWallet , connection,mintAddress,accountAddress);
