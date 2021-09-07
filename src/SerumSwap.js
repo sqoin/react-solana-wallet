@@ -3,7 +3,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import './App.css';
 import Wallet from '@project-serum/sol-wallet-adapter';
 import { Connection, SystemProgram, Transaction, clusterApiUrl,PublicKey } from '@solana/web3.js';
-import { createMMStep, sendLamportToMMStep, sendTokenToMMStep, createTokenStep, createVaultStep, mintTokenToVaultStep } from './cli/serum-steps';
+import { createMMStep, sendLamportToMMStep, sendTokenToMMStep, createTokenStep, createVaultStep, mintTokenToVaultStep, createMarketStep, swapAtoBStep } from './cli/serum-steps';
 
 function toHex(buffer) {
   return Array.prototype.map
@@ -130,9 +130,9 @@ const [accountA,setAccountA]=useState("")
           addLog("loading create and vault B ... ");
           try {
               createVaultStep(selectedWallet,connection, tokenBPk).then(result =>{
-                setVaultB(result)
+               setVaultB(result)
                addLog("vault B successfully created")
-               addLog("vault B pk => "+result.publicKey)
+               addLog("vault B pk => "+result)
               } )
               .catch(
                 err => addLog("" + err)
@@ -206,6 +206,56 @@ const [accountA,setAccountA]=useState("")
           }
           }
 
+          async function sendTokenBToMM(){
+            addLog("loading send token B to Market maker ... ");
+            try {
+              sendTokenToMMStep(selectedWallet, connection, tokenBPk,vaultB, MM).then(result =>{
+                 addLog("Success =>"+JSON.stringify(result))
+                } )
+                .catch(
+                  err => addLog("" + err)
+                )
+            }
+            catch (err) {
+              addLog("" + err);
+            }
+            }
+
+            async function createMarket(){
+              addLog("loading create market ... ");
+              try {
+                createMarketStep(selectedWallet, connection, tokenAPk,tokenBPk,100000,100,0).then(result =>{
+                   addLog("Success =>"+JSON.stringify(result))
+                  } )
+                  .catch(
+                    err => addLog("" + err)
+                  )
+              }
+              catch (err) {
+                addLog("" + err);
+              }
+              }
+
+              async function swapAtoB(){
+                let market1="2D5miXKig4GVnyyBUcHUxcxxgscdT7yMi3L72huyU619"
+                let tokenPk1="DCYcuWGgNJ6DxD1qCwKNpMErUEsP3RCHHfEfSQFXh3cw"
+                let vault1="GDVsybnAob7B8Y3zyHWbPthdHBbUTC4TpQFoq5nZXxv4"
+                let tokenPk2="FJXXae55SGkMrodYCNcCVLMZu8wM3vn6exHQvraBpQRX"
+                let vault2="Fc5nUr2do5vRanheAyZR4vY5Fq7gnWWH48z4ayRynZkx"
+                addLog("loading swap A to B... ");
+                try {
+                  swapAtoBStep(selectedWallet, connection, market1, tokenPk1,tokenPk2,vault1,vault2).then(result =>{
+                     addLog("Success =>"+JSON.stringify(result))
+                    } )
+                    .catch(
+                      err => addLog("" + err)
+                    )
+                }
+                catch (err) {
+                  addLog("" + err);
+                }
+                }
+  
 
   return(
 <div className="App">
@@ -268,6 +318,18 @@ const [accountA,setAccountA]=useState("")
       <br></br>
       <button onClick={ () => sendTokenAToMM()}>
           send 10 of token A to market maker
+      </button>
+      <br></br>
+      <button onClick={ () => sendTokenBToMM()}>
+          send 10 of token B to market maker
+      </button>
+      <br></br>
+      <button onClick={ () => createMarket()}>
+          create serum dex Market for tokenA/tokenB pool
+      </button>
+      <br></br>
+      <button onClick={ () => swapAtoB()}>
+          swap A to B
       </button>
       <br></br>
     </div>
