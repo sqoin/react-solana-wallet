@@ -22,43 +22,10 @@ const DEX_PID = new PublicKey("9xQeWvG816bUx9EPjHmaT23yvVM2ZWbrrpZb9PusVFin");
 const decimals=2
 const options = Provider.defaultOptions();
 let TOKEN_PROGRAM_ID1= new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA");
-let tokenA:Token;
-let vaultA=undefined
-let tokenB=undefined
-let vaultB=undefined
-let marketMaker=undefined
-let mintedAmount=100
+let mintedAmount=1000
 let sentAmount=10
-let owner
 
-
-
-/*export async function mintTokenAApi(selectedWallet , connection) {
- let provider= new Provider(connection, selectedWallet, options);
-     [tokenA, vaultA ] = await serumCmn.createMintAndVault(
-        provider,
-        new BN(100),
-        undefined,
-        decimals
-      );
-      console.log("token A => "+JSON.stringify(tokenA))
-      console.log("vault A => "+JSON.stringify(vaultA))
-      return {"tokenA":tokenA,"vaultA":vaultA}
-}
-
-export async function mintTokenBApi(selectedWallet , connection) {
-    let provider= new Provider(connection, selectedWallet, options);
-        [tokenB, vaultB ] = await serumCmn.createMintAndVault(
-           provider,
-           new BN(100),
-           undefined,
-           decimals
-         );
-         console.log("token B => "+JSON.stringify(tokenB))
-         console.log("vault B => "+JSON.stringify(vaultB))
-         return {"tokenB":tokenB,"vaultB":vaultB}
-}*/
-export async function createTokenAApi(selectedWallet, connection) {
+export async function createTokenApi(selectedWallet, connection) {
 
  let token = new Token(
   connection,
@@ -66,7 +33,7 @@ export async function createTokenAApi(selectedWallet, connection) {
   TOKEN_PROGRAM_ID1,
   selectedWallet)
 
-tokenA = await token.createMint(
+let tokenA = await token.createMint(
   connection,
   selectedWallet, 
   selectedWallet.publicKey,
@@ -78,72 +45,40 @@ tokenA = await token.createMint(
   return tokenA;
 }
 
-export async function createVaultAApi(selectedWallet, connection, tokenPk) {
+export async function createVaultApi(selectedWallet, connection, tokenPk) {
   let testToken = new Token(
     connection,
     tokenPk,
     TOKEN_PROGRAM_ID1,
     selectedWallet
 );
-  vaultA = await testToken.createAccount(selectedWallet.publicKey);
+  let vaultA = await testToken.createAccount(selectedWallet.publicKey);
   const accountInfo = await testToken.getAccountInfo(vaultA);
   return vaultA
 }
 
-export async function mintTokenAToVaultAApi(selectedWallet, connection, vault, tokenPk) {
+export async function mintTokenToVaultApi(selectedWallet, connection, vaultPk, tokenPk) {
+  
   let testToken = new Token(
     connection,
-    tokenPk,
-    TOKEN_PROGRAM_ID1,
+    new PublicKey(tokenPk),
+    new PublicKey( TOKEN_PROGRAM_ID1 ),
     selectedWallet
 );
-
-  // await testToken.mintTo(testAccount, testMintAuthority, [], 1000);
   console.log("token pk => "+ tokenPk)
   console.log("selected Wallet pk => "+ selectedWallet.publicKey)
-  console.log("vault => "+ vault.publicKey)
-  await testToken.mintTo(vault, selectedWallet, [], mintedAmount);
-  const mintInfo = await testToken.getAccountInfo(tokenPk)
+  console.log("vault => "+ vaultPk)
+  await testToken.mintTo(vaultPk, selectedWallet, [], mintedAmount);
+  const mintInfo = await testToken.getAccountInfo(new PublicKey(vaultPk))
   return  mintInfo;
-/*  await tokenA.mintTo(vaultA, selectedWallet.publicKey, [], mintedAmount); 
-  const mintInfo = await tokenA.getMintInfo();*/
 }
-
-export async function createTokenBApi(selectedWallet, connection) {
-  let owner = await newAccountWithLamports1(connection, 1000000000);
-  tokenB = await Token.createMint(
-    connection,
-    selectedWallet,
-    owner.publicKey,
-    null,
-    decimals,
-    TOKEN_PROGRAM_ID1,
-  );
-  return tokenB;
-}
-
-export async function createVaultBApi(selectedWallet) {
-  vaultB = await tokenB.createAccount(selectedWallet.publicKey);
-  const accountInfo = await tokenB.getAccountInfo(vaultA);
-  return vaultB
-}
-
-export async function mintTokenBToVaultBApi(selectedWallet) {
-  await tokenB.mintTo(vaultB, selectedWallet.publicKey, [], mintedAmount); 
-  const mintInfo = await tokenB.getMintInfo();
-}
-
 
 export async function createMMApi() {
     const MARKET_MAKER = new Account();
-     marketMaker = {
-      tokens: {},
-      account: MARKET_MAKER,
-    };
-    return marketMaker
+    return MARKET_MAKER.publicKey
 }
 
-export async function sendLamportToMMApi(selectedWallet , connection) {
+export async function sendLamportApi(selectedWallet , connection, to) {
     let provider= new Provider(connection, selectedWallet, options);
     let tx=undefined;
     console.log("provider wallet => "+provider.wallet.publicKey)
@@ -153,7 +88,7 @@ export async function sendLamportToMMApi(selectedWallet , connection) {
           tx.add(
             SystemProgram.transfer({
               fromPubkey: provider.wallet.publicKey,
-              toPubkey: marketMaker.account.publicKey,
+              toPubkey: to,
               lamports: 10000000,
             })
           );
@@ -165,27 +100,24 @@ export async function sendLamportToMMApi(selectedWallet , connection) {
       return tx;
 }
 
-export async function sendTokenAToMMApi(selectedWallet , connection) {
+export async function sendTokenApi(selectedWallet , connection, tokenPk, vault, to) {
     let provider= new Provider(connection, selectedWallet, options);
     let tx=undefined;
-    let amount=10
     console.log("provider wallet => "+provider.wallet.publicKey)
-    
-   
     const mintAClient = new Token(
         provider.connection,
-        tokenA,
+        tokenPk,
         TOKEN_PROGRAM_ID1,
         selectedWallet // node only
       );
 
-      console.log("mm pk => "+marketMaker.account.publicKey)
-      console.log("mm token pk => "+mintAClient.publicKey)
+      console.log("mm pk => "+to)
+      console.log("token pk => "+tokenPk)
      const marketMakerTokenA = await mintAClient.createAccount(
-        marketMaker.account.publicKey
+        to
       );
-      console.log("mint pk => ")
-      console.log(vaultA.publicKey)
+      console.log("vault pk => ")
+      console.log(vault)
 
     /*  console.log(JSON.stringify(marketMakerTokenA))
       let trans= await mintAClient.createAccount1(
@@ -195,8 +127,8 @@ export async function sendTokenAToMMApi(selectedWallet , connection) {
             marketMakerTokenA,
             selectedWallet,
             amount,
-            decimals);
-      console.log(JSON.stringify(marketMakerTokenA))*/
+            decimals);*/
+      console.log("MM token => "+JSON.stringify(marketMakerTokenA))
   
       await provider.send(
         (() => {
@@ -204,12 +136,12 @@ export async function sendTokenAToMMApi(selectedWallet , connection) {
           tx.add(
             Token.createTransferCheckedInstruction(
               TOKEN_PROGRAM_ID1,
-              vaultA,
-              tokenA,
-              marketMakerTokenA,
+              new PublicKey(vault),
+              new PublicKey(tokenPk),
+              marketMakerTokenA.publicKey,
               selectedWallet,
               [],
-              amount,
+              sentAmount,
               decimals
             )
           );

@@ -3,8 +3,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import './App.css';
 import Wallet from '@project-serum/sol-wallet-adapter';
 import { Connection, SystemProgram, Transaction, clusterApiUrl,PublicKey } from '@solana/web3.js';
-import { mintTokenAStep, mintTokenBStep, createMMStep, sendLamportToMMStep, sendTokenAToMMStep, createTokenAStep, createTokenBStep, createVaultAStep, createVaultBStep, mintTokenBToVaultBStep, mintTokenAToVaultAStep } from './cli/serum-steps';
-import { sendTokenAToMMApi, sendTokenToMMApi } from './cli/serum-api';
+import { createMMStep, sendLamportToMMStep, sendTokenToMMStep, createTokenStep, createVaultStep, mintTokenToVaultStep } from './cli/serum-steps';
 
 function toHex(buffer) {
   return Array.prototype.map
@@ -28,8 +27,9 @@ function SerumSwap() {
   const [tokenInfo, setTokenInfo] = useState("no Info");
 const [tokenAPk,setTokenAPk]=useState("")
 const [tokenBPk,setTokenBPk]=useState("")
-const [vaultA,setVaultA]=useState(null)
-const [vaultBPk,setVaultBPk]=useState("")
+const [vaultA,setVaultA]=useState("")
+const [vaultB,setVaultB]=useState("")
+const [MM,setMM]=useState("")
 const [mintA,setMintA]=useState("")
 const [accountA,setAccountA]=useState("")
   const injectedWallet = useMemo(() => {
@@ -62,7 +62,7 @@ const [accountA,setAccountA]=useState("")
  async function createTokenA(){
   addLog("loading create and initialize token A ... "+selectedWallet.publicKey.toBase58());
   try {
-      createTokenAStep(selectedWallet, connection).then(result =>{
+      createTokenStep(selectedWallet, connection).then(result =>{
        setTokenAPk(result.publicKey)
        addLog("token A successfully created")
        addLog("token A pk => "+result.publicKey)
@@ -79,7 +79,7 @@ const [accountA,setAccountA]=useState("")
   async function createVaultA(){
     addLog("loading create vault A ... ");
     try {
-        createVaultAStep(selectedWallet, connection, tokenAPk).then(result =>{
+        createVaultStep(selectedWallet, connection, tokenAPk).then(result =>{
           setVaultA(result)
          addLog("vault A successfully created")
          addLog("vault A pk => "+result)
@@ -96,9 +96,9 @@ const [accountA,setAccountA]=useState("")
     async function mintTokenAToVaultA(){
       addLog("loading mint token A to vault A ... ");
       try {
-        mintTokenAToVaultAStep(selectedWallet, connection, vaultA, tokenAPk).then(result =>{
+        mintTokenToVaultStep(selectedWallet, connection, vaultA, tokenAPk).then(result =>{
            addLog("token A successfully minted")
-           addLog("mint info => "+JSON.stringify(result))
+           //addLog("mint info => "+JSON.stringify(result))
           } )
           .catch(
             err => addLog("" + err)
@@ -112,7 +112,8 @@ const [accountA,setAccountA]=useState("")
       async function createTokenB(){
         addLog("loading create and initialize token B ... ");
         try {
-            createTokenBStep(selectedWallet, connection).then(result =>{
+            createTokenStep(selectedWallet, connection).then(result =>{
+             setTokenBPk(result.publicKey)
              addLog("token B successfully created")
              addLog("token B pk => "+result.publicKey)
             } )
@@ -128,7 +129,8 @@ const [accountA,setAccountA]=useState("")
         async function createVaultB(){
           addLog("loading create and vault B ... ");
           try {
-              createVaultBStep(selectedWallet,connection).then(result =>{
+              createVaultStep(selectedWallet,connection, tokenBPk).then(result =>{
+                setVaultB(result)
                addLog("vault B successfully created")
                addLog("vault B pk => "+result.publicKey)
               } )
@@ -144,7 +146,7 @@ const [accountA,setAccountA]=useState("")
           async function mintTokenBToVaultB(){
             addLog("loading mint token B to vault B ... ");
             try {
-              mintTokenBToVaultBStep(selectedWallet).then(result =>{
+              mintTokenToVaultStep(selectedWallet, connection, vaultB, tokenBPk).then(result =>{
                  addLog("token B successfully minted")
                  addLog("mint info => "+JSON.stringify(result))
                 } )
@@ -162,12 +164,12 @@ const [accountA,setAccountA]=useState("")
       addLog("loading create Market maker ... ");
       try {
           createMMStep(selectedWallet, connection).then(result =>{
-           addLog("Market maker successfully created =>"+JSON.stringify(result))
+            setMM(result)
+           addLog("Market maker successfully created =>"+result)
           } )
           .catch(
             err => addLog("" + err)
-          )
-         
+          )  
       }
       catch (err) {
         addLog("" + err);
@@ -177,13 +179,12 @@ const [accountA,setAccountA]=useState("")
       async function sendLamportToMM(){
         addLog("loading send lamport to Market maker ... ");
         try {
-          sendLamportToMMStep(selectedWallet, connection).then(result =>{
+          sendLamportToMMStep(selectedWallet, connection, MM).then(result =>{
              addLog("Success =>"+JSON.stringify(result))
             } )
             .catch(
               err => addLog("" + err)
             )
-           
         }
         catch (err) {
           addLog("" + err);
@@ -193,13 +194,12 @@ const [accountA,setAccountA]=useState("")
         async function sendTokenAToMM(){
           addLog("loading send token A to Market maker ... ");
           try {
-            sendTokenAToMMStep(selectedWallet, connection).then(result =>{
+            sendTokenToMMStep(selectedWallet, connection, tokenAPk,vaultA, MM).then(result =>{
                addLog("Success =>"+JSON.stringify(result))
               } )
               .catch(
                 err => addLog("" + err)
               )
-             
           }
           catch (err) {
             addLog("" + err);
