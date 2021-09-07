@@ -29,6 +29,7 @@ function SwapOriginal() {
 
 
   const [mintA, setMintA] = useState("")
+  const [mintAA, setMintAA] = useState("")
   const [accountA, setAccountA] = useState("")
   const [mintB, setMintB] = useState("");
   const [accountB, setAccountB] = useState("")
@@ -125,7 +126,7 @@ function SwapOriginal() {
     addLog("loading create Mint A... ");
     // try {
       createTokenA(selectedWallet, connection).then(token => {
-        console.log("create mintA " + JSON.stringify(token))
+        
        
          setMintA(token.mintA)
          setAuthority(token.authority)
@@ -133,7 +134,7 @@ function SwapOriginal() {
         
 
     
-         addLog("publickey tokenA   " + token.mintA + " authorty = " + token.authority )
+         addLog("publickey tokenA   " + token.mintA + " authorty = " + token.authority)
 
       })
         // .catch(
@@ -171,8 +172,9 @@ function SwapOriginal() {
   function createAccountA() {
     addLog("loading create account A... ");
     let mint=mintA
+    let autority=autorithy
     try {
-      createNewAccountTokenA(selectedWallet, connection)
+      createNewAccountTokenA(selectedWallet, connection,mint,autority)
         .then(account => {
 
           setAccountA(account)

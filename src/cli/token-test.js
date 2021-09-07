@@ -340,14 +340,19 @@ export async function createPoolTokenSwap(selectedWallet, connection): Promise<v
 
 }
 
-export async function createAccountTokenSwapA(): Promise<void> {
+export async function createAccountTokenSwapA(selectedWallet, connection,mint,autority): Promise<void> {
 
   // createAccountProgramm=new Account([95,214,128,34,18,164,154,241,35,95,234,185,216,118,40,65,242,115,5,210,130,217,119,39,96,224,165,206,163,227,255,13,109,16,141,79,216,210,106,68,147,152,240,170,137,40,174,195,23,121,207,82,14,68,129,96,180,73,142,49,138,73,209,161]);
 
   // testAccountOwner = new Account();
-  console.log("authority" + authority)
+  console.log("authority" + autority)
+  let token = new Token(
+    connection,
+   mint,
+    TOKEN_PROGRAM_ID,
+    selectedWallet)
 
-  tokenAccountA = await mintA.createAccount(authority);
+  tokenAccountA = await token.createAccount(autority);
 
   // const accountInfo = await mintA.getAccountInfo(tokenAccountA);
 
@@ -551,7 +556,7 @@ export async function allTokenAccountsByOwner(
   selectedWallet, connection
 ) {
   var result = {};
-  result = await connection.getTokenAccountsByOwner(new PublicKey("Cat1TQkytXTmxQL4uDGjL3FruyvwLNaiZuVPANQ9wpgz"),
+  result = await connection.getTokenAccountsByOwner(new PublicKey(selectedWallet.publicKey),
 
     { "programId": new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA") }
 
