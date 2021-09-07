@@ -29,6 +29,7 @@ import { newAccountWithLamports, newAccountWithLamports1 } from '../client/util/
 import { newAccountWithLamports3 } from '../swap/util/new-account-with-lamports';
 import { sleep } from '../client/util/sleep';
 import { Store } from './store';
+import { isForInStatement } from 'typescript';
 const TOKEN_SWAP_PROGRAM_ID: PublicKey = new PublicKey(
   '5e2zZzHS8P1kkXQFVoBN6tVN15QBUHMDisy6mxVwVYSz',
 );
@@ -460,7 +461,17 @@ export async function swap(selectedWallet,connection,feeAccount,tokenSwapPubkey)
   // await mintB.mintTo(userAccountB,owner,1000)
   // mintB.approve(userAccountB,userTransfertAuthority,owner,[],10)
   let poolAccount = SWAP_PROGRAM_OWNER_FEE_ADDRESS ? await poolToken.createAccount(selectedWallet.publicKey): null; //account pool
+  let info;
+console.log("************** Info Account A Before swap *******************")
 
+ info =await mintA.getAccountInfo(userAccountA);
+console.log("mint A Pubkey = "+info.mint+" address account A = "+info.address+" amount = "+info.amount+" owner ="+info.owner+ " delegate = "+info.delegate);
+
+console.log("*************************************************")
+console.log("************** Info Account B Before swap *******************")
+ info =await mintB.getAccountInfo(userAccountB);
+console.log("mint B Pubkey = "+info.mint+" address account B = "+info.address+" amount = "+info.amount+" owner ="+info.owner+ " delegate = "+info.delegate);
+console.log("*************************************************")
  // let  accountPool = await poolToken.createAccount(selectedWallet.publicKey);
   let programIdHello = new PublicKey("FRTtufPDTq76ZBTMif3uHpWPBiq7L7k592p7hJCscYVs")
   let [programAddress, nonce1] = await PublicKey.findProgramAddress(
@@ -506,14 +517,29 @@ export async function swap(selectedWallet,connection,feeAccount,tokenSwapPubkey)
  //   addLog('Got signature, submitting transaction');
     let signature = await connection.sendRawTransaction(signed.serialize());
 
-    await connection.confirmTransaction(signature, 'max');
-  
+    let x=await connection.confirmTransaction(signature, 'max');
+    console.log("signature "+JSON.stringify(signature))
+  console.log("xxxx "+JSON.stringify(x))
+  console.log("************** Info Account A After swap *******************")
+
+info =await mintA.getAccountInfo(userAccountA);
+console.log("mint A Pubkey = "+info.mint+" address account A = "+info.address+" amount = "+info.amount+" owner ="+info.owner+ " delegate = "+info.delegate);
+
+console.log("*************************************************")
+
+console.log("************** Info Account B After swap *******************")
+
+ info =await mintB.getAccountInfo(userAccountB);
+console.log("mint B Pubkey = "+info.mint+" address account B = "+info.address+" amount = "+info.amount+" owner ="+info.owner+ " delegate = "+info.delegate);
+
+console.log("*************************************************")
   /*await sendAndConfirmTransaction(
     connection,
    transaction,
     [payer, userTransferAuthority],
 
   );*/
+  return signature
 }
 
 function isAccount(accountOrPublicKey: any): boolean {

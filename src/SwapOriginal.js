@@ -2,9 +2,10 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import './App.css';
 import Wallet from '@project-serum/sol-wallet-adapter';
+
 import { Connection, SystemProgram, Transaction, clusterApiUrl, PublicKey } from '@solana/web3.js';
 import { createTokenA, createNewAccountTokenA, mintTokenA, createTokenB, createNewAccountTokenB, mintTokenB, createPoolToken, createSwapTokens, createSwap, getTokenAccountsByOwnerSolet, getProgrammSwapOwner, getAccountSwapByMint } from "./cli/makesteps"
-
+import "./swapOriginal.css"
 function toHex(buffer) {
   return Array.prototype.map
     .call(buffer, (x) => ('00' + x.toString(16)).slice(-2))
@@ -39,6 +40,7 @@ function SwapOriginal() {
   const [feeAccount, setFeeAccount] = useState("")
   const [accountInfo, setAccountInfo] = useState()
   const [nonce,setNonce]=useState()
+  const [idTransaction,setIdTransaction]=useState()
   // const[authority,setAuthority]=useState()
   const injectedWallet = useMemo(() => {
     try {
@@ -295,8 +297,12 @@ function SwapOriginal() {
       let fee=new PublicKey(feeAccount)
       let tokenSwapPubkey=new PublicKey(tokenSwap)
       createSwap(selectedWallet, connection,fee,tokenSwapPubkey).then(
-        token =>
-          addLog(JSON.stringify(token)))
+        token =>{
+          setIdTransaction(token)
+          addLog(JSON.stringify(token))
+          
+        }
+         )
 
     }
     catch (err) {
@@ -304,6 +310,11 @@ function SwapOriginal() {
     }
 
 
+  }
+
+  function createDynamicURL(){
+    window.open(`https://explorer.solana.com/tx/${idTransaction}?cluster=devnet`,'_blank','resizable=yes')
+     
   }
   /////************ get Account Info */
 
@@ -445,9 +456,12 @@ function SwapOriginal() {
     AccountA  <input type="text" onChange={(e) => setAccountA(e.target.value)} value={accountA}/>   mintB<input onChange={(e) => setMintB(e.target.value)} value={mintB}/>accountB <input onChange={(e) => setAccountB(e.target.value)} value={accountB}/> Authority<input type="text" onChange={(e) => setAuthority(e.target.value)} value={autorithy}/> nonce<input type="text" onChange={(e) => setNonce(e.target.value)} value={nonce}/> poolToken <input type="text" onChange={(e) => setPoolToken(e.target.value)} value={poolToken}/> feeAccount <input type="text" onChange={(e) => setFeeAccount(e.target.value)} value={feeAccount}/>  AccountPool:<input type="text" onChange={(e) => setAccountPool(e.target.value)} value={accountPool}/>  <button onClick={() => swapTokens()}>
         swap Token
       </button>
+      
       <br></br>
       <button onClick={() => swap()}>Swap</button>
       <br></br>
+      { 
+    idTransaction &&  <a  onClick={createDynamicURL} >transaction swap</a>}
       <hr />
       <button onClick={() => getTokenAccountsByOwner()}>get Token Accounts By Owner</button>
       <table >
@@ -467,7 +481,7 @@ function SwapOriginal() {
             <tr>
 
               <td >{item.pubkey.toBase58()}</td>
-              <td >{item.account.lamports}</td>
+              <td >{item.account.lamports/1000000}</td>
           
             </tr>
           )
