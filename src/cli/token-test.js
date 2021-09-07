@@ -55,7 +55,7 @@ let accountPool: PublicKey;
 let nonce: Number;
 let payer: Account;
 let testTokenDecimals: number = 2;
-let createAccountProgramm :Account;
+let createAccountProgramm :Account= new Account();;
 let tokenMint : Token;
 
 
@@ -168,6 +168,7 @@ export async function swapToken(selectedWallet, connection,mintA,mintB,accountA,
   // [95,214,128,34,18,164,154,241,35,95,234,185,216,118,40,65,242,115,5,210,130,217,119,39,96,224,165,206,163,227,255,13,109,16,141,79,216,210,106,68,147,152,240,170,137,40,174,195,23,121,207,82,14,68,129,96,180,73,142,49,138,73,209,161]
   // let createAccountProgramm=new Account([86,  26, 243,  72,  46, 135, 186,  23,  31, 215, 229,43,  54,  89, 206, 222,  82,   6, 231, 212, 212, 226,184, 211, 107, 147, 180, 138,  57, 108, 182,  46, 185,33, 232, 144,  77,  70,  77, 145, 151, 152, 188,  19,78,  73,  32,  89, 236, 171,  90,  44, 120,  71, 202,142, 214, 179,  38,  85,  71, 103, 145, 193]);
   // swapPayer=new Account([])
+
   console.log("poolToken:"+poolToken,
     "mintA:"+mintA,
     "mintB"+mintB)
@@ -197,9 +198,8 @@ export async function swapToken(selectedWallet, connection,mintA,mintB,accountA,
     0,
     curveParameters,
   );
-
-  //   console.log("token swap ="+testTokenSwap.tokenSwap)
-  //   console.log('loading token swap');
+   console.log("token swap ="+testTokenSwap.tokenSwap)
+     console.log('loading token swap');
   //   const fetchedTokenSwap = await TokenSwap.loadTokenSwap(
   //     connection,
   //     createAccountProgramm.publicKey,
@@ -217,7 +217,7 @@ export async function swapToken(selectedWallet, connection,mintA,mintB,accountA,
 
 }
 export async function createTokenSwapA(selectedWallet, connection): Promise<void> {
-  createAccountProgramm = new Account();
+  // createAccountProgramm = new Account();
   [authority, nonce] = await PublicKey.findProgramAddress(
     [createAccountProgramm.publicKey.toBuffer()],
     TOKEN_SWAP_PROGRAM_ID,
@@ -244,11 +244,11 @@ export async function createTokenSwapA(selectedWallet, connection): Promise<void
     selectedWallet,
     selectedWallet.publicKey,
     null,
-    TOKEN_PROGRAM_ID,
+    testTokenDecimals,
     programId,
   );
   // let ret = [];
-  let ret= { "mintA": mintA.publicKey.toBase58(), "authority": authority.toBase58() }
+  let ret= { "mintA": mintA.publicKey, "authority": authority.toBase58(),"nonce":nonce};
   // ret.push({ "mintA": mintA, "authority": authority.toBase58(), "owner": owner })
   console.log("mintA" + mintA.publicKey.toBase58())
   // let info= await mintA.getAccountInfo()
@@ -274,7 +274,7 @@ export async function createTokenSwapB(selectedWallet, connection): Promise<void
     
     selectedWallet.publicKey,
     null,
-    TOKEN_PROGRAM_ID,
+    testTokenDecimals,
     programId,
   );
   // HACK: override hard-coded ASSOCIATED_TOKEN_PROGRAM_ID with corresponding
@@ -308,10 +308,10 @@ export async function createPoolTokenSwap(selectedWallet, connection): Promise<v
     TOKEN_PROGRAM_ID,
     selectedWallet)
 
-  let poolToken = await token.createMint(
+   poolToken = await token.createMint(
     connection,
     selectedWallet,
-    selectedWallet.publicKey,
+    authority,
     null,
     testTokenDecimals,
     TOKEN_PROGRAM_ID,
@@ -333,7 +333,7 @@ export async function createPoolTokenSwap(selectedWallet, connection): Promise<v
 
   console.log("accountPool: "+accountPool.toBase58())
 
-  let infoPool = { "poolToken": poolToken.publicKey.toBase58(), "accountPool": accountPool.toBase58(), "feeAccount": feeAccount.toBase58() }
+  let infoPool = { "poolToken": poolToken.publicKey, "accountPool": accountPool, "feeAccount": feeAccount }
 
   return infoPool;
 
@@ -444,61 +444,81 @@ export async function createMintTokenB(selectedWallet,connection,mintAddress,acc
   // return accountInfo;
 }
 
-export async function swap(selectedWallet) {
-  let userAccountA = await mintA.createAccount(owner.publicKey)
-  await mintA.mintTo(userAccountA, owner, [], 100000);
+export async function swap(selectedWallet,connection,feeAccount,tokenSwapPubkey) {
+  let userAccountA = await mintA.createAccount(selectedWallet.publicKey)
+  await mintA.mintTo(userAccountA, selectedWallet, [], 100000);
   /***GHOST */
   const userTransferAuthority = new Account([155, 200, 249, 167, 10, 23, 75, 131, 118, 125, 114, 216, 128, 104, 178, 124, 197, 52, 254, 20, 115, 17, 181, 113, 249, 97, 206, 128, 236, 197, 223, 136, 12, 128, 101, 121, 7, 177, 87, 233, 105, 253, 150, 154, 73, 9, 56, 54, 157, 240, 189, 68, 189, 52, 172, 228, 134, 89, 160, 189, 52, 26, 149, 130]);
   await mintA.approve(
     userAccountA,
-
     userTransferAuthority.publicKey,
     selectedWallet,
-
     [],
     100000,
   );
-  let userAccountB = await mintB.createAccount(owner.publicKey)
+  let userAccountB = await mintB.createAccount(selectedWallet.publicKey)
   // await mintB.mintTo(userAccountB,owner,1000)
   // mintB.approve(userAccountB,userTransfertAuthority,owner,[],10)
-  let poolAccount = SWAP_PROGRAM_OWNER_FEE_ADDRESS
-    ? await poolToken.createAccount(owner.publicKey)
-    : null;
-  let programIdHello = new PublicKey("8H1ShZJeQAcDWAYcDY7LACe7aMS4GWQGVWAMWTLJrAY4")
+  let poolAccount = SWAP_PROGRAM_OWNER_FEE_ADDRESS ? await poolToken.createAccount(selectedWallet.publicKey): null; //account pool
+
+ // let  accountPool = await poolToken.createAccount(selectedWallet.publicKey);
+  let programIdHello = new PublicKey("FRTtufPDTq76ZBTMif3uHpWPBiq7L7k592p7hJCscYVs")
   let [programAddress, nonce1] = await PublicKey.findProgramAddress(
-    [createAccountProgramm.publicKey.toBuffer()],
+    [userTransferAuthority.publicKey.toBuffer()],
     programIdHello,
   );
   //testTokenSwap.swap(userAccountA,tokenAccountA,tokenAccountB,userAccountB,poolAccount,userTransfertAuthority,10,0)
-  const keys = [{ pubkey: testTokenSwap, isSigner: false, isWritable: true },
+  const keys = [{ pubkey:tokenSwapPubkey, isSigner: false, isWritable: true },
   { pubkey: authority, isSigner: false, isWritable: true },  //authority 
   { pubkey: userTransferAuthority.publicKey, isSigner: true, isWritable: true },
   { pubkey: userAccountA, isSigner: false, isWritable: true },
   { pubkey: tokenAccountA, isSigner: false, isWritable: true },
   { pubkey: tokenAccountB, isSigner: false, isWritable: true },
   { pubkey: userAccountB, isSigner: false, isWritable: true },
-  { pubkey: poolToken, isSigner: false, isWritable: true },
+  { pubkey: poolToken.publicKey, isSigner: false, isWritable: true },
   { pubkey: feeAccount, isSigner: false, isWritable: true },
   { pubkey: TOKEN_PROGRAM_ID, isSigner: false, isWritable: true },
   { pubkey: poolAccount, isSigner: false, isWritable: true },
   { pubkey: programAddress, isSigner: false, isWritable: true },
   { pubkey: TOKEN_SWAP_PROGRAM_ID, isSigner: false, isWritable: true },
-  { pubkey: createAccountProgramm.publicKey, isSigner: false, isWritable: false },
+  { pubkey: userTransferAuthority.publicKey, isSigner: false, isWritable: false },
   ]
+
   const instruction = new TransactionInstruction({
     keys,
-    programIdHello,
+    programId:programIdHello,
     data: Buffer.from([nonce1]), // All instructions are hellos
 
   });
-  await sendAndConfirmTransaction(
+  const transaction = new Transaction().add(instruction);
+  transaction.recentBlockhash = (
+    await connection.getRecentBlockhash()
+  ).blockhash;
+
+  transaction.feePayer =selectedWallet.publicKey;
+
+  //transaction.setSigners(payer.publicKey, mintAccount.publicKey );
+  const signers = [userTransferAuthority];
+  transaction.partialSign(...signers);
+
+  let signed = await selectedWallet.signTransaction(transaction);
+  
+ //   addLog('Got signature, submitting transaction');
+    let signature = await connection.sendRawTransaction(signed.serialize());
+
+    await connection.confirmTransaction(signature, 'max');
+  
+  /*await sendAndConfirmTransaction(
     connection,
-    new Transaction().add(instruction),
+   transaction,
     [payer, userTransferAuthority],
 
-  );
+  );*/
 }
 
+function isAccount(accountOrPublicKey: any): boolean {
+  return 'publicKey' in accountOrPublicKey;
+}
 ///************** get token accounts by owner  */
 
 export async function allTokenAccountsByOwner(
