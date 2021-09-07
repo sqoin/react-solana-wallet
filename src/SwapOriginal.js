@@ -170,6 +170,7 @@ function SwapOriginal() {
   // create Account A 
   function createAccountA() {
     addLog("loading create account A... ");
+    let mint=mintA
     try {
       createNewAccountTokenA(selectedWallet, connection)
         .then(account => {
@@ -412,7 +413,7 @@ function SwapOriginal() {
       {/* <input type="text" onChange={(e) => setMintA(e.target.value)} value={mintA} /> */}
       <br></br>
 
- mint A:     <input type="text" onChange={(e) => setMintA(e.target.value)} value={mintA} />    <button onClick={() => createAccountA()}>
+ mint A:     <input type="text" onChange={(e) => setMintA(e.target.value)} value={mintA} />   Authority<input type="text" onChange={(e) => setAuthority(e.target.value)} value={autorithy}/> <br/> <button onClick={() => createAccountA()}>
 
 
         createAccountA
