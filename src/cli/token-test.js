@@ -260,7 +260,11 @@ export async function createTokenSwapA(selectedWallet, connection): Promise<void
 }
 export async function createTokenSwapB(selectedWallet, connection): Promise<void> {
 
- 
+  [authority, nonce] = await PublicKey.findProgramAddress(
+    [createAccountProgramm.publicKey.toBuffer()],
+    TOKEN_SWAP_PROGRAM_ID,
+  )
+
   
   let token = new Token(
     connection,
@@ -285,8 +289,8 @@ export async function createTokenSwapB(selectedWallet, connection): Promise<void
   // console.log("test")
   //   const mintInfo = await mintB.getMintInfo();
   // console.log("mintB" + mintB.publicKey.toBase58())
-
-  return mintB;
+  let ret= { "mintB": mintA.publicKey, "authority": authority.toBase58(),"nonce":nonce};
+  return ret;
 }
 
 function timeout(ms) {
@@ -386,7 +390,7 @@ export async function createMintTokenA(selectedWallet,connection,mintAddress,acc
     let testToken = new Token(
       connection,
       new PublicKey(mintAddress),
-      new PublicKey( TOKEN_PROGRAM_ID),
+     TOKEN_PROGRAM_ID,
       selectedWallet
   );
   
@@ -556,6 +560,7 @@ export async function allTokenAccountsByOwner(
   selectedWallet, connection
 ) {
   var result = {};
+  console.log("selectedWallet.publicKey"+selectedWallet.publicKey)
   result = await connection.getTokenAccountsByOwner(new PublicKey(selectedWallet.publicKey),
 
     { "programId": new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA") }

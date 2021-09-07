@@ -29,7 +29,7 @@ function SwapOriginal() {
 
 
   const [mintA, setMintA] = useState("")
-  const [mintAA, setMintAA] = useState("")
+
   const [accountA, setAccountA] = useState("")
   const [mintB, setMintB] = useState("");
   const [accountB, setAccountB] = useState("")
@@ -415,7 +415,7 @@ function SwapOriginal() {
       {/* <input type="text" onChange={(e) => setMintA(e.target.value)} value={mintA} /> */}
       <br></br>
 
- mint A:     <input type="text" onChange={(e) => setMintA(e.target.value)} value={mintA} />   Authority<input type="text" onChange={(e) => setAuthority(e.target.value)} value={autorithy}/> <br/> <button onClick={() => createAccountA()}>
+ mint A:     <input type="text" onChange={(e) => setMintA(e.target.value)} value={mintA} />   Authority<input type="text" onChange={(e) => setAuthority(e.target.value)} value={autorithy}/> <button onClick={() => createAccountA()}>
 
 
         createAccountA
@@ -425,18 +425,17 @@ function SwapOriginal() {
       {/* <input type="text" onChange={(e) => setAccountA(e.target.value)} value={accountA} /> */}
 
       <br></br>
-      <input type="text" onChange={(e) => setMintA(e.target.value)} value={mintA} />  <input type="text" onChange={(e) => setAccountA(e.target.value)} value={accountA} />  <button onClick={() => mintTokenSwapA()}>
-
+     mint A: <input type="text" onChange={(e) => setMintA(e.target.value)} value={mintA} />  account A: <input type="text" onChange={(e) => setAccountA(e.target.value)} value={accountA} />  <button onClick={() => mintTokenSwapA()}>
         MintTokenA
       </button>
-      <br></br><br></br><br></br>
+      <br></br> <br></br>**************************************<br></br>
       <button onClick={() => createTokenBSwap()}>
         createTokenB
       </button>
       <br></br>
       
       <br></br>
-      <button onClick={() => createAccountB()}>
+   mintB   <input onChange={(e) => setMintB(e.target.value)} value={mintB}></input>    Authority<input type="text" onChange={(e) => setAuthority(e.target.value)} value={autorithy}/>  <button onClick={() => createAccountB()}>
 
 
         createAccountB
@@ -480,8 +479,8 @@ function SwapOriginal() {
 
 
         {
-          accountInfo && accountInfo.map(item =>
-            <tr>
+          accountInfo && accountInfo.map((item,index) =>
+            <tr key={index}> 
 
               <td >{item.pubkey.toBase58()}</td>
               <td >{item.account.lamports/1000000}</td>
