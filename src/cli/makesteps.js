@@ -37,7 +37,10 @@ import {
   createAccountMulti,
   allTokenAccountsByOwner
   ,allProgrammSwapOwner,
-  allAccountSwapByMint
+  allAccountSwapByMint,
+  mintMultisig,
+  mintMultisig2
+
 } from './token-test';
 
 export async function makeSteps(selectedWallet) {
@@ -158,7 +161,18 @@ export async function createMintMultisigner(selectedWallet , connection) {
 }
 
 
-export async function createAccountMultisigner(selectedWallet , connection) {  
-  return createAccountMulti(selectedWallet , connection);
+export async function createAccountMultisigner(selectedWallet , connection , mintPubKey) {  
+  return createAccountMulti(selectedWallet , connection , mintPubKey);
 }
+
+
+export async function mintToMultisig(selectedWallet , connection , mintAccount) {  
+  return mintMultisig(selectedWallet , connection , mintAccount);
+}
+
+
+export async function mintToSig2(selectedWallet , connection , rawTransaction) {  
+  return mintMultisig2(selectedWallet , connection , rawTransaction);
+}
+
 

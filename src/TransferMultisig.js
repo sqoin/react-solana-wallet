@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import './App.css';
 import Wallet from '@project-serum/sol-wallet-adapter';
 import { Connection, SystemProgram, Transaction, clusterApiUrl, PublicKey } from '@solana/web3.js';
-import { createMintMultisigner , createAccountMultisigner} from './cli/makesteps';
+import { createMintMultisigner , createAccountMultisigner,createTokenA , mintToMultisig , mintToSig2} from './cli/makesteps';
 
 
 
@@ -19,9 +19,9 @@ function TransferMultisig() {
     const [logs, setLogs] = useState([]);
     const [accountDest, setAccountDest] = useState("");
     const [amount, setAmount] = useState("");
-    const [rawTransaction, setRawTransaction] = useState("");
     const [accountA, setAccountA] = useState("");
     const [accountB, setAccountB] = useState("");
+    const [rawTransaction, setRawTransaction] = useState({});
     function addLog(log) {
       setLogs((logs) => [...logs, log]);
     }
@@ -79,27 +79,8 @@ function TransferMultisig() {
   }
 
 
-  async function partialSignature () {
-      try{
-        addLog('waiting first signature to confirmed ... ');
 
-      }
-      catch(e){
-        console.warn(e);
-        addLog('Error: ' + e.message);
-      }
-  }
-
-  async function secondSignature () {
-      try{
-        addLog('waiting second signature to confirmed ... ');
-
-      }
-      catch(e){
-        console.warn(e);
-        addLog('Error: ' + e.message);
-      }
-  }
+  
 
 
 
@@ -136,7 +117,7 @@ function TransferMultisig() {
             createMintMultisigner(selectedWallet, connection).then(token =>{
               console.log(token)
               
-              addLog("publickey tokenB   "+token)
+              addLog("token with vanity nova   "+token)
             }
            )
             .catch(
@@ -150,7 +131,8 @@ function TransferMultisig() {
     }
     async function createAccountA() {
         try {
-            createAccountMultisigner(selectedWallet, connection).then(tokenAccount =>{
+          let mintPubKey = new PublicKey("Novax1pqBrhqJC9dHBNobrBai91x25gVnPrUvvvc7cn");
+            createAccountMultisigner(selectedWallet, connection , mintPubKey).then(tokenAccount =>{
               console.log(tokenAccount)
               setAccountA(tokenAccount);
               addLog("publickey of account   "+tokenAccount)
@@ -167,12 +149,14 @@ function TransferMultisig() {
       
 
     }
+  
     async function createAccountB() {
         try {
-            createAccountMultisigner(selectedWallet, connection).then(tokenAccount =>{
+          let mintPubKey = new PublicKey("Novax1pqBrhqJC9dHBNobrBai91x25gVnPrUvvvc7cn");
+            createAccountMultisigner(selectedWallet, connection , mintPubKey).then(tokenAccount =>{
               console.log(tokenAccount)
               setAccountB(tokenAccount);
-              addLog("publickey of account   "+tokenAccount)
+              addLog("publickey of account "+tokenAccount)
             }
            )
             .catch(
@@ -189,6 +173,66 @@ function TransferMultisig() {
 
 
 
+    async function mintToMultisig1() {
+
+      let mintAccount = new PublicKey("Novax1pqBrhqJC9dHBNobrBai91x25gVnPrUvvvc7cn");
+      let res =  await mintToMultisig(selectedWallet, connection, mintAccount )
+console.log ("res",res);
+await mintToSig2(selectedWallet, connection ,mintAccount ,res);
+setRawTransaction(res);
+       /* try {
+          let mintAccount = new PublicKey("Novax1pqBrhqJC9dHBNobrBai91x25gVnPrUvvvc7cn");
+            mintToMultisig(selectedWallet, connection, mintAccount ).then(transaction =>{
+              console.log("raw transaction" ,transaction);
+              
+              addLog(" raw transaction :   ",transaction);
+            }
+           )
+            .catch(
+              err => addLog("" + err)
+            )
+        }
+        catch (err) {
+          addLog("" + err);
+        }
+
+      */
+
+    }
+
+    async function secondSignature () {
+      try{
+        let mintAccount = new PublicKey("Novax1pqBrhqJC9dHBNobrBai91x25gVnPrUvvvc7cn");
+        mintToSig2(selectedWallet, connection ,mintAccount ,rawTransaction);
+      }
+      catch(e){
+        console.warn(e);
+        addLog('Error: ' + e.message);
+      }
+  }
+
+
+    async function createTokenASwap() {
+        addLog("loading create Mint A... ");
+        // try {
+          createTokenA(selectedWallet, connection).then(token => {
+            console.log("create mintA " + JSON.stringify(token))
+      
+    
+            // console.log("token " + token[0].mintA.publicKey.toBase58())
+             addLog("publickey tokenA   " + token.mintA + " authorty = " + token.authority )
+    
+          })
+            // .catch(
+            //   err => addLog("" + err)
+            // )
+    
+        // }
+        // catch (err) {
+        //   addLog("" + err);
+        // }
+    
+      }
     return (
         <div className="App">
             <h1>PORTFOLIO Adapter Demo</h1>
@@ -221,8 +265,11 @@ function TransferMultisig() {
             </div>
 
             <div>
+          
                 <div>
-                     <button onClick={() => createMint()}>Create mint</button>
+
+     <p>Mint Pubkey : Novax1pqBrhqJC9dHBNobrBai91x25gVnPrUvvvc7cn </p>
+                  {/* <button onClick={() => createMint()}>Create mint</button>*/}
                 </div>
 
                 <div>
@@ -231,6 +278,9 @@ function TransferMultisig() {
                 <div>
                      <button onClick={() => createAccountB()}>Create account B </button>
                 </div>
+
+
+               
                 <div>
                     Account destination :{' '}
                     <input
@@ -247,7 +297,7 @@ function TransferMultisig() {
                     />
                 </div>
                 <div >
-                <button onClick={() => partialSignature()}>First signature</button>
+                <button onClick={() => mintToMultisig1()}>First signature</button>
                 </div>
 
                 <div>
