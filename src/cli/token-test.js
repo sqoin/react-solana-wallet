@@ -1051,13 +1051,77 @@ console.log ("tokenMint : " +tokenMint.publicKey);
 }
 
 
-export async function createAccountMulti(): Promise<void> {
+export async function mintMultisig(selectedWallet , connection , mintAccount): Promise<void> {
+
+let multisigAccount = new PublicKey("7owzsQm3T8rirScNC8RDEd3qdJJTzGETKqte6eHL1XTG") ;
+let bacem = new Account([199,65,249,220,57,154,21,249,242,73,177,149,213,25,3,168,104,183,74,253,81,70,92,47,192,62,6,141,52,101,24,21,169,20,74,222,240,77,149,169,87,66,86,103,206,65,12,49,58,163,18,5,206,125,132,230,175,225,43,88,168,53,252,130]);
+let karima = new Account([167,50,120,172,248,193,71,240,199,250,89,145,194,18,3,25,151,29,8,80,146,252,36,77,250,33,211,238,11,23,82,230,54,202,38,6,10,56,138,236,27,68,24,143,81,245,200,105,170,29,114,192,69,102,192,39,139,16,127,222,37,48,241,213]);
+let ameni = new Account([30,222,11,88,198,158,102,243,139,33,202,137,184,109,167,171,176,222,235,56,200,71,40,167,132,193,209,219,79,68,130,186,52,228,115,179,132,138,20,197,97,35,0,221,22,185,205,138,133,129,80,16,8,117,241,69,177,52,174,66,161,230,192,141]);
+let spluMultisig = new PublicKey("5xdN1WLKNepbUjZKfs9Lc44qNqzv9FJ2ZoDhQjRcmMdG");
+let token = new Token(
+  connection,
+  mintAccount,
+  TOKEN_PROGRAM_ID,
+  selectedWallet)
+
+   let res = await token.mintToMultisig(
+  connection,
+  selectedWallet,
+  spluMultisig,
+  mintAccount,
+  multisigAccount,
+  [],
+  10,
+  programId,
+);
+//const mintInfo = await token.getAccountInfo(new PublicKey(spluMultisig))
+//console.log(mintInfo)
+
+return  res;
+}
+
+
+export async function mintMultisig2 (selectedWallet, connection ,mintAccount ,rawTransaction): Promise<void> {
+  console.log ("second : transaction " , rawTransaction);
+
+  let token = new Token(
+    connection,
+    mintAccount,
+    TOKEN_PROGRAM_ID,
+    selectedWallet)
+  
+     await token.mintToMultisig2(
+    connection,
+    selectedWallet,
+    rawTransaction,
+    programId,
+  );
+
+}
+
+
+
+
+
+
+
+
+
+export async function createAccountMulti(selectedWallet , connection , mintPubKey): Promise<void> {
   
   // createAccountProgramm=new Account([95,214,128,34,18,164,154,241,35,95,234,185,216,118,40,65,242,115,5,210,130,217,119,39,96,224,165,206,163,227,255,13,109,16,141,79,216,210,106,68,147,152,240,170,137,40,174,195,23,121,207,82,14,68,129,96,180,73,142,49,138,73,209,161]);
   let Accountowner  = new Account([253, 105, 193, 173, 55, 108, 145, 101, 186, 22, 187, 172, 156, 119, 173, 35, 25, 99, 80, 68, 92, 204, 232, 243, 67, 169, 199, 7, 218, 94, 225, 17, 173, 31, 39, 116, 250, 166, 211, 3, 213, 13, 179, 50, 47, 240, 7, 164, 48, 110, 143, 141, 244, 242, 74, 210, 185, 203, 0, 4, 138, 99, 110, 251]);
   // testAccountOwner = new Account();
  // console.log("authority"+authority)
-  tokenAccountA = await tokenMint.createAccount(Accountowner.publicKey );
+
+ let token = new Token(
+  connection,
+  mintPubKey,
+  TOKEN_PROGRAM_ID,
+  selectedWallet)
+
+
+  tokenAccountA = await token.createAccount(Accountowner.publicKey );
  
   //const accountInfo = await mintA.getAccountInfo(tokenAccountA);
 
@@ -1071,3 +1135,4 @@ export async function createAccountMulti(): Promise<void> {
   return tokenAccountA;
  
 }
+
