@@ -11,7 +11,7 @@ import {
   TransactionInstruction,
 } from '@solana/web3.js';
 
-import * as Layout from './layout';
+import * as Layout from '../cli/layout';
 import { sendAndConfirmTransaction } from './util/send-and-confirm-transaction';
 import { loadAccount } from './util/account';
 
@@ -398,6 +398,19 @@ export class TokenSwap {
       curveType,
       payer,
     );
+    console.log("selectWallet  : ",payer,
+    " tokenSwapAccount : ",tokenSwapAccount,
+    " authority : ",authority,
+     " tokenAccountA : ", tokenAccountA,
+      " tokenAccountB : ",tokenAccountB,
+     "poolToken : ", poolToken,
+      "mainA : ",mintA,
+      'mintB : ',mintB,
+     " feeAccount : ", feeAccount,
+      " tokenAccountPool : ",tokenAccountPool,
+      " swapProgramId : ", swapProgramId,
+      " tokenProgramId : ",tokenProgramId,
+      " tokenProgramId : ",nonce)
 console.log("test swap token ")
     // Allocate memory for the account
     const balanceNeeded = await TokenSwap.getMinBalanceRentForExemptTokenSwap(

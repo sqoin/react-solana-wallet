@@ -1,4 +1,4 @@
-import { createMMApi, createTokenAApi, createTokenBApi, createVaultAApi, createVaultBApi, mintTokenAToVaultAApi, mintTokenBToVaultBApi, sendLamportToMMApi, sendTokenAToMMApi } from "./serum-api";
+import { createMMApi, createTokenApi, createVaultApi, mintTokenToVaultApi, sendTokenApi, sendLamportApi, createMarketApi, swapAtoBApi, placeOrder } from "./serum-api";
 
 /*export async function mintTokenAStep(selectedWallet , connection) {  
     return mintTokenAApi(selectedWallet , connection);
@@ -6,30 +6,32 @@ import { createMMApi, createTokenAApi, createTokenBApi, createVaultAApi, createV
 export async function mintTokenBStep(selectedWallet , connection) {  
     return mintTokenBApi(selectedWallet , connection);
 }*/
-export async function createTokenAStep(selectedWallet , connection) {  
-    return createTokenAApi(selectedWallet , connection);
+export async function createTokenStep(selectedWallet , connection) {  
+    return createTokenApi(selectedWallet , connection);
 }
-export async function createVaultAStep(selectedWallet,connection,tokenPk) {  
-    return createVaultAApi(selectedWallet,connection,tokenPk);
+export async function createVaultStep(selectedWallet,connection,tokenPk) {  
+    return createVaultApi(selectedWallet,connection,tokenPk);
 }
-export async function mintTokenAToVaultAStep(selectedWallet, connection, vault, tokenPk) {  
-    return mintTokenAToVaultAApi(selectedWallet, connection, vault, tokenPk );
-}
-export async function createTokenBStep(selectedWallet , connection) {  
-    return createTokenBApi(selectedWallet , connection);
-}
-export async function createVaultBStep(selectedWallet,connection) {  
-    return createVaultBApi(selectedWallet,connection);
-}
-export async function mintTokenBToVaultBStep(selectedWallet) {  
-    return mintTokenBToVaultBApi(selectedWallet);
+export async function mintTokenToVaultStep(selectedWallet, connection, vault, tokenPk) {  
+    return mintTokenToVaultApi(selectedWallet, connection, vault, tokenPk );
 }
 export async function createMMStep() {  
     return createMMApi();
 }
-export async function sendLamportToMMStep(selectedWallet , connection) {  
-    return sendLamportToMMApi(selectedWallet , connection);
+export async function sendLamportToMMStep(selectedWallet , connection, to) {  
+    return sendLamportApi(selectedWallet , connection, to);
 }
-export async function sendTokenAToMMStep(selectedWallet , connection) {  
-    return sendTokenAToMMApi(selectedWallet , connection);
+export async function sendTokenToMMStep(selectedWallet , connection, tokenPk, vault, to) {  
+    return sendTokenApi(selectedWallet , connection, tokenPk, vault, to);
 }
+export async function createMarketStep(selectedWallet , connection, tokenAPk, tokenBPk, baseLotSize, quoteLotSize, feeRateBps) {  
+    return createMarketApi(selectedWallet , connection, tokenAPk, tokenBPk, baseLotSize, quoteLotSize, feeRateBps);
+}
+export async function swapAtoBStep(selectedWallet , connection, market,tokenAPk, tokenBPk, vaultA, vaultB) {  
+    return swapAtoBApi(selectedWallet , connection, market, tokenAPk, tokenBPk, vaultA, vaultB);
+}
+export async function placeOrderStep(selectedWallet , connection, market, marketMaker, tokenAPk, tokenBPk) {  
+    return placeOrder(selectedWallet , connection, market, marketMaker, tokenAPk, tokenBPk);
+}
+
+

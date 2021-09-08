@@ -120,9 +120,9 @@ export async function createSwapTokens(selectedWallet, connection,minta,mintb,ac
   return swapToken(selectedWallet, connection,minta,mintb,accounta,accountb,pooltoken,feeaccount,accountpool,autority,Nonce);
 }
 
-export async function createSwap(selectedWallet, connection,minta,mintb,accounta,accountb,pooltoken,feeaccount,accountpool,autority){
+export async function createSwap(selectedWallet, connection,tokenSwapPubkey,minta,mintb,accounta,accountb,pooltoken,feeaccount,accountpool,autority){
 
-  return swap(selectedWallet, connection,minta,mintb,accounta,accountb,pooltoken,feeaccount,accountpool,autority)
+  return swap(selectedWallet, connection,tokenSwapPubkey,minta,mintb,accounta,accountb,pooltoken,feeaccount,accountpool,autority)
 }
 export async function getTokenAccountsByOwnerSolet (selectedWallet,connection){
   return allTokenAccountsByOwner(selectedWallet,connection)
