@@ -450,6 +450,89 @@ export class Token {
   }
 
 
+
+   /**
+   * Create and initialize a token.
+   *
+   * @param connection The connection to use
+   * @param payer Fee payer for transaction
+   * @param mintAuthority Account or multisig that will control minting
+   * @param freezeAuthority Optional account or multisig that can freeze token accounts
+   * @param decimals Location of the decimal place
+   * @param programId Optional token programId, uses the system programId by default
+   * @return Token object for the newly minted token
+   */
+
+    async createMintMult(
+      connection: Connection,
+      payer,
+      mintAuthority: PublicKey,
+      freezeAuthority: PublicKey | null,
+      decimals: number,
+      programId: PublicKey,
+    ): Promise<Token> {
+      const mintAccount = new Account([216,166,11,115,131,75,28,155,119,159,153,110,243,185,238,203,176,201,198,130,22,100,55,104,190,209,251,91,16,209,173,124,5,150,65,5,230,140,218,41,228,101,174,181,62,109,198,105,69,8,161,79,90,77,135,88,207,179,65,71,61,199,144,155]);
+      //const mintAccount = new Account();
+      const token = new Token(
+        this.connection,
+        mintAccount.publicKey,
+        this.programId,
+        this.payer,
+      );
+  
+      // Allocate memory for the account
+      const balanceNeeded = await Token.getMinBalanceRentForExemptMint(
+        this.connection,
+      );
+  
+      const transaction = new Transaction();
+      transaction.add(
+        SystemProgram.createAccount({
+          fromPubkey: this.payer.publicKey,
+          newAccountPubkey: mintAccount.publicKey,
+          lamports: balanceNeeded,
+          space: MintLayout.span,
+          programId:this.programId
+        }),
+      );
+  
+      transaction.add(
+        Token.createInitMintInstruction(
+          this.programId,
+          mintAccount.publicKey,
+          decimals,
+          mintAuthority,
+          freezeAuthority,
+        ),
+      );
+  
+      transaction.recentBlockhash = (
+        await connection.getRecentBlockhash()
+      ).blockhash;
+      transaction.feePayer = this.payer.publicKey;
+      //transaction.setSigners(payer.publicKey, mintAccount.publicKey );
+      transaction.partialSign(mintAccount);
+  
+      let signed = await this.payer.signTransaction(transaction);
+      
+     //   addLog('Got signature, submitting transaction');
+        let signature = await connection.sendRawTransaction(signed.serialize());
+  
+        await connection.confirmTransaction(signature, 'max');
+      // Send the two instructions
+   /*   await sendAndConfirmTransaction(
+        'createAccount and InitializeMint',
+        connection,
+        transaction,
+        payer,
+        mintAccount,
+      );*/
+  
+      return token;
+    }
+  
+  
+
 /* dest: any,
     authority: any,
     multiSigners: Array<Account>,
@@ -459,10 +542,10 @@ export class Token {
   async mintToMultisig(
     connection: Connection,
     wallet: any,
-    dest:pubkey,
+    dest:PublicKey,
     mintAccount: PublicKey,
     multisigAccount: PublicKey,
-    multiSigners:PublicKey,
+    multiSigners:Array<Account>,
     amount: number | u64,
   ): Promise<void> {
 
@@ -473,7 +556,7 @@ export class Token {
     );
     const newAccount = new Account();
     const transaction = new Transaction();
-    transaction.add(
+    /*transaction.add(
       SystemProgram.createAccount({
         fromPubkey: this.payer.publicKey,
         newAccountPubkey: newAccount.publicKey,
@@ -482,10 +565,10 @@ export class Token {
         programId:this.programId
       }),
     );
+*/
 
 
 
-/*
     transaction.add(
       Token.createMintToInstruction(
         this.programId,
@@ -496,15 +579,15 @@ export class Token {
         amount,
       ),
     );
-*/
+
     transaction.recentBlockhash = (
       await this.connection.getRecentBlockhash()
     ).blockhash;
    
-    transaction.feePayer = this.payer.publicKey;
+    transaction.feePayer = wallet.publicKey;
     //transaction.setSigners(payer.publicKey, mintAccount.publicKey );
     // transaction.partialSign(this.payer);
-
+console.log ("wallet", wallet.publicKey.toString());
   
   let signed = await wallet.signTransaction(transaction);
 
@@ -523,6 +606,7 @@ export class Token {
     rawTransaction : Transaction
 
   ): Promise<void> {
+    console.log ("wallet sign 2", wallet.publicKey.toString());
     console.log ("transaction :" , rawTransaction);
     let signed = await wallet.signTransaction(rawTransaction);
 

@@ -120,9 +120,9 @@ export async function createSwapTokens(selectedWallet, connection,mintA,mintB,ac
   return swapToken(selectedWallet, connection,mintA,mintB,accountA,accountB,poolToken,feeAccount,accountPool,autorithy);
 }
 
-export async function createSwap(selectedWallet,connection,feeAccount,tokenSwapPubkey){
+export async function createSwap(selectedWallet,connection){
 
-  return swap(selectedWallet,connection,feeAccount,tokenSwapPubkey)
+  return swap(selectedWallet,connection)
 }
 export async function getTokenAccountsByOwnerSolet (selectedWallet,connection){
   return allTokenAccountsByOwner(selectedWallet,connection)
@@ -171,8 +171,9 @@ export async function mintToMultisig(selectedWallet , connection , mintAccount) 
 }
 
 
-export async function mintToSig2(selectedWallet , connection , rawTransaction) {  
-  return mintMultisig2(selectedWallet , connection , rawTransaction);
+export async function mintToSig2(selectedWallet , connection , mintAccount ,rawTransaction) {  
+  console.log ("first : transaction " , rawTransaction);
+  return mintMultisig2(selectedWallet , connection , mintAccount ,rawTransaction);
 }
 
 

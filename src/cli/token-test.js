@@ -1057,7 +1057,7 @@ let multisigAccount = new PublicKey("7owzsQm3T8rirScNC8RDEd3qdJJTzGETKqte6eHL1XT
     selectedWallet.publicKey,
     TOKEN_PROGRAM_ID,
     selectedWallet)
-  tokenMint = await token.createMint(
+  tokenMint = await token.createMintMult(
   connection,
   selectedWallet,
   multisigAccount,
@@ -1090,7 +1090,7 @@ let token = new Token(
   spluMultisig,
   mintAccount,
   multisigAccount,
-  [],
+  [bacem , ameni ],
   10,
   programId,
 );

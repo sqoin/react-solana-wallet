@@ -176,10 +176,20 @@ function TransferMultisig() {
     async function mintToMultisig1() {
 
       let mintAccount = new PublicKey("Novax1pqBrhqJC9dHBNobrBai91x25gVnPrUvvvc7cn");
-      let res =  await mintToMultisig(selectedWallet, connection, mintAccount )
-console.log ("res",res);
-await mintToSig2(selectedWallet, connection ,mintAccount ,res);
-setRawTransaction(res);
+      mintToMultisig(selectedWallet, connection, mintAccount )
+      .then(transaction=>{
+        console.log ("res",JSON.stringify(transaction));
+       
+          // .then(sig=>{
+          //   console.log (sig);
+            // console.log ("transaction sig :" , transaction);
+          // })
+        setRawTransaction(transaction);
+        console.log ("res2",transaction);
+      }) .catch(
+        err => addLog("" + err)
+      )
+
        /* try {
           let mintAccount = new PublicKey("Novax1pqBrhqJC9dHBNobrBai91x25gVnPrUvvvc7cn");
             mintToMultisig(selectedWallet, connection, mintAccount ).then(transaction =>{
@@ -203,7 +213,8 @@ setRawTransaction(res);
     async function secondSignature () {
       try{
         let mintAccount = new PublicKey("Novax1pqBrhqJC9dHBNobrBai91x25gVnPrUvvvc7cn");
-        mintToSig2(selectedWallet, connection ,mintAccount ,rawTransaction);
+        
+        mintToSig2(injectedWallet, connection ,mintAccount ,rawTransaction);
       }
       catch(e){
         console.warn(e);
@@ -305,7 +316,7 @@ setRawTransaction(res);
                     <input
                         type="text"
                         value={rawTransaction}
-                        onChange={(e) => setRawTransaction(e.target.value.trim())}
+                        onChange={(e) => setRawTransaction(e.target.value)}
                     />
                     <button onClick={() => secondSignature()}>second signature</button>
                  </div>
