@@ -18,19 +18,40 @@ const Transaction = web3.Transaction;
 const PublicKey = web3.PublicKey;
 const SystemProgram = web3.SystemProgram;
 const Provider = anchor.Provider
-const DEX_PID = new PublicKey("9xQeWvG816bUx9EPjHmaT23yvVM2ZWbrrpZb9PusVFin");
+const DEX_PID = new PublicKey("DESVgJVGajEgKGXhb6XmqDHGz3VjdgP7rEVESBgxmroY");
 const decimals=2
 const options = Provider.defaultOptions();
 let TOKEN_PROGRAM_ID1= new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA");
 let mintedAmount=1000
 let sentAmount=10
 let dexProgramId= new PublicKey("DESVgJVGajEgKGXhb6XmqDHGz3VjdgP7rEVESBgxmroY");
+//FgFxp8voPtbFqCgqSgGDwUDz7CWpHKZbE6w7WudXDxz
 const OpenOrders = require("@project-serum/serum").OpenOrders;
 const Side = {
   Bid: { bid: {} },
   Ask: { ask: {} },
 };
 let marketA;
+
+const asks = [
+  [6.041, 7.8],
+  [6.051, 72.3],
+  [6.055, 5.4],
+  [6.067, 15.7],
+  [6.077, 390.0],
+  [6.09, 24.0],
+  [6.11, 36.3],
+  [6.133, 300.0],
+  [6.167, 687.8],
+];
+const bids = [
+  [6.004, 8.5],
+  [5.995, 12.9],
+  [5.987, 6.2],
+  [5.978, 15.3],
+  [5.965, 82.8],
+  [5.961, 25.4],
+];
 
 
 export async function createTokenApi(selectedWallet, connection) {
@@ -323,15 +344,70 @@ async function sendAndConfirmRawTransaction(
   return await connection.confirmTransaction(tx, commitment);
 }
 
-export async function swapAtoBApi(connection, selectedWallet, marketPk, tokenAPk, tokenBPk, vaultA, vaultB) {
+export async function placeOrder(selectedWallet, connection, marketPk, marketMaker, mmBaseToken, mmQuoteToken){
   let provider= new Provider(connection, selectedWallet, options);
+  const market = await Market.load(
+    connection,
+    new PublicKey(marketPk),
+    { commitment: "recent" },
+    dexProgramId
+  );
+  console.log("loaded"+market._decoded.ownAddress)
+  const {
+    transaction,
+    signers,
+  } = await market.makePlaceOrderTransaction(connection, {
+      owner: new PublicKey(marketMaker),
+      payer: new PublicKey(mmBaseToken),
+      side: "sell",
+      price: new BN(6),
+      size: new BN(7),
+      orderType: "postOnly",
+      clientId: undefined,
+      openOrdersAddressKey: undefined,
+      openOrdersAccount: undefined,
+      feeDiscountPubkey: null,
+      selfTradeBehavior: "abortTransaction",
+    });
+    //await provider.send(transaction, signers.concat(marketMaker));
+    /*const {
+      transaction2,
+      signers2,
+    } = await marketA.makePlaceOrderTransaction(provider.connection, {
+      owner: new PublicKey(marketMaker),
+      payer: new PublicKey(mmQuoteToken),
+      side: "buy",
+      price: 6.004,
+      size: 8.5,
+      orderType: "postOnly",
+      clientId: undefined,
+      openOrdersAddressKey: undefined,
+      openOrdersAccount: undefined,
+      feeDiscountPubkey: null,
+      selfTradeBehavior: "abortTransaction",
+    });*/
+    //await provider.send(transaction2, signers2.concat(marketMaker));
+}
+
+export async function swapAtoBApi(selectedWallet, connection,  marketPk, tokenAPk, tokenBPk, vaultA, vaultB) {
+  console.log("sw "+selectedWallet.publicKey)
+  console.log("market "+marketPk)
+
+  let connection1= new Connection("https://api.devnet.solana.com")
+  let provider= new Provider(connection1, selectedWallet, options);
   anchor.setProvider(provider);
-  const idl = JSON.parse(require('fs').readFileSync('./serumSwap.json', 'utf8'));
-  const programId = new anchor.web3.PublicKey('64VhHFWyFgXxUaHi9tg4DWLd1xqdYNdTdsNSG3DWhRE3');
+  console.log(provider.connection)
+  //const idl = JSON.parse(require('fs').readFile('./serumSwap.json', 'utf8'));
+  const idl=require('./serumSwap')
+  console.log(idl)
+  //const programId = new anchor.web3.PublicKey('64VhHFWyFgXxUaHi9tg4DWLd1xqdYNdTdsNSG3DWhRE3');
+  const programId = new anchor.web3.PublicKey('DS1mnbJcJRGimF4iqazbBQrd7dBMayqPdEq36XhC2soc');
   const program = new anchor.Program(idl, programId);
+  console.log(program)
+  console.log("market => "+ marketPk)
   const marketA = await Market.load(
-    provider.connection,
-    marketPk,
+    connection1,
+    new PublicKey(marketPk),
     { commitment: "recent" },
     dexProgramId
   );
@@ -342,7 +418,7 @@ export async function swapAtoBApi(connection, selectedWallet, marketPk, tokenAPk
   );
   let marketAVaultSigner = vaultSignerA;
   const openOrdersA = new anchor.web3.Account();
-  console.log() 
+  console.log("vault signer"+ marketAVaultSigner) 
   let  SWAP_ACCOUNTS = {
       market: {
         market: marketA._decoded.ownAddress,
@@ -355,15 +431,16 @@ export async function swapAtoBApi(connection, selectedWallet, marketPk, tokenAPk
         vaultSigner: marketAVaultSigner,
         // User params.
         openOrders: openOrdersA.publicKey,
-        orderPayerTokenAccount: vaultB,
-        coinWallet: vaultA,
+        orderPayerTokenAccount: new PublicKey(vaultB),
+        coinWallet: new PublicKey(vaultA),
       },
-      pcWallet: vaultB,
-      authority: program.provider.wallet.publicKey,
+      pcWallet: new PublicKey(vaultB),
+      authority: selectedWallet.publicKey,
       dexProgram: dexProgramId,
       tokenProgram: TOKEN_PROGRAM_ID1,
       rent: anchor.web3.SYSVAR_RENT_PUBKEY,
     };
+  
 
     console.log("swap accounts => "+ JSON.stringify(SWAP_ACCOUNTS))
     // Swap exactly enough USDC to get 1.2 A tokens (best offer price is 6.041 USDC).
@@ -371,28 +448,38 @@ export async function swapAtoBApi(connection, selectedWallet, marketPk, tokenAPk
     const expectedResultantAmount = 7.2;
     const bestOfferPrice = 6.041;
     const amountToSpend = expectedResultantAmount * bestOfferPrice;
-    const swapAmount = new BN((amountToSpend / (1 - TAKER_FEE)) * 10 ** 6);
+    const swapAmount = new BN(10);
     console.log("swap amount "+swapAmount)
     //const [tokenAChange, usdcChange] = await withBalanceChange(
-        await program.rpc.swap(
-          Side.Bid,
-          swapAmount,
-          { rate: new BN(1.0), fromDecimals: 2, toDecimals: 2, strict: false },
-          {
-            accounts: SWAP_ACCOUNTS,
-            instructions: [
-              // First order to this market so one must create the open orders account.
-              await OpenOrders.makeCreateAccountTransaction(
-                program.provider.connection,
-                marketA._decoded.ownAddress,
-                program.provider.wallet.publicKey,
-                openOrdersA.publicKey,
-                dexProgramId
-              )
-            ],
-            signers: [openOrdersA],
-          }
-        );
-      
-    //);
+    // const tx = new Transaction();
+     /* tx.add(
+        await OpenOrders.makeCreateAccountTransaction(
+          connection,
+          marketA._decoded.ownAddress,
+          selectedWallet.publicKey,
+          openOrdersA.publicKey,
+          dexProgramId
+        )
+      );
+      await program.provider.send(tx, [openOrdersA]);*/
+      await program.rpc.swap(
+        Side.Bid,
+        swapAmount,
+        { rate: new BN(1.0), fromDecimals: 2, toDecimals: 2, strict: false },
+        {
+          accounts: SWAP_ACCOUNTS,
+          instructions: [
+            // First order to this market so one must create the open orders account.
+          await OpenOrders.makeCreateAccountTransaction(
+          connection,
+          marketA._decoded.ownAddress,
+          selectedWallet.publicKey,
+          openOrdersA.publicKey,
+          dexProgramId
+            ),
+          ],
+          signers: [openOrdersA],
+        }
+      );
+        return "ok"
 }
