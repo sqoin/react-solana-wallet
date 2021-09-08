@@ -10,12 +10,14 @@ import {
   Transaction,
   sendAndConfirmTransaction,
 } from '@solana/web3.js';
-
+import * as BufferLayout from 'buffer-layout';
+import * as Layout from './layout';
 import {
   Token,
   TOKEN_PROGRAM_ID,
   ASSOCIATED_TOKEN_PROGRAM_ID,
   NATIVE_MINT,
+  u64,
 
 } from '../client/token';
 import {
@@ -29,6 +31,7 @@ import { newAccountWithLamports, newAccountWithLamports1 } from '../client/util/
 import { newAccountWithLamports3 } from '../swap/util/new-account-with-lamports';
 import { sleep } from '../client/util/sleep';
 import { Store } from './store';
+import { isForInStatement } from 'typescript';
 const TOKEN_SWAP_PROGRAM_ID: PublicKey = new PublicKey(
   '5e2zZzHS8P1kkXQFVoBN6tVN15QBUHMDisy6mxVwVYSz',
 );
@@ -55,7 +58,8 @@ let accountPool: PublicKey;
 let nonce: Number;
 let payer: Account;
 let testTokenDecimals: number = 2;
-let createAccountProgramm :Account= new Account();;
+//let createAccountProgramm :Account= new Account([167,178,107,106,16,55,109,156,155,69,195,190,214,234,187,166,224,195,146,61,204,112,20,235,24,198,131,62,232,129,162,6,196,255,147,49,157,22,174,151,206,248,119,242,161,206,153,61,97,67,12,28,87,67,100,90,173,96,171,86,20,113,93,18]);
+let createAccountProgramm :Account= new Account();
 let tokenMint : Token;
 
 
@@ -162,31 +166,29 @@ export async function createMint(selectedWallet, connection): Promise<void> {
 
   return mintInfo;
 }
-export async function swapToken(selectedWallet, connection,mintA,mintB,accountA,accountB,poolToken,feeAccount,accountPool,autorithy): Promise<void> {
+export async function swapToken(selectedWallet, connection,minta,mintb,accounta,accountb,pooltoken,feeaccount,accountpool,autority,Nonce): Promise<void> {
 
 
   // [95,214,128,34,18,164,154,241,35,95,234,185,216,118,40,65,242,115,5,210,130,217,119,39,96,224,165,206,163,227,255,13,109,16,141,79,216,210,106,68,147,152,240,170,137,40,174,195,23,121,207,82,14,68,129,96,180,73,142,49,138,73,209,161]
   // let createAccountProgramm=new Account([86,  26, 243,  72,  46, 135, 186,  23,  31, 215, 229,43,  54,  89, 206, 222,  82,   6, 231, 212, 212, 226,184, 211, 107, 147, 180, 138,  57, 108, 182,  46, 185,33, 232, 144,  77,  70,  77, 145, 151, 152, 188,  19,78,  73,  32,  89, 236, 171,  90,  44, 120,  71, 202,142, 214, 179,  38,  85,  71, 103, 145, 193]);
   // swapPayer=new Account([])
-
-  console.log("poolToken:"+poolToken,
-    "mintA:"+mintA,
-    "mintB"+mintB)
-  testTokenSwap = await TokenSwap.createTokenSwap(
+console.log("createAccountProgramm ",createAccountProgramm.publicKey.toBase58()," minta "+minta+" mintB "+mintb+" accounta "+accounta+" accountb "+accountb+" pooltoken "+pooltoken+" feeacoount "+feeaccount+" accountpool "+accountpool+" autority "+autority+" nonce "+Nonce)
+  let tokenSwap=new TokenSwap(connection,null,null,null,new PublicKey(pooltoken),new PublicKey(feeaccount),new PublicKey(autority),new PublicKey(accounta),new PublicKey(accountb), new PublicKey(minta),new PublicKey(mintb),null,null,null,null,null,null,null,null,null,selectedWallet)
+  testTokenSwap = await tokenSwap.createTokenSwap(
     connection,
     selectedWallet,
     createAccountProgramm,
-    autorithy,
-    accountA,
-    accountB,
-    poolToken,
-    mintA,
-    mintB,
-    feeAccount,
-    accountPool,
+    new PublicKey(autority),
+    new PublicKey(accounta),
+    new PublicKey(accountb),
+    new PublicKey(pooltoken),
+    new PublicKey(minta),
+    new PublicKey(mintb),
+    new PublicKey(feeaccount),
+    new PublicKey(accountpool),
     TOKEN_SWAP_PROGRAM_ID,
     TOKEN_PROGRAM_ID,
-    nonce,
+    Nonce,
     TRADING_FEE_NUMERATOR,
     TRADING_FEE_DENOMINATOR,
     OWNER_TRADING_FEE_NUMERATOR,
@@ -254,12 +256,15 @@ export async function createTokenSwapA(selectedWallet, connection): Promise<void
   // let info= await mintA.getAccountInfo()
   // const mintInfo = await mintA.getMintInfo();
   // console.log("mintA"+mintInfo.publicKey)
-  console.log(ret)
   return ret;
 }
 export async function createTokenSwapB(selectedWallet, connection): Promise<void> {
 
- 
+  [authority, nonce] = await PublicKey.findProgramAddress(
+    [createAccountProgramm.publicKey.toBuffer()],
+    TOKEN_SWAP_PROGRAM_ID,
+  )
+
   
   let token = new Token(
     connection,
@@ -284,8 +289,8 @@ export async function createTokenSwapB(selectedWallet, connection): Promise<void
   // console.log("test")
   //   const mintInfo = await mintB.getMintInfo();
   // console.log("mintB" + mintB.publicKey.toBase58())
-
-  return mintB;
+  let ret= { "mintB": mintB.publicKey, "authority": authority.toBase58(),"nonce":nonce};
+  return ret;
 }
 
 function timeout(ms) {
@@ -294,14 +299,14 @@ function timeout(ms) {
  
 
 
-export async function createPoolTokenSwap(selectedWallet, connection): Promise<void> {
+export async function createPoolTokenSwap(selectedWallet, connection, autority): Promise<void> {
 
   const ownerKey = SWAP_PROGRAM_OWNER_FEE_ADDRESS || owner.publicKey.toString();
   // [authority, nonce] = await PublicKey.findProgramAddress(
   //   [createAccountProgramm.publicKey.toBuffer()],
   //   TOKEN_SWAP_PROGRAM_ID,
   // )
-
+console.log(autority)
   let token = new Token(
     connection,
     selectedWallet.publicKey,
@@ -311,17 +316,17 @@ export async function createPoolTokenSwap(selectedWallet, connection): Promise<v
    poolToken = await token.createMint(
     connection,
     selectedWallet,
-    authority,
+   new PublicKey(autority),
     null,
     testTokenDecimals,
     TOKEN_PROGRAM_ID,
   );
-  console.log("poolToken: "+poolToken.publicKey.toBase58())
+  
 
 
   // await timeout(10000);
   let  feeAccount = await poolToken.createAccount(new PublicKey(ownerKey));
-  console.log("feeAccount: "+feeAccount.toBase58())
+  
   
   
   
@@ -331,7 +336,7 @@ export async function createPoolTokenSwap(selectedWallet, connection): Promise<v
 
 
 
-  console.log("accountPool: "+accountPool.toBase58())
+
 
   let infoPool = { "poolToken": poolToken.publicKey, "accountPool": accountPool, "feeAccount": feeAccount }
 
@@ -339,14 +344,19 @@ export async function createPoolTokenSwap(selectedWallet, connection): Promise<v
 
 }
 
-export async function createAccountTokenSwapA(): Promise<void> {
+export async function createAccountTokenSwapA(selectedWallet, connection,mint,autority): Promise<void> {
 
   // createAccountProgramm=new Account([95,214,128,34,18,164,154,241,35,95,234,185,216,118,40,65,242,115,5,210,130,217,119,39,96,224,165,206,163,227,255,13,109,16,141,79,216,210,106,68,147,152,240,170,137,40,174,195,23,121,207,82,14,68,129,96,180,73,142,49,138,73,209,161]);
 
   // testAccountOwner = new Account();
-  console.log("authority" + authority)
+  console.log("authority" + autority)
+  let token = new Token(
+    connection,
+   mint,
+    TOKEN_PROGRAM_ID,
+    selectedWallet)
 
-  tokenAccountA = await mintA.createAccount(authority);
+  tokenAccountA = await token.createAccount(autority);
 
   // const accountInfo = await mintA.getAccountInfo(tokenAccountA);
 
@@ -363,14 +373,19 @@ export async function createAccountTokenSwapA(): Promise<void> {
 
 
 
-export async function createAccountTokenSwapB(): Promise<void> {
+export async function createAccountTokenSwapB(selectedWallet, connection,mint,autority): Promise<void> {
+  let token = new Token(
+    connection,
+   mint,
+    TOKEN_PROGRAM_ID,
+    selectedWallet)
 
-  tokenAccountB = await mintB.createAccount(authority);
+  tokenAccountB = await token.createAccount(autority);
 
 
 
 
-  const accountInfo = await mintB.getAccountInfo(tokenAccountB);
+  // const accountInfo = await mintB.getAccountInfo(tokenAccountB);
 
   return tokenAccountB;
 }
@@ -380,7 +395,7 @@ export async function createMintTokenA(selectedWallet,connection,mintAddress,acc
     let testToken = new Token(
       connection,
       new PublicKey(mintAddress),
-      new PublicKey( TOKEN_PROGRAM_ID),
+     TOKEN_PROGRAM_ID,
       selectedWallet
   );
   
@@ -405,7 +420,7 @@ export async function createMintTokenB(selectedWallet,connection,mintAddress,acc
   let testToken = new Token(
     connection,
     new PublicKey(mintAddress),
-    new PublicKey( TOKEN_PROGRAM_ID),
+    TOKEN_PROGRAM_ID,
     selectedWallet
 );
 
@@ -444,23 +459,49 @@ export async function createMintTokenB(selectedWallet,connection,mintAddress,acc
   // return accountInfo;
 }
 
-export async function swap(selectedWallet,connection,feeAccount,tokenSwapPubkey) {
-  let userAccountA = await mintA.createAccount(selectedWallet.publicKey)
-  await mintA.mintTo(userAccountA, selectedWallet, [], 100000);
+export async function swap(selectedWallet, connection,tokenSwapPubkey,minta,mintb,accounta,accountb,pooltoken,feeaccount,accountpool,autority) {
+  console.log("createAccountProgramm ",createAccountProgramm.publicKey.toBase58()," minta "+minta+" mintB "+mintb+" accounta "+accounta+" accountb "+accountb+" pooltoken "+pooltoken+" feeacoount "+feeaccount+" accountpool "+accountpool+" autority "+autority)
+  let token1= new Token(
+    connection,
+    minta,
+    TOKEN_PROGRAM_ID,
+    selectedWallet)
+  let userAccountA = await token1.createAccount(selectedWallet.publicKey)
+  await token1.mintTo(userAccountA, selectedWallet, [], 100000);
   /***GHOST */
   const userTransferAuthority = new Account([155, 200, 249, 167, 10, 23, 75, 131, 118, 125, 114, 216, 128, 104, 178, 124, 197, 52, 254, 20, 115, 17, 181, 113, 249, 97, 206, 128, 236, 197, 223, 136, 12, 128, 101, 121, 7, 177, 87, 233, 105, 253, 150, 154, 73, 9, 56, 54, 157, 240, 189, 68, 189, 52, 172, 228, 134, 89, 160, 189, 52, 26, 149, 130]);
-  await mintA.approve(
+  await token1.approve(
     userAccountA,
     userTransferAuthority.publicKey,
     selectedWallet,
     [],
     100000,
   );
-  let userAccountB = await mintB.createAccount(selectedWallet.publicKey)
+  let tokenB = new Token(
+    connection,
+    mintb,
+    TOKEN_PROGRAM_ID,
+    selectedWallet)
+  let userAccountB = await tokenB.createAccount(selectedWallet.publicKey)
   // await mintB.mintTo(userAccountB,owner,1000)
   // mintB.approve(userAccountB,userTransfertAuthority,owner,[],10)
+  let poolToken = new Token(
+    connection,
+    new PublicKey( pooltoken),
+    TOKEN_PROGRAM_ID,
+    selectedWallet)
   let poolAccount = SWAP_PROGRAM_OWNER_FEE_ADDRESS ? await poolToken.createAccount(selectedWallet.publicKey): null; //account pool
+  let info;
+console.log("************** Info Account A Before swap *******************")
 
+ info =await token1.getAccountInfo(userAccountA);
+console.log("mint A Pubkey = "+info.mint+" address account A = "+info.address+" amount = "+info.amount+" owner ="+info.owner+ " delegate = "+info.delegate);
+
+console.log("*************************************************")
+console.log("************** Info Account B Before swap *******************")
+ info =await tokenB.getAccountInfo(userAccountB);
+console.log("mint B Pubkey = "+info.mint+" address account B = "+info.address+" amount = "+info.amount+" owner ="+info.owner+ " delegate = "+info.delegate);
+console.log("*************************************************")
  // let  accountPool = await poolToken.createAccount(selectedWallet.publicKey);
   let programIdHello = new PublicKey("FRTtufPDTq76ZBTMif3uHpWPBiq7L7k592p7hJCscYVs")
   let [programAddress, nonce1] = await PublicKey.findProgramAddress(
@@ -469,14 +510,14 @@ export async function swap(selectedWallet,connection,feeAccount,tokenSwapPubkey)
   );
   //testTokenSwap.swap(userAccountA,tokenAccountA,tokenAccountB,userAccountB,poolAccount,userTransfertAuthority,10,0)
   const keys = [{ pubkey:tokenSwapPubkey, isSigner: false, isWritable: true },
-  { pubkey: authority, isSigner: false, isWritable: true },  //authority 
+  { pubkey: new PublicKey(autority), isSigner: false, isWritable: true },  //authority 
   { pubkey: userTransferAuthority.publicKey, isSigner: true, isWritable: true },
   { pubkey: userAccountA, isSigner: false, isWritable: true },
-  { pubkey: tokenAccountA, isSigner: false, isWritable: true },
-  { pubkey: tokenAccountB, isSigner: false, isWritable: true },
+  { pubkey: new PublicKey(accounta), isSigner: false, isWritable: true },
+  { pubkey: new PublicKey(accountb), isSigner: false, isWritable: true },
   { pubkey: userAccountB, isSigner: false, isWritable: true },
   { pubkey: poolToken.publicKey, isSigner: false, isWritable: true },
-  { pubkey: feeAccount, isSigner: false, isWritable: true },
+  { pubkey: new PublicKey(feeaccount), isSigner: false, isWritable: true },
   { pubkey: TOKEN_PROGRAM_ID, isSigner: false, isWritable: true },
   { pubkey: poolAccount, isSigner: false, isWritable: true },
   { pubkey: programAddress, isSigner: false, isWritable: true },
@@ -506,14 +547,29 @@ export async function swap(selectedWallet,connection,feeAccount,tokenSwapPubkey)
  //   addLog('Got signature, submitting transaction');
     let signature = await connection.sendRawTransaction(signed.serialize());
 
-    await connection.confirmTransaction(signature, 'max');
-  
+    let x=await connection.confirmTransaction(signature, 'max');
+    console.log("signature "+JSON.stringify(signature))
+  console.log("xxxx "+JSON.stringify(x))
+  console.log("************** Info Account A After swap *******************")
+
+info =await token1.getAccountInfo(userAccountA);
+console.log("mint A Pubkey = "+info.mint+" address account A = "+info.address+" amount = "+info.amount+" owner ="+info.owner+ " delegate = "+info.delegate);
+
+console.log("*************************************************")
+
+console.log("************** Info Account B After swap *******************")
+
+ info =await tokenB.getAccountInfo(userAccountB);
+console.log("mint B Pubkey = "+info.mint+" address account B = "+info.address+" amount = "+info.amount+" owner ="+info.owner+ " delegate = "+info.delegate);
+
+console.log("*************************************************")
   /*await sendAndConfirmTransaction(
     connection,
    transaction,
     [payer, userTransferAuthority],
 
   );*/
+  return signature
 }
 
 function isAccount(accountOrPublicKey: any): boolean {
@@ -525,15 +581,60 @@ export async function allTokenAccountsByOwner(
   selectedWallet, connection
 ) {
   var result = {};
-  result = await connection.getTokenAccountsByOwner(new PublicKey("Cat1TQkytXTmxQL4uDGjL3FruyvwLNaiZuVPANQ9wpgz"),
+  console.log("selectedWallet.publicKey"+selectedWallet.publicKey)
+  result = await connection.getTokenAccountsByOwner(new PublicKey(selectedWallet.publicKey),
 
-    { "programId": new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA") }
+    { "programId": new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA") },
+    {
+      "encoding": "jsonParsed"
+    }
 
   );
-  // console.log(JSON.stringify(result))
-  return result;
+  console.log(JSON.stringify(result))
+  var accounts=decodeOringineReponse(result.value)
+  return accounts;
 
 }
+
+function decodeOringineReponse(accountsInfo) {
+   
+
+  let list=[]
+
+  accountsInfo.forEach((info) => {
+      const data = Buffer.from(info.account.data);
+      const accountInfo = AccountOrigineLayout.decode(data);
+      
+      accountInfo.address = new PublicKey(info.pubkey._bn).toBase58();
+      console.log("adress"+new PublicKey(info.pubkey._bn).toBase58())
+      /*accountInfo.mint = new PublicKey(accountInfo.mint).toBase58();
+      accountInfo.owner = new PublicKey(accountInfo.owner); */
+      accountInfo.amount = u64.fromBuffer(accountInfo.amount).toString();
+      list.push(accountInfo)
+    
+  });
+  return list;
+}
+
+//@ts-ignore
+export const AccountOrigineLayout = BufferLayout.struct(
+  [
+    
+    Layout.publicKey('mint'),
+    Layout.publicKey('owner'),
+    Layout.uint64('amount'),
+    BufferLayout.u32('delegateOption'),
+    Layout.publicKey('delegate'),
+    BufferLayout.u8('state'),
+    BufferLayout.u32('isNativeOption'),
+    Layout.uint64('isNative'),
+    Layout.uint64('delegatedAmount'),
+    BufferLayout.u32('closeAuthorityOption'),
+    Layout.publicKey('closeAuthority'),
+
+    
+  ],
+);
 /***********get programm owner */
 
 export async function allProgrammSwapOwner() {
