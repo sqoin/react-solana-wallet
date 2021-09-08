@@ -100,11 +100,11 @@ export async function createTokenB(selectedWallet , connection) {
   return createTokenSwapB(selectedWallet , connection);
 }
 
-export async function createNewAccountTokenA(selectedWallet , connection) {  
-  return createAccountTokenSwapA(selectedWallet , connection);
+export async function createNewAccountTokenA(selectedWallet, connection,mint,autority) {  
+  return createAccountTokenSwapA(selectedWallet, connection,mint,autority);
 }
-export async function createNewAccountTokenB(selectedWallet , connection) {  
-  return createAccountTokenSwapB(selectedWallet , connection);
+export async function createNewAccountTokenB(selectedWallet, connection,mint,autority) {  
+  return createAccountTokenSwapB(selectedWallet, connection,mint,autority);
 }
 export async function mintTokenA(selectedWallet , connection,mintAddress, accountAddress) {  
   return createMintTokenA(selectedWallet , connection,mintAddress,accountAddress);
@@ -113,16 +113,16 @@ export async function mintTokenB(selectedWallet , connection,mintAddress, accoun
   return createMintTokenB(selectedWallet , connection,mintAddress, accountAddress);
 }
 
-export async function createPoolToken(selectedWallet , connection,autorithy) {  
-  return createPoolTokenSwap(selectedWallet , connection,autorithy);
+export async function createPoolToken(selectedWallet, connection, autority) {  
+  return createPoolTokenSwap(selectedWallet, connection, autority);
 }
-export async function createSwapTokens(selectedWallet, connection,mintA,mintB,accountA,accountB,poolToken,feeAccount,accountPool,autorithy) {  
-  return swapToken(selectedWallet, connection,mintA,mintB,accountA,accountB,poolToken,feeAccount,accountPool,autorithy);
+export async function createSwapTokens(selectedWallet, connection,minta,mintb,accounta,accountb,pooltoken,feeaccount,accountpool,autority,Nonce) {  
+  return swapToken(selectedWallet, connection,minta,mintb,accounta,accountb,pooltoken,feeaccount,accountpool,autority,Nonce);
 }
 
-export async function createSwap(selectedWallet,connection){
+export async function createSwap(selectedWallet, connection,minta,mintb,accounta,accountb,pooltoken,feeaccount,accountpool,autority){
 
-  return swap(selectedWallet,connection)
+  return swap(selectedWallet, connection,minta,mintb,accounta,accountb,pooltoken,feeaccount,accountpool,autority)
 }
 export async function getTokenAccountsByOwnerSolet (selectedWallet,connection){
   return allTokenAccountsByOwner(selectedWallet,connection)

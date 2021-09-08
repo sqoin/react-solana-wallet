@@ -101,8 +101,8 @@ async function loadProgram(
 
 async function GetPrograms(connection: Connection): Promise < void > {
 
-    programId = new PublicKey("7d6gF8rDv9w2A8amuF1CrsoFNMs7dCyognjHvHTTG8u");
-    associatedProgramId = new PublicKey("7d6gF8rDv9w2A8amuF1CrsoFNMs7dCyognjHvHTTG8u");
+    programId = new PublicKey("AX9kkGLpKn9H2bcHgP4YDi2QQCeQEfWjpi5W7EvM5doJ");
+    associatedProgramId = new PublicKey("AX9kkGLpKn9H2bcHgP4YDi2QQCeQEfWjpi5W7EvM5doJ");
     let info;
     info = await connection.getAccountInfo(programId);
     assert(info != null);
@@ -284,7 +284,7 @@ export async function runDeposit(): Promise < void > {
 
 export async function withDraw(): Promise < void > {
     console.log("run test withdraw");
-    const connection = await getConnection();
+   // const connection = await getConnection();
     const payer = await newAccountWithLamports(connection, 1000000000 /* wag */ );
     accountKey = await testToken.createAccount(payer.publicKey);
     //runGetFullBalance(accountKey)
@@ -296,108 +296,118 @@ export async function withDraw(): Promise < void > {
 
 export async function createPortfolio(selectedWallet , connection) : Promise<void> {
 
+    programId = new PublicKey("AX9kkGLpKn9H2bcHgP4YDi2QQCeQEfWjpi5W7EvM5doJ");
+        console.log ("start");
+     //   let owner = new Account([253, 105, 193, 173, 55, 108, 145, 101, 186, 22, 187, 172, 156, 119, 173, 35, 25, 99, 80, 68, 92, 204, 232, 243, 67, 169, 199, 7, 218, 94, 225, 17, 173, 31, 39, 116, 250, 166, 211, 3, 213, 13, 179, 50, 47, 240, 7, 164, 48, 110, 143, 141, 244, 242, 74, 210, 185, 203, 0, 4, 138, 99, 110, 251]);
+      //  const ownerSource  = await newAccountWithLamports(connection, 10000000000 /* wag */);
+        
+        //const creatorSource  = await newAccountWithLamports(connection, 10000000000 /* wag */);
 
+       // const payer = await newAccountWithLamports(connection, 1000000000 /* wag */ );
+        asset = new Portfolio(
+            connection,
+            new PublicKey("9ZFJWoBMQuYiBvbGpExs3smE59kQZbPnVmJp7F8iUsDG"),
+            TOKEN_PROGRAM_ID,
+            selectedWallet.publicKey
+        );
 
-  console.log ("start");
+        testToken = new Portfolio(
+            connection,
+            new PublicKey("6ykyxd7bZFnvEHq61vnd69BkU3gabiDmKGEQb4sGiPQG"),
+            programId,
+            selectedWallet.publicKey
+        ); 
 
-
-  const payer = await newAccountWithLamports(connection, 1000000000 /* wag */ );
-  const accounttest = await newAccountWithLamports(connection, 1000000000 /* wag */ );
-  programId = new PublicKey("7d6gF8rDv9w2A8amuF1CrsoFNMs7dCyognjHvHTTG8u");
-
-  testToken = new Portfolio(
-    connection,
-    //new PublicKey("887xCkc7KNUTQTJLHrrPAqHvcBCdbaBWFDqzXkXNjxkS"),
-    new PublicKey("6ykyxd7bZFnvEHq61vnd69BkU3gabiDmKGEQb4sGiPQG"),
-    programId,
-    payer
-);
-
-
-  let owner = new Account([253, 105, 193, 173, 55, 108, 145, 101, 186, 22, 187, 172, 156, 119, 173, 35, 25, 99, 80, 68, 92, 204, 232, 243, 67, 169, 199, 7, 218, 94, 225, 17, 173, 31, 39, 116, 250, 166, 211, 3, 213, 13, 179, 50, 47, 240, 7, 164, 48, 110, 143, 141, 244, 242, 74, 210, 185, 203, 0, 4, 138, 99, 110, 251]);
-  //const ownerSource  = await newAccountWithLamports(connection, 10000000000 /* wag */);
-  //const creatorSource  = await newAccountWithLamports(connection, 10000000000 /* wag */);
-  const creatorSource = await testToken.createAccount(accounttest.publicKey);
-
-  console.log ("new account : ", creatorSource);
-  //let owner = await testToken.createAccount(ownerSource.publicKey);
   
-  /*  
-  let metaDataUrl = "aabbcc";
-  var metaDataHash = new Uint16Array([789]);
-  console.log ("metaDataHash  ",metaDataHash );
-  // let metaDataHash = 123;
- // let creatorAccount = await asset.createAccountNew(creatorSource.publicKey);
-  let amountAsset1 = 2;
-  let splmAsset1 = await (await testToken.createAccount(accounttest.publicKey)).publicKey;
- // let periodAsset1 = new Uint32Array([123]);
-  let periodAsset1 = 123;
-  console.log ("period asset 1 ",periodAsset1 );
-  let assetToSoldIntoAsset1 =await (await testToken.createAccount(accounttest.publicKey)).publicKey;
-  // let amountAsset1 = 2;
-  // let addressAsset1: PublicKey; 
-  // let periodAsset1 = 10;
-  // let assetToSoldIntoAsset1 : PublicKey;
+        USDC = new PublicKey("4A3a33ozsqA6ihMXRAzYeNwZv4df9RfJoLPh6ycZJVhE");
+           
+       
 
-  let amountAsset2=3 ;
- // let addressAsset2  = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
-  let splmAsset2  = splmAsset1;
-  let periodAsset2 = 4;
-  let assetToSoldIntoAsset2  = await (await testToken.createAccount(accounttest.publicKey)).publicKey;
+        let metaDataUrl = "aabbcc";
+        var metaDataHash = new Uint16Array([789]);
+        console.log ("metaDataHash  ",metaDataHash );
+       
 
-  let amountAsset3=3 ;
-  let splmAsset3  = splmAsset1;
-  let periodAsset3 =3;
-  let assetToSoldIntoAsset3  = splmAsset1;
-
-  let amountAsset4 =3;
-  let splmAsset4 = splmAsset1;
-  let periodAsset4 = 3;
-  let assetToSoldIntoAsset4  = splmAsset1;
-
-  let amountAsset5 =3;
-  let splmAsset5  = splmAsset1;
-  let periodAsset5=3;
-  let assetToSoldIntoAsset5  =splmAsset1;
-
-  let amountAsset6 =3;
-  let splmAsset6  = splmAsset1;
-  let periodAsset6=3;
-  let assetToSoldIntoAsset6  = splmAsset1;
-
-  let amountAsset7=3 ;
-  let splmAsset7  = splmAsset1;
-  let periodAsset7=3;
-  let assetToSoldIntoAsset7  = splmAsset1;
-
-  let amountAsset8 =3;
-  let splmAsset8  = splmAsset1;
-  let periodAsset8=3;
-  let assetToSoldIntoAsset8  = splmAsset1;
-
-  let amountAsset9 =3;
-  let splmAsset9  = splmAsset1;
-  let periodAsset9 =3;
-  let assetToSoldIntoAsset9  = splmAsset1;
-
-
-   portfolioAddress = await testToken.createPortfolio(connection ,owner , metaDataUrl , metaDataHash /*, creatorAccount*//* ,
-    amountAsset1 , splmAsset1 , periodAsset1 , assetToSoldIntoAsset1 ,
-     amountAsset2 , splmAsset2 , periodAsset2 , assetToSoldIntoAsset2 ,
-     amountAsset3 , splmAsset3 , periodAsset3 , assetToSoldIntoAsset3 ,
-     amountAsset4 , splmAsset4 , periodAsset4 , assetToSoldIntoAsset4 ,
-     amountAsset5 , splmAsset5 , periodAsset5 , assetToSoldIntoAsset5 ,
-     amountAsset6 , splmAsset6 , periodAsset6 , assetToSoldIntoAsset6 ,
-     amountAsset7 , splmAsset7 , periodAsset7 , assetToSoldIntoAsset7 ,
-     amountAsset8 , splmAsset8 , periodAsset8 , assetToSoldIntoAsset8 ,
-     amountAsset9 , splmAsset9 , periodAsset9 , assetToSoldIntoAsset9
+        let amountAsset1 = 2;
+        let splmAsset1 = USDC;
+        console.log ("splmasset1 : " ,splmAsset1.toString());
+        let periodAsset1 = 123;
+        console.log ("period asset 1 ",periodAsset1 );
+        let assetToSoldIntoAsset1 = new PublicKey("FAxFrLbWabNWgL1A9sLokNQbaBSq33iQHA2Y3zKk1g8x");
   
-     );
-
-*/
-
-
-}
+      
+        let amountAsset2=3 ;
+       // let addressAsset2  = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
+        let splmAsset2  = splmAsset1;
+        let periodAsset2 = 4;
+        let assetToSoldIntoAsset2  = new PublicKey("FAxFrLbWabNWgL1A9sLokNQbaBSq33iQHA2Y3zKk1g8x");
+      
+        let amountAsset3=3 ;
+        let splmAsset3  = splmAsset1;
+        let periodAsset3 =3;
+        let assetToSoldIntoAsset3  = splmAsset1;
+      
+        let amountAsset4 =3;
+        let splmAsset4 = splmAsset1;
+        let periodAsset4 = 3;
+        let assetToSoldIntoAsset4  = splmAsset1;
+      
+        let amountAsset5 =3;
+        let splmAsset5  = splmAsset1;
+        let periodAsset5=3;
+        let assetToSoldIntoAsset5  =splmAsset1;
+      
+        let amountAsset6 =3;
+        let splmAsset6  = splmAsset1;
+        let periodAsset6=3;
+        let assetToSoldIntoAsset6  = splmAsset1;
+      
+        let amountAsset7=3 ;
+        let splmAsset7  = splmAsset1;
+        let periodAsset7=3;
+        let assetToSoldIntoAsset7  = splmAsset1;
+      
+        let amountAsset8 =3;
+        let splmAsset8  = splmAsset1;
+        let periodAsset8=3;
+        let assetToSoldIntoAsset8  = splmAsset1;
+      
+        let amountAsset9 =3;
+        let splmAsset9  = splmAsset1;
+        let periodAsset9 =3;
+        let assetToSoldIntoAsset9  = splmAsset1;
+      
+      
+         portfolioAddress = await testToken.createPortfolio(connection, programId,selectedWallet , metaDataUrl , metaDataHash /*, creatorAccount*/ ,
+           amountAsset1 , splmAsset1 , periodAsset1 , assetToSoldIntoAsset1 ,
+           amountAsset2 , splmAsset2 , periodAsset2 , assetToSoldIntoAsset2 ,
+           amountAsset3 , splmAsset3 , periodAsset3 , assetToSoldIntoAsset3 ,
+           amountAsset4 , splmAsset4 , periodAsset4 , assetToSoldIntoAsset4 ,
+           amountAsset5 , splmAsset5 , periodAsset5 , assetToSoldIntoAsset5 ,
+           amountAsset6 , splmAsset6 , periodAsset6 , assetToSoldIntoAsset6 ,
+           amountAsset7 , splmAsset7 , periodAsset7 , assetToSoldIntoAsset7 ,
+           amountAsset8 , splmAsset8 , periodAsset8 , assetToSoldIntoAsset8 ,
+           amountAsset9 , splmAsset9 , periodAsset9 , assetToSoldIntoAsset9
+        
+           );
+      
+      
+          let accountInfo= await testToken.getPortfolioInfo(portfolioAddress.publicKey);
+          console.log ("********************************************************************************************************");
+          console.log("************************************Info Portfolio Account *****************************");
+          console.log("portfolioAddress : " + accountInfo.portfolioAddress +
+           "--- creatorPortfolio : "+accountInfo.creatorPortfolio+
+           " -- amountAsset1  :" + accountInfo.amountAsset1 +
+           " -- addressAsset1 :" + accountInfo.addressAsset1 +
+           " -- periodAsset1 :" + accountInfo.periodAsset1 + 
+           " -- assetToSoldIntoAsset1 :" + accountInfo.assetToSoldIntoAsset1+" --metadataUrl : " + accountInfo.metadataUrl)
+          console.log("************************************end info Portfolio Account ******************************")
+          console.log ("********************************************************************************************************");
+      
+           return accountInfo;
+      
+      
+      }
 
 export async function createUserPortfolio(): Promise < void > {
     //let owner = new Account();

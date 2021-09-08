@@ -2,9 +2,10 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import './App.css';
 import Wallet from '@project-serum/sol-wallet-adapter';
+
 import { Connection, SystemProgram, Transaction, clusterApiUrl, PublicKey } from '@solana/web3.js';
 import { createTokenA, createNewAccountTokenA, mintTokenA, createTokenB, createNewAccountTokenB, mintTokenB, createPoolToken, createSwapTokens, createSwap, getTokenAccountsByOwnerSolet, getProgrammSwapOwner, getAccountSwapByMint } from "./cli/makesteps"
-
+import "./swapOriginal.css"
 function toHex(buffer) {
   return Array.prototype.map
     .call(buffer, (x) => ('00' + x.toString(16)).slice(-2))
@@ -27,18 +28,20 @@ function SwapOriginal() {
   const [tokenInfo, setTokenInfo] = useState("no Info");
 
 
-  const [mintA, setMintA] = useState("")
-  const [accountA, setAccountA] = useState("")
-  const [mintB, setMintB] = useState("");
-  const [accountB, setAccountB] = useState("")
-  const [poolToken, setPoolToken] = useState("")
-  const [accountPool, setAccountPool] = useState("")
+  const [mintA, setMintA] = useState("9gxaiTz6BGiALbEzoDG6d6MFvkdUs2apktU2aJtsVzM5")
+
+  const [accountA, setAccountA] = useState("EmArTLKA2iGtjEiY7vV8KPiBnSydfnGnwgTfQDbjrnAz")
+  const [mintB, setMintB] = useState("JEJStEfpkHyw1qRhKzNRAzCkvtrmRu2YWVtZRidpcnk3");
+  const [accountB, setAccountB] = useState("AQkNwWgvnSAFuVu9SEZXPieUj6c1kL6xRWFcj587fbyC")
+  const [poolToken, setPoolToken] = useState("3RU3ozspbqAsw7FUVwvt4derHVWsf5Fdf3jDuc4Rw8FT")
+  const [accountPool, setAccountPool] = useState("6Jjhc8rhZ5BEpYwXg3DDNbhq5LhGDj5aa6aZNmqLbniR")
   const [owner, setOwner] = useState("")
-  const [autorithy, setAuthority] = useState("")
+  const [autorithy, setAuthority] = useState("EtYcqQniowJ1mPTN9Jz9MQjb9EWd5w8C2FXbdQLB8cds")
   const [tokenSwap, setTokenSwap] = useState("")
-  const [feeAccount, setFeeAccount] = useState("")
+  const [feeAccount, setFeeAccount] = useState("JCsgDntcN97jq2u9S362ab8x8VsM3LWR5Fta8TirEhTG")
   const [accountInfo, setAccountInfo] = useState()
-  const [nonce,setNonce]=useState()
+  const [nonce,setNonce]=useState(254)
+  const [idTransaction,setIdTransaction]=useState()
   // const[authority,setAuthority]=useState()
   const injectedWallet = useMemo(() => {
     try {
@@ -123,7 +126,7 @@ function SwapOriginal() {
     addLog("loading create Mint A... ");
     // try {
       createTokenA(selectedWallet, connection).then(token => {
-        console.log("create mintA " + JSON.stringify(token))
+        
        
          setMintA(token.mintA)
          setAuthority(token.authority)
@@ -131,7 +134,7 @@ function SwapOriginal() {
         
 
     
-         addLog("publickey tokenA   " + token.mintA + " authorty = " + token.authority )
+         addLog("publickey tokenA   " + token.mintA + " authorty = " + token.authority)
 
       })
         // .catch(
@@ -149,9 +152,12 @@ function SwapOriginal() {
     addLog("loading create mint B ... ");
     try {
       createTokenB(selectedWallet, connection).then(token => {
-        console.log(token.publicKey.toBase58())
-        setMintB(token.publicKey)
-        addLog("publickey tokenB   " + token.publicKey.toBase58())
+      
+        setMintB(token.mintB)
+        
+         setAuthority(token.authority)
+         setNonce(token.nonce)
+        addLog("publickey tokenB   " + token.mintB+ "authority"+token.authority)
       }
       )
         .catch(
@@ -168,8 +174,10 @@ function SwapOriginal() {
   // create Account A 
   function createAccountA() {
     addLog("loading create account A... ");
+    let mint=mintA
+    let autority=autorithy
     try {
-      createNewAccountTokenA(selectedWallet, connection)
+      createNewAccountTokenA(selectedWallet, connection,mint,autority)
         .then(account => {
 
           setAccountA(account)
@@ -183,9 +191,11 @@ function SwapOriginal() {
   }
   // create Account B
   async function createAccountB() {
+    let mint=mintB
+    let autority=autorithy
     addLog("loading create account B ... ");
     try {
-      createNewAccountTokenB(selectedWallet, connection)
+      createNewAccountTokenB(selectedWallet, connection,mint,autority)
         .then(account => {
           setAccountB(account)
         })
@@ -252,8 +262,9 @@ function SwapOriginal() {
 
   async function createPool() {
     addLog("loading create pool... ");
+    let autority=autorithy
     // try {
-    createPoolToken(selectedWallet, connection, autorithy)
+    createPoolToken(selectedWallet, connection, autority)
       .then(token => {
         console.log("createPool result " + token)
         setAccountPool(token.accountPool)
@@ -271,8 +282,17 @@ function SwapOriginal() {
   }
   async function swapTokens() {
     addLog("loading swap token... ");
+    let minta=mintA
+    let mintb=mintB
+    let accounta=accountA
+    let accountb=accountB
+    let pooltoken=poolToken
+    let feeaccount=feeAccount
+    let accountpool=accountPool
+    let autority=autorithy
+    let Nonce=nonce
     // try {
-      createSwapTokens(selectedWallet, connection,mintA,mintB,accountA,accountB,poolToken,feeAccount,accountPool,autorithy)
+      createSwapTokens(selectedWallet, connection,minta,mintb,accounta,accountb,pooltoken,feeaccount,accountpool,autority,Nonce)
         .then(token => {
           setTokenSwap(token.tokenSwap)
 
@@ -292,11 +312,22 @@ function SwapOriginal() {
   async function swap() {
     addLog("loading swap ......");
     try {
-      let fee=new PublicKey(feeAccount)
-      let tokenSwapPubkey=new PublicKey(tokenSwap)
-      createSwap(selectedWallet, connection,fee,tokenSwapPubkey).then(
-        token =>
-          addLog(JSON.stringify(token)))
+      let minta=mintA
+      let mintb=mintB
+      let accounta=accountA
+      let accountb=accountB
+      let pooltoken=poolToken
+      let feeaccount=feeAccount
+      let accountpool=accountPool
+      let autority=autorithy
+     
+      createSwap(selectedWallet, connection,minta,mintb,accounta,accountb,pooltoken,feeaccount,accountpool,autority).then(
+        token =>{
+          setIdTransaction(token)
+          addLog(JSON.stringify(token))
+          
+        }
+         )
 
     }
     catch (err) {
@@ -304,6 +335,11 @@ function SwapOriginal() {
     }
 
 
+  }
+
+  function createDynamicURL(){
+    window.open(`https://explorer.solana.com/tx/${idTransaction}?cluster=devnet`,'_blank','resizable=yes')
+     
   }
   /////************ get Account Info */
 
@@ -401,7 +437,7 @@ function SwapOriginal() {
       {/* <input type="text" onChange={(e) => setMintA(e.target.value)} value={mintA} /> */}
       <br></br>
 
- mint A:     <input type="text" onChange={(e) => setMintA(e.target.value)} value={mintA} />    <button onClick={() => createAccountA()}>
+ mint A:     <input type="text" onChange={(e) => setMintA(e.target.value)} value={mintA} />   Authority<input type="text" onChange={(e) => setAuthority(e.target.value)} value={autorithy}/> <button onClick={() => createAccountA()}>
 
 
         createAccountA
@@ -411,18 +447,17 @@ function SwapOriginal() {
       {/* <input type="text" onChange={(e) => setAccountA(e.target.value)} value={accountA} /> */}
 
       <br></br>
-      <input type="text" onChange={(e) => setMintA(e.target.value)} value={mintA} />  <input type="text" onChange={(e) => setAccountA(e.target.value)} value={accountA} />  <button onClick={() => mintTokenSwapA()}>
-
+     mint A: <input type="text" onChange={(e) => setMintA(e.target.value)} value={mintA} />  account A: <input type="text" onChange={(e) => setAccountA(e.target.value)} value={accountA} />  <button onClick={() => mintTokenSwapA()}>
         MintTokenA
       </button>
-      <br></br><br></br><br></br>
+      <br></br> <br></br>**************************************<br></br>
       <button onClick={() => createTokenBSwap()}>
         createTokenB
       </button>
       <br></br>
       
       <br></br>
-      <button onClick={() => createAccountB()}>
+   mintB   <input onChange={(e) => setMintB(e.target.value)} value={mintB}></input>    Authority<input type="text" onChange={(e) => setAuthority(e.target.value)} value={autorithy}/>  <button onClick={() => createAccountB()}>
 
 
         createAccountB
@@ -430,50 +465,60 @@ function SwapOriginal() {
       <br></br>
       
       <br></br>
-      <input onChange={(e) => setMintB(e.target.value)} value={mintB}></input>   <input onChange={(e) => setAccountB(e.target.value)} value={accountB}></input> <button onClick={() => mintTokenSwapB()}>
+    mintB  <input onChange={(e) => setMintB(e.target.value)} value={mintB}></input>  account B <input onChange={(e) => setAccountB(e.target.value)} value={accountB}></input> <button onClick={() => mintTokenSwapB()}>
 
         MintTokenB
       </button>
-      <br></br><br></br><br></br>
-      *********{autorithy}
-      <input onChange={(e) => setAuthority(e.target.value)} value={autorithy}></input> <button onClick={() => createPool()}>
+      <br></br> <br></br>**************************************<br></br>
+    
+      Authority <input onChange={(e) => setAuthority(e.target.value)} value={autorithy}></input> <button onClick={() => createPool()}>
 
         createPool
       </button>
-      <br></br>
-    mintA :<input onChange={(e) => setMintA(e.target.value)} value={mintA} />  
-    AccountA  <input type="text" onChange={(e) => setAccountA(e.target.value)} value={accountA}/>   mintB<input onChange={(e) => setMintB(e.target.value)} value={mintB}/>accountB <input onChange={(e) => setAccountB(e.target.value)} value={accountB}/> Authority<input type="text" onChange={(e) => setAuthority(e.target.value)} value={autorithy}/> nonce<input type="text" onChange={(e) => setNonce(e.target.value)} value={nonce}/> poolToken <input type="text" onChange={(e) => setPoolToken(e.target.value)} value={poolToken}/> feeAccount <input type="text" onChange={(e) => setFeeAccount(e.target.value)} value={feeAccount}/>  AccountPool:<input type="text" onChange={(e) => setAccountPool(e.target.value)} value={accountPool}/>  <button onClick={() => swapTokens()}>
+      <br></br> <br></br>**************************************<br></br>
+    mintA :<input onChange={(e) => setMintA(e.target.value)} value={mintA} /> 
+
+    AccountA  <input type="text" onChange={(e) => setAccountA(e.target.value)} value={accountA}/>   mintB<input onChange={(e) => setMintB(e.target.value)} value={mintB}/>accountB <input onChange={(e) => setAccountB(e.target.value)} value={accountB}/> <br/>
+    <br/><br/>Authority<input type="text" onChange={(e) => setAuthority(e.target.value)} value={autorithy}/> nonce<input type="text" onChange={(e) => setNonce(e.target.value)} value={nonce}/><br/> <br/>poolToken <input type="text" onChange={(e) => setPoolToken(e.target.value)} value={poolToken}/> feeAccount <input type="text" onChange={(e) => setFeeAccount(e.target.value)} value={feeAccount}/>  AccountPool:<input type="text" onChange={(e) => setAccountPool(e.target.value)} value={accountPool}/> 
+    <br/> <br/> <br/><button onClick={() => swapTokens()}>
         swap Token
       </button>
+      
+      <br></br> <br></br>**************************************<br></br>
+      mintA :<input onChange={(e) => setMintA(e.target.value)} value={mintA} /> 
+
+AccountA  <input type="text" onChange={(e) => setAccountA(e.target.value)} value={accountA}/>   mintB<input onChange={(e) => setMintB(e.target.value)} value={mintB}/>accountB <input onChange={(e) => setAccountB(e.target.value)} value={accountB}/> <br/>  <br/><br/>Authority<input type="text" onChange={(e) => setAuthority(e.target.value)} value={autorithy}/> <br/> <br/>poolToken <input type="text" onChange={(e) => setPoolToken(e.target.value)} value={poolToken}/> feeAccount <input type="text" onChange={(e) => setFeeAccount(e.target.value)} value={feeAccount}/>  AccountPool:<input type="text" onChange={(e) => setAccountPool(e.target.value)} value={accountPool}/> 
+    <br/> <br/> <br/><button onClick={() => swap()}>Swap</button>
       <br></br>
-      <button onClick={() => swap()}>Swap</button>
-      <br></br>
+      { 
+    idTransaction &&  <a  onClick={createDynamicURL} >transaction swap</a>}
       <hr />
       <button onClick={() => getTokenAccountsByOwner()}>get Token Accounts By Owner</button>
       <table >
 
-
-
-
+      <thead>
         <tr>
-          <th>publickey</th>
+        <th>publickey</th>
           <th>amount</th>
-          <th></th>
         </tr>
+    </thead>
+
+
+    <tbody> 
 
 
         {
-          accountInfo && accountInfo.map(item =>
-            <tr>
+          accountInfo && accountInfo.map((item,index) =>
+            <tr key={index}> 
 
               <td >{item.pubkey.toBase58()}</td>
-              <td >{item.account.lamports}</td>
+              <td >{item.data.parsed.info.tokenAmount.uiAmount}</td>
           
             </tr>
           )
         }
 
-
+</tbody> 
 
 
       </table>

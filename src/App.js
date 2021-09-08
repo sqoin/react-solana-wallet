@@ -3,6 +3,8 @@ import SerumSwap from "./SerumSwap";
 import SwapOriginal from "./SwapOriginal";
 import Portfolio from "./Portfolio";
 import TransferMultisig from "./TransferMultisig";
+import HomePage from "./HomePage";
+import Saber from "./Saber";
 
 import {
   BrowserRouter as Router,
@@ -17,17 +19,23 @@ export default function App() {
     <div>
     
       <Switch>
+        <Route exact path="/">
+          <HomeLink />
+        </Route>
         <Route exact path="/SerumSwap">
           <SerumSwapLink />
         </Route>
         <Route exact path="/SwapOriginal">
           <SwapOriginalLink />
         </Route>
-        <Route exact path="/">
+        <Route exact path="/Portfolio">
           <PortfolioLink />
         </Route>
         <Route exact path="/TransferMultisig">
           <TransferMultisigLink />
+        </Route>
+        <Route exact path="/Saber">
+          <SaberLink />
         </Route>
 
       </Switch>
@@ -36,6 +44,11 @@ export default function App() {
 
 
 
+  );
+}
+function HomeLink() {
+  return (
+   <HomePage/>
   );
 }
 function SerumSwapLink() {
@@ -58,4 +71,10 @@ function TransferMultisigLink() {
    <TransferMultisig/>
   );
 }
+function SaberLink() {
+  return (
+   <Saber/>
+  );
+}
+
 

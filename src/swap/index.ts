@@ -111,6 +111,7 @@ export class TokenSwap {
    * @param curveType The curve type
    * @param payer Pays for the transaction
    */
+  
   constructor(
     private connection: Connection,
     public tokenSwap: PublicKey,
@@ -132,7 +133,7 @@ export class TokenSwap {
     public hostFeeNumerator: Numberu64,
     public hostFeeDenominator: Numberu64,
     public curveType: number,
-    public payer: Account,
+    public payer: any,
   ) {
     this.connection = connection;
     this.tokenSwap = tokenSwap;
@@ -347,7 +348,7 @@ export class TokenSwap {
    * @param feeDenominator Denominator of the fee ratio
    * @return Token object for the newly minted token, Public key of the account holding the total supply of new tokens
    */
-  static async createTokenSwap(
+   async createTokenSwap(
     connection: Connection,
     payer: any,
     tokenSwapAccount: Account,

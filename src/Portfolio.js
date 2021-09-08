@@ -77,10 +77,10 @@ function Portfolio() {
     addLog("loading create portfolio ... ");
 
     try {createNewPortfolio(selectedWallet, connection)
-      .then(account =>{
-       
-        setPortfolioAccount(account)
-        addLog("address of new portfolio :  ", account.publicKey);
+      .then(portfolio =>{
+        addLog("address of new portfolio :  "+ portfolio.portfolioAddress.toString());
+        setPortfolioAccount(portfolio)
+        console.log("address of new portfolio :  ", portfolio.portfolioAddress.toString());
         })
       .catch(
         err => addLog("" + err)
@@ -91,6 +91,25 @@ function Portfolio() {
       addLog("" + err);
     }
   }
+/*
+  async function createUserPortfolio () {
+    addLog("loading create user portfolio ... ");
+
+    try {createNewPortfolio(selectedWallet, connection)
+      .then(usePortfolio =>{
+        addLog("address of new user portfolio :  "+ portfolio.portfolioAddress.toString());
+        setPortfolioAccount(portfolio)
+        console.log("address of new user portfolio :  ", portfolio.portfolioAddress.toString());
+        })
+      .catch(
+        err => addLog("" + err)
+      )
+           
+    }
+    catch (err) {
+      addLog("" + err);
+    }
+  }*/
 
     async function sendTransaction() {
         try {
@@ -122,7 +141,7 @@ function Portfolio() {
 
     return (
         <div className="App">
-            <h1>PORTFOLIO Adapter Demo</h1>
+            <h1>PORTFOLIO Demo</h1>
             <div>Network: {network}</div>
             <div>
                 Waller provider:{' '}
@@ -158,6 +177,12 @@ function Portfolio() {
             Create portfolio account :
             <br></br>
             <button onClick={() => createPortfolio()}>Create portfolio account</button> 
+            <br></br>
+            <br></br>
+            <br></br>
+            Create user portfolio account :
+            <br></br>
+            {/* <button onClick={() => createUserPortfolio()}>Create user portfolio account</button>  */}
 
 
 
