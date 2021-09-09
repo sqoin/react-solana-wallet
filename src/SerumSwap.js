@@ -300,7 +300,7 @@ const [accountA,setAccountA]=useState("")
                 let token2="c2R6fukan3M9hducHKqtMeoq2xUTYogNShgkZkSvTkM"
                 let vault1="6X9zfeTmFNWyoE1tZhGtsPKa7nBWNSaoyDAMw2LcxVth"
                 let vault2="345rmzGi4skkeHHUp1tS2fnjZSxLAcB8rStSUTnzibcM"*/
-                addLog("loading swap A to B... ");
+                addLog("loading swap B to A... ");
                 try {
                   console.log("maarket"+market)
                   swapAtoBStep(selectedWallet, connection, market, tokenAPk,tokenBPk,vaultA,vaultB).then(result =>{
@@ -369,6 +369,10 @@ const [accountA,setAccountA]=useState("")
           mint token B to vault B
       </button>
       <br></br>
+      <button onClick={ () => createMarket()}>
+          create serum dex Market for tokenA/tokenB pool
+      </button>
+      <br></br>
       <button onClick={ () => createMM()}>
           create market maker
       </button>
@@ -385,19 +389,16 @@ const [accountA,setAccountA]=useState("")
           send 10 of token B to market maker
       </button>
       <br></br>
-      <button onClick={ () => createMarket()}>
-          create serum dex Market for tokenA/tokenB pool
+      <button onClick={ () => placeOrderSell()}>
+          place order to sell token A 
       </button>
       <br></br>
-      <button onClick={ () => placeOrderSell()}>
-          place order to sell tokenA 
-      </button>
       <button onClick={ () => placeOrderBuy()}>
           place orders to buy token B
       </button>
       <br></br>
       <button onClick={ () => swapAtoB()}>
-          swap A to B
+          swap B to A
       </button>
       <br></br>
       </div>

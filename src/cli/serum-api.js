@@ -458,7 +458,7 @@ export async function swapAtoBApi(selectedWallet, connection,  marketPk, tokenAP
     const expectedResultantAmount = 6.041;
     const bestOfferPrice = 6.041;
     const amountToSpend = expectedResultantAmount * bestOfferPrice;
-    const swapAmount = new BN(1000);
+    const swapAmount = new BN((10 / (1 - TAKER_FEE)) * 10 ** 2);
     console.log("swap amount "+swapAmount)
     //const [tokenAChange, usdcChange] = await withBalanceChange(
     // const tx = new Transaction();
