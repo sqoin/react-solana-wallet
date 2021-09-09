@@ -296,8 +296,9 @@ export async function withDraw(): Promise < void > {
 
 export async function createPortfolio(selectedWallet , connection) : Promise<void> {
 
-    programId = new PublicKey("AX9kkGLpKn9H2bcHgP4YDi2QQCeQEfWjpi5W7EvM5doJ");
+   
         console.log ("start");
+        programId = new PublicKey("AX9kkGLpKn9H2bcHgP4YDi2QQCeQEfWjpi5W7EvM5doJ");
      //   let owner = new Account([253, 105, 193, 173, 55, 108, 145, 101, 186, 22, 187, 172, 156, 119, 173, 35, 25, 99, 80, 68, 92, 204, 232, 243, 67, 169, 199, 7, 218, 94, 225, 17, 173, 31, 39, 116, 250, 166, 211, 3, 213, 13, 179, 50, 47, 240, 7, 164, 48, 110, 143, 141, 244, 242, 74, 210, 185, 203, 0, 4, 138, 99, 110, 251]);
       //  const ownerSource  = await newAccountWithLamports(connection, 10000000000 /* wag */);
         
@@ -409,43 +410,39 @@ export async function createPortfolio(selectedWallet , connection) : Promise<voi
       
       }
 
-export async function createUserPortfolio(): Promise < void > {
-    //let owner = new Account();
-    ownerPortfolio = new Account([253, 105, 193, 173, 55, 108, 145, 101, 186, 22, 187, 172, 156, 119, 173, 35, 25, 99, 80, 68, 92, 204, 232, 243, 67, 169, 199, 7, 218, 94, 225, 17, 173, 31, 39, 116, 250, 166, 211, 3, 213, 13, 179, 50, 47, 240, 7, 164, 48, 110, 143, 141, 244, 242, 74, 210, 185, 203, 0, 4, 138, 99, 110, 251]);
-  let portfolio_address = portfolioAddress.publicKey;
- //let portfolio_address = new PublicKey("2miGqxYAjpv2huXSEk3q8tUDzjvuxoVruW3EQabg6JCT");
-  let delegate = programId ;
-  let delegated_amount = 5;
-    let splu_asset1 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
-
-    let splu_asset2 = await (await USDC.createAccountNew(testToken.publicKey)).publicKey
-
-    let splu_asset3 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
-
-    let splu_asset4 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
-
-    let splu_asset5 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
-
-    let splu_asset6 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
+export async function createUserPortfolio(selectedWallet , connection): Promise < void > {
   
-    let splu_asset7 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
-    
-    let splu_asset8 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
-    
-    let splu_asset9 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
-    
-      UserPortfolioAccount = await testToken.createUserPortfolio(ownerPortfolio,portfolio_address,delegate , delegated_amount,
-       splu_asset1,
-       splu_asset2,
-       splu_asset3,
-       splu_asset4,
-       splu_asset5,
-       splu_asset6,
-       splu_asset7,
-       splu_asset8,
-       splu_asset9);
+     let programId = new PublicKey("AX9kkGLpKn9H2bcHgP4YDi2QQCeQEfWjpi5W7EvM5doJ");
+     let ownerPortfolio = selectedWallet;
+     let portfolio_address = portfolioAddress.publicKey;
+     testToken = new Portfolio(
+        connection,
+        new PublicKey("6ykyxd7bZFnvEHq61vnd69BkU3gabiDmKGEQb4sGiPQG"),
+        programId,
+        selectedWallet.publicKey
+    ); 
+     
+      let delegate = programId ;
+      let delegated_amount = 5;
 
-    }
+        
+          UserPortfolioAccount = await testToken.createUserPortfolio(connection, programId ,ownerPortfolio,portfolio_address,delegate , delegated_amount,
+      );
+    
+    
+           let accountUserInfo = await testToken.getAccountUserPortfolioInfo(UserPortfolioAccount.publicKey);
+           console.log ("********************************************************************************************************");
+           console.log("********************************************Info User Portfolio Account *********************************");
+           console.log("user_portfolio_address : " + accountUserInfo.user_portfolio_address +"--- portfolio_address : "+accountUserInfo.portfolio_address+ " -- owner  :" + accountUserInfo.owner +
+            " -- delegated amount :" + accountUserInfo.delegatedAmount +
+            " -- delegate :" + accountUserInfo.delegate + " -- splu_asset1 :" + accountUserInfo.splu_asset1+" --splu_asset2 : " + accountUserInfo.splu_asset2)
+           console.log("*********************************************end info User Portfolio Account **************************")
+           console.log ("********************************************************************************************************");
+    
+    
+    return accountUserInfo;
+    
+        }
     
 
 
