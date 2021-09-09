@@ -15,3 +15,9 @@ div#content-wrap {
 td{
   padding: 10px;
 }
+span{
+  font-weight: bold; /*Les textes seront en gras*/
+   /*Fond des span jaune*/
+  color: black; /*Couleur du texte noire*/
+  margin: auto 5px;
+}
