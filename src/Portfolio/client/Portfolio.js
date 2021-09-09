@@ -846,73 +846,7 @@
          return token;
      }
  
-     /**
-      * Create Deposit.
-      *
-      * @param userSource Source account
-      * @param userDestination Destination account
-      * @param userAuthority Owner of the source account
-      * @param amount   Number of tokens to deposit
-      * @param volatility volatility of tokens to deposit
-      * @return Portfolio object for the newly minted token
-      */
-     async createDeposit(
-             userSource: Account,
-             userDestination: Account,
-             userAuthority: Account,
-             amount: any,
-             volatility: any
-         ): Promise < Portfolio > {
- 
-             const newAccount = new Account();
- 
- 
-             // Allocate memory for the account
-             const balanceNeeded = await Portfolio.getMinBalanceRentForExemptAccount(
-                 this.connection,
-             );
-             let tokenSwap = new PublicKey("8vT1aMoP3Xdq6JyFfZXUhbjuVgoyR5fG68HGPibDridU");
- 
-             let tokenSwapAccount = new Account();
-             let programAddress;
-             let nonce;
-             [programAddress, nonce] = await PublicKey.findProgramAddress(
-                 [tokenSwap.toBuffer()],
-                 this.programId,
-             );
- 
- 
-             const transaction = new Transaction();
- 
-             console.log("payer in createDeposit  " + this.payer.publicKey)
- 
-             transaction.add(
-                 Portfolio.createDepositInstruction(
-                     this.programId,
-                     this.payer.publicKey,
-                     userAuthority.publicKey,
-                     amount,
-                     volatility,
-                     nonce,
-                     programAddress,
-                     userSource.publicKey,
-                     userDestination.publicKey
-                 ),
-             );
-             console.log("payer : ", this.payer.publicKey);
-             console.log("user Authority : ", userAuthority.publicKey);
-             // Send the two instructions
-             await sendAndConfirmTransaction(
-                 'createAccount and InitializeMint',
-                 this.connection,
-                 transaction,
-                 this.payer,
-                 userAuthority
-                 //newAccount
-             );
- 
- 
-         }
+   
  
  
  
@@ -929,6 +863,9 @@
       * @return Portfolio object for the newly minted token
       */
      async depositPortfolio(
+         programId:PublicKey,
+         selectedWallet:Account,
+         connection:Connection,
         portfolioAddress : Account,
         userPortfolioAccount : Account,
         tokenSwap : PublicKey,
@@ -955,17 +892,17 @@
  
              // Allocate memory for the account
              const balanceNeeded = await Portfolio.getMinBalanceRentForExemptAccount(
-                 this.connection,
+                 connection,
              );
          
  
              const transaction = new Transaction();
  
-             console.log("payer in createDeposit  " + this.payer.publicKey)
+             console.log("payer in createDeposit  " + selectedWallet.publicKey)
  
              transaction.add(
                  Portfolio.createDepositInstruction(
-                     this.programId,
+                     programId,
                      portfolioAddress,
                      userPortfolioAccount,
                      tokenSwap,
@@ -987,6 +924,28 @@
                  ),
              );
       
+
+
+
+
+
+             transaction.recentBlockhash = (
+                await connection.getRecentBlockhash()
+              ).blockhash;
+              transaction.feePayer = selectedWallet.publicKey;
+              //transaction.setSigners(payer.publicKey, mintAccount.publicKey );
+              transaction.partialSign(userTransferAuthority);
+          
+              let signed = await selectedWallet.signTransaction(transaction);
+              
+             //   addLog('Got signature, submitting transaction');
+                let signature = await connection.sendRawTransaction(signed.serialize());
+          
+                await connection.confirmTransaction(signature, 'max');
+             
+  
+/*
+
              // Send the two instructions
              await sendAndConfirmTransaction(
                  'createAccount and InitializeMint',
@@ -997,7 +956,9 @@
  
              );
  
- 
+ */
+
+      
          }
  
  
@@ -2090,41 +2051,78 @@
       * @param multiSigners Signing accounts if `owner` is a multiSig
       * @param amount Maximum number of tokens the delegate may transfer
       */
-     async approve(
-         account: PublicKey,
-         delegate: PublicKey,
-         owner: any,
-         multiSigners: Array < Account > ,
-         amount: number | u64,
-     ): Promise < void > {
-         let ownerPublicKey;
-         let signers;
-         if (isAccount(owner)) {
-             console.log( "it's account");
-             ownerPublicKey = owner.publicKey;
-             signers = [owner];
-         } else {
-             ownerPublicKey = owner;
-             signers = multiSigners;
-         }
-         await sendAndConfirmTransaction(
-             'Approve',
-             this.connection,
-             new Transaction().add(
-                 Portfolio.createApproveInstruction(
-                     this.programId,
-                     account,
-                     delegate,
-                     ownerPublicKey,
-                     multiSigners,
-                     amount,
-                 ),
-             ),
-             this.payer,
-             ...signers,
-         );
-     }
- 
+      async approve(
+        programId : PublicKey,
+        selectedWallet:Account,
+        connection:Connection,
+        account: PublicKey,
+        delegate: PublicKey,
+        owner: any,
+        multiSigners: Array<Account>,
+        amount: number | u64,
+      ): Promise<void> {
+        let ownerPublicKey;
+        let signers;
+        if (isAccount(owner)) {
+          ownerPublicKey = owner.publicKey;
+          signers = [owner];
+        } else {
+          ownerPublicKey = owner;
+          signers = multiSigners;
+        }
+
+
+     /*   await sendAndConfirmTransaction(
+            'Approve',
+            connection,
+            new Transaction().add(
+                Portfolio.createApproveInstruction(
+                    programId,
+                    account,
+                    delegate,
+                    ownerPublicKey,
+                    multiSigners,
+                    amount,
+                ),
+            ),
+            selectedWallet,
+            ...signers,
+        );
+*/
+    
+        let transaction = new Transaction();
+    
+        transaction.add(
+          Portfolio.createApproveInstruction(
+            TOKEN_PROGRAM_ID,
+            account,
+            delegate,
+            owner.publicKey,
+            multiSigners,
+            amount,
+          ),
+        );
+    
+        transaction.recentBlockhash = (
+          await connection.getRecentBlockhash()
+        ).blockhash;
+    
+    
+        transaction.feePayer = selectedWallet.publicKey;
+        //transaction.setSigners(payer.publicKey, mintAccount.publicKey );
+       
+    
+        let signed = await selectedWallet.signTransaction(transaction);
+    
+        //   addLog('Got signature, submitting transaction');
+        let signature = await connection.sendRawTransaction(signed.serialize());
+    
+        await connection.confirmTransaction(signature, 'max');
+    
+    
+        
+      }
+    
      /**
       * Grant a third-party permission to transfer up the specified number of tokens from an account
       *
@@ -2257,40 +2255,72 @@
       * @param multiSigners Signing accounts if `authority` is a multiSig
       * @param amount Amount to mint
       */
-     async mintTo(
-         dest: PublicKey,
-         authority: any,
-         multiSigners: Array < Account > ,
-         amount: number | u64,
-     ): Promise < void > {
-         let ownerPublicKey;
-         let signers;
-         if (isAccount(authority)) {
-             ownerPublicKey = authority.publicKey;
-             signers = [authority];
-         } else {
-             ownerPublicKey = authority;
-             signers = multiSigners;
-         }
-         console.log(" - " + this.programId + " - " + this.publicKey + " - " +
-             dest + " - " + " - " + ownerPublicKey + " - " + multiSigners + " - " + amount);
-         await sendAndConfirmTransaction(
-             'MintTo',
-             this.connection,
-             new Transaction().add(
-                 Portfolio.createMintToInstruction(
-                     this.programId,
-                     this.publicKey,
-                     dest,
-                     ownerPublicKey,
-                     multiSigners,
-                     amount,
-                 ),
-             ),
-             this.payer,
-             ...signers,
-         );
-     }
+      async mintTo(
+        programId:PublicKey,
+        selectedWallet:Account,
+        connection:Connection,
+        splmPRIMARY:PublicKey,
+        dest: any,
+        authority: any,
+        multiSigners: Array<Account>,
+        amount: number | u64,
+      ): Promise<void> {
+    
+        let ownerPublicKey;
+        let signers;
+        if (isAccount(authority)) {
+          ownerPublicKey = authority.publicKey;
+          signers = [authority];
+        } else {
+          ownerPublicKey = authority;
+          signers = multiSigners;
+        }
+
+
+        const transaction = new Transaction();
+    transaction.add(
+      Portfolio.createMintToInstruction(
+        TOKEN_PROGRAM_ID,
+        splmPRIMARY,
+        dest,
+        ownerPublicKey,
+        multiSigners,
+        amount,
+      ),
+    );
+
+    transaction.recentBlockhash = (
+      await connection.getRecentBlockhash()
+    ).blockhash;
+    transaction.feePayer = selectedWallet.publicKey;
+    //transaction.setSigners(payer.publicKey, mintAccount.publicKey );
+
+    let signed = await selectedWallet.signTransaction(transaction);
+
+    //   addLog('Got signature, submitting transaction');
+    let signature = await connection.sendRawTransaction(signed.serialize());
+
+    await connection.confirmTransaction(signature, 'max');
+
+
+
+      /*  await sendAndConfirmTransaction(
+            'MintTo',
+            connection,
+            new Transaction().add(
+                Portfolio.createMintToInstruction(
+                    programId,
+                    splmPRIMARY,
+                    dest,
+                    ownerPublicKey,
+                    multiSigners,
+                    amount,
+                ),
+            ),
+            selectedWallet,
+            ...signers,
+        );*/
+      }
  
  
  

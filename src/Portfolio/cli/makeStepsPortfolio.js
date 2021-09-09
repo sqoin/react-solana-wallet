@@ -54,3 +54,8 @@ export async function createNewPortfolio(selectedWallet , connection) {
 export async function createNewUserPortfolio(selectedWallet , connection) {  
     return createUserPortfolio(selectedWallet , connection);
   }
+
+export async function depositInPortfolio(selectedWallet , connection) {  
+  console.log ("in deposit")
+    return runDepositPortfolio(selectedWallet , connection);
+  }
