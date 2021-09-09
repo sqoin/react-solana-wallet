@@ -2,7 +2,8 @@ import React, { useEffect, useMemo, useState } from 'react';
 import './App.css';
 import Wallet from '@project-serum/sol-wallet-adapter';
 import { Connection, SystemProgram, Transaction, clusterApiUrl, PublicKey } from '@solana/web3.js';
-import { createNewPortfolio , createNewUserPortfolio} from './Portfolio/cli/makeStepsPortfolio';
+import { createNewPortfolio , createNewUserPortfolio , depositInPortfolio} from './Portfolio/cli/makeStepsPortfolio';
+import { AccountsCoder } from '@project-serum/anchor';
 
 
 
@@ -135,6 +136,64 @@ function Portfolio() {
     }
   }
 
+
+  async function deposit () {
+    addLog("loading deposit ... ");
+
+    try {depositInPortfolio(selectedWallet, connection)
+      .then(accounts =>{
+       // accountInfoSourceBefore ,accountInfoDestBefore , accountInfoSource ,accountInfoDest
+          console.log ("success");
+          console.log (JSON.stringify(accounts));
+
+        addLog("********************************************************************************************************");
+        addLog("********************************************Info SPLU PRIMARY BEFORE SWAP *********************************");
+        addLog("address of SPLU PRIMARY : : " + accounts[0].address.toString() + 
+        "----  amount OF SPLU PRIMARY :  "+accounts[0].amount)
+        //addLog ("********************************************************************************************************");
+        
+        addLog("********************************************Info SPLU SECONDARY BEFORE SWAP  *********************************");
+        addLog("address of SPLU SECONDARY : " + accounts[1].address.toString() + 
+        "---- amount of SPLU SECONDARY :  "+accounts[1].amount);
+        addLog ("********************************************************************************************************");
+        
+
+        addLog("********************************************************************************************************");
+        addLog("********************************************Info SPLU PRIMARY AFTER SWAP *********************************");
+        addLog("address of SPLU PRIMARY : : " + accounts[2].address.toString() + 
+        "----  amount OF SPLU PRIMARY :  "+accounts[2].amount)
+        //addLog ("********************************************************************************************************");
+        
+        addLog("********************************************Info SPLU SECONDARY AFTER SWAP  *********************************");
+        addLog("address of SPLU SECONDARY : " + accounts[3].address.toString()
+         + "---- amount of SPLU SECONDARY :  "+accounts[3].amount);
+        addLog ("********************************************************************************************************");
+        
+        addLog("********************************************************************************************************");
+        addLog("******************************************** INFO PPU AFTER SWAP  *********************************");
+        addLog("user_portfolio_address : " + accounts[4].user_portfolio_address.toString() +
+        "--- portfolio_address : "+accounts[4].portfolio_address.toString()+ 
+        " -- owner  :" + accounts[4].owner.toString() +
+         " -- delegated amount :" + accounts[4].delegatedAmount +
+         " -- delegate : " + accounts[4].delegate.toString() +
+          " -- splu_asset1 : " + accounts[4].splu_asset1.toString()+
+          " --splu_asset2 : " + accounts[4].splu_asset2.toString())
+        addLog("*********************************************end info Portfolio Account **************************")
+        addLog ("********************************************************************************************************");
+ 
+    
+     
+        })
+      .catch(
+        err => addLog("" + err)
+      )
+           
+    }
+    catch (err) {
+      addLog("" + err);
+    }
+  }
+
     async function sendTransaction() {
         try {
             let transaction = new Transaction().add(
@@ -195,18 +254,24 @@ function Portfolio() {
             </div>
 
 
-            <br></br>
+          
             <br></br>
             <br></br>
             Create portfolio account :
             <br></br>
             <button onClick={() => createPortfolio()}>Create portfolio account</button> 
-            <br></br>
+     
             <br></br>
             <br></br>
             Create user portfolio account :
             <br></br>
             <button onClick={() => createUserPortfolio()}>Create user portfolio account</button> 
+  
+            <br></br>
+            <br></br>
+            deposit to an existing user account :
+            <br></br>
+            <button onClick={() => deposit()}>deposit to an existing user account</button> 
 
 
 

@@ -446,75 +446,114 @@ export async function createUserPortfolio(selectedWallet , connection): Promise 
     
 
 
-  export async function runDepositPortfolio(): Promise < void > {
-    console.log("start Deposit in portfolio");
-
-
-
-    const connection = await getConnection();
-    const payer = await newAccountWithLamports(connection, 10000000000 /* wag */ );
-
-   
-  let account_deposit = UserPortfolioAccount;
-  let delegate = programId;
-  let amount_delegated=5;
-  console.log ("ownerPortfolio : ", ownerPortfolio.publicKey.toString());
-   await testToken.approveUserPortfolio(account_deposit.publicKey, delegate, ownerPortfolio , [], 5);
-
-    let accountInfo = await testToken.getAccountUserPortfolioInfo(UserPortfolioAccount.publicKey);
-    console.log("**********Info Portfolio Account **************");
-    console.log("user_portfolio_address : " + accountInfo.user_portfolio_address +"--- portfolio_address : "+accountInfo.portfolio_address+ " -- owner  :" + accountInfo.owner +
-     " -- delegated amount :" + accountInfo.delegatedAmount +
-     " -- delegate :" + accountInfo.delegate + " -- splu_asset1 :" + accountInfo.splu_asset1+" --splu_asset2 : " + accountInfo.splu_asset2)
-    console.log("***end info Portfolio Account ******")
-
- 
-
-
-    let portfolio_address = new PublicKey("2miGqxYAjpv2huXSEk3q8tUDzjvuxoVruW3EQabg6JCT");
-
-    let valueAsset1 = 2;
-    let addressAsset1 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
-
-    let value_asset2 = 20000;
-    let splm_asset2 = await (await USDC.createAccountNew(testToken.publicKey)).publicKey
-
-
-    let value_asset3 = 15265;
-    let splm_asset3 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
+        export async function runDepositPortfolio(selectedWallet , connection): Promise < void > {
+            console.log("start Deposit in portfolio");
+            let programId = new PublicKey("AX9kkGLpKn9H2bcHgP4YDi2QQCeQEfWjpi5W7EvM5doJ");
+         
+        
+            let TOKEN_PROGRAM_ID = new PublicKey('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA');
+            let TOKEN_SWAP_PROGRAM_ID = new PublicKey('5e2zZzHS8P1kkXQFVoBN6tVN15QBUHMDisy6mxVwVYSz');
+            let userTransferAuthority = new Account([155,200,249,167,10,23,75,131,118,125,114,216,128,104,178,124,197,52,254,20,115,17,181,113,249,97,206,128,236,197,223,136,12,128,101,121,7,177,87,233,105,253,150,154,73,9,56,54,157,240,189,68,189,52,172,228,134,89,160,189,52,26,149,130]);
+            let spluPRIMARY=new PublicKey("GLmeujjxYahQv8wuXfZCGHy3ewdMzYPSUfswETRELPhM");//userSource
+            let managerPRIMARY=new PublicKey("95o4RBDUFFCPUMRq9YZkVJWkVKoTK9JviBwdbXLx8jWo");//poolSource
+        
+            let tokenSwap =new PublicKey("DTgQwyJ1qPSmgi4mFisZorqynErAzXTGYkmGW2iheT7N");
+            let authority=new PublicKey("3KoXCpKYWfqkpsxiSmg2gae5rHeaFJdNVQYBpPEeuuvg");
+            let manager_asset1=new PublicKey("sWwgNAHXezA4LdVBXoowmzrbWwBqbMP59YtJCADZAeq");// poolDestination
+            let splu_asset1=new PublicKey("HFtdH3zviWQKmgMrN4kqwULQCVrhVtQZwAkCFvxC2ceE");//userDestination
+            let tokenPool=new PublicKey("4LSqN7n1rAod1tQaJL1QVeL1y94NswQi8CGp4ubK4vur");
+            let feeAccount=new PublicKey("4cFWJ9RK3jnWRKGVupCZx9DdqNSb9pDSQDdmFDNxYs6z");
+            let tokenAccountPool=new PublicKey("Ea9QR6wdTALykEFEJmBQwVg97enmDgMvS8dAEdYXaSoR")//hostFeeAccount
+            let owner =new Account([97,30,31,33,13,91,4,73,57,214,172,115,44,20,255,207,156,101,25,224,7,2,170,146,20,213,165,241,211,14,76,95,123,128,140,138,192,242,113,62,119,27,79,105,116,153,140,191,215,220,88,150,210,137,231,88,23,142,210,51,240,144,106,241]);
+            let payer=new Account([154,155,110,10,215,247,77,101,78,22,138,92,50,193,239,103,198,82,67,161,255,3,76,5,142,6,49,166,75,110,109,247,56,64,177,222,238,169,65,249,178,65,251,34,236,93,194,184,113,65,164,76,25,238,12,188,93,192,45,7,241,146,222,241]);
+        
+            let createAccountProgram=new Account([86,  26, 243,  72,  46, 135, 186,  23,  31, 215, 229,43,  54,  89, 206, 222,  82,   6, 231, 212, 212, 226,184, 211, 107, 147, 180, 138,  57, 108, 182,  46, 185,33, 232, 144,  77,  70,  77, 145, 151, 152, 188,  19,78,  73,  32,  89, 236, 171,  90,  44, 120,  71, 202,142, 214, 179,  38,  85,  71, 103, 145, 193]);
+            
+            let [programAddress, nonce] = await PublicKey.findProgramAddress(
+              [createAccountProgram.publicKey.toBuffer()],
+              programId,
+             );
+        
+        
+            let splmPRIMARY=new Portfolio(
+                connection,
+                new PublicKey("6nQ394bEX7XqLQUf4tbkTBeJ4kPfEgCSVdVTcePAj3yZ") ,
+                TOKEN_PROGRAM_ID,
+                selectedWallet);
+        
+            let splmAsset1=new Portfolio(
+                connection,
+                new PublicKey("CfLPTRPcwbsfiMZmxGzk4Cy7GBHRSi8rwo5wFBkXiSWi") ,
+                TOKEN_PROGRAM_ID,
+                selectedWallet);
+            await splmPRIMARY.mintTo(programId ,selectedWallet,connection, splmPRIMARY.publicKey,spluPRIMARY, owner, [], 100000);
+            console.log("test")
+            await splmPRIMARY.approve(
+                programId,
+                selectedWallet,
+                connection,
+              spluPRIMARY,
+              userTransferAuthority.publicKey,
+              owner,
+              [],
+              100,
+            );
+        
+        let amount_deposit = 10 ;
     
-    let value_asset4;
-    let splm_asset4 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
-
-    let value_asset5;
-    let splm_asset5 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
-
-    
-    let value_asset6;
-    let splm_asset6 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
-    
-    
-    let value_asset7;
-    let splm_asset7 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
-    
-    
-    let value_asset8;
-    let splm_asset8 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
-    
-    let value_asset9;
-    let splm_asset9 = await (await asset.createAccountNew(testToken.publicKey)).publicKey;
-    
-    // let valueAsset10;
-    // let addressAsset10;
-
-   /* UserPortfolioAccount = await testToken.depositPortfolio(portfolioAddress,managerPortfolioUSDC,payer, valueAsset1,
-       addressAsset1 , valueAsset2, addressAsset2, valueAsset3, addressAsset3, valueAsset4,addressAsset4,
-       valueAsset5,addressAsset5,valueAsset6,addressAsset6 ,valueAsset7 ,addressAsset7,valueAsset8
-       ,addressAsset8,valueAsset9,addressAsset9 ,volatility );
-*/
-  }
-
-
+        
+        let accountInfoSourceBefore = await splmPRIMARY.getAccountInfoNew(spluPRIMARY);
+        let accountInfoDestBefore = await splmAsset1.getAccountInfoNew(splu_asset1);
+        
+        console.log ("********************************************************************************************************");
+        console.log("********************************************primary account before swap  *********************************");
+        console.log("accountInfoDest : " + accountInfoSourceBefore.address + "---- accountInfoDest amount"+accountInfoSourceBefore.amount);
+        console.log ("********************************************************************************************************");
+        
+        console.log("********************************************destination account before swap  *********************************");
+        console.log("accountInfoDest : " + accountInfoDestBefore.address + "---- accountInfoDest amount"+accountInfoDestBefore.amount);
+        console.log ("********************************************************************************************************");
+        
+        // let portfolioAddress= new PublicKey("Mbg2TZtj2iA3nsYQ7kJvCSFnhQdMuAkssuFgXi72wUe");
+        // let UserPortfolioAccount= new PublicKey("3fGrHusBViqcQvfisaoRzN4vyoGUQj3hgNBG42ptMFxZ");
+        
+             await testToken.depositPortfolio(programId , selectedWallet,connection , portfolioAddress,UserPortfolioAccount,tokenSwap,authority ,
+                  userTransferAuthority, spluPRIMARY , managerPRIMARY ,manager_asset1 , splu_asset1 , tokenPool , feeAccount , 
+                TOKEN_PROGRAM_ID,tokenAccountPool , programAddress , TOKEN_SWAP_PROGRAM_ID ,createAccountProgram ,
+                 selectedWallet, amount_deposit , nonce
+             );
+        
+        
+        
+             /******** ******/
+        
+             let PortfolioInfo = await testToken.getAccountUserPortfolioInfo(UserPortfolioAccount.publicKey);
+               console.log ("********************************************************************************************************");
+               console.log("********************************************Info Portfolio Account After swap  *********************************");
+               console.log("user_portfolio_address : " + PortfolioInfo.user_portfolio_address +"--- portfolio_address : "+PortfolioInfo.portfolio_address+ " -- owner  :" + PortfolioInfo.owner +
+                " -- delegated amount :" + PortfolioInfo.delegatedAmount +
+                " -- delegate :" + PortfolioInfo.delegate + " -- splu_asset1 :" + PortfolioInfo.splu_asset1+" --splu_asset2 : " + PortfolioInfo.splu_asset2)
+               console.log("*********************************************end info Portfolio Account **************************")
+               console.log ("********************************************************************************************************");
+        
+        
+        
+              
+               let accountInfoSource = await splmPRIMARY.getAccountInfoNew(spluPRIMARY);
+                let accountInfoDest = await splmAsset1.getAccountInfoNew(splu_asset1);
+               
+               
+               console.log("********************************************primary account after swap  *********************************");
+               console.log("accountInfoDest : " + accountInfoSource.address + "---- accountInfoDest amount"+accountInfoSource.amount);
+               console.log ("********************************************************************************************************");
+               
+               console.log("********************************************destination account after swap  *********************************");
+               console.log("accountInfoDest : " + accountInfoDest.address + "---- accountInfoDest amount"+accountInfoDest.amount);
+               console.log ("********************************************************************************************************");
+               console.log ("********************************************************************************************************");
+               console.log ("********************************************************************************************************");
+          return [accountInfoSourceBefore ,accountInfoDestBefore , accountInfoSource ,accountInfoDest , PortfolioInfo ]
+            }
 
 /*
 
