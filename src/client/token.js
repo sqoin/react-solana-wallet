@@ -1475,6 +1475,48 @@ console.log("tkenpublickey"+token.publicKey)
     await this.connection.confirmTransaction(signature, 'max');
   }
 
+
+  async mintToStable(
+    dest: any,
+    authority: any,
+    multiSigners: Array<Account>,
+    amount: number | u64,
+  ): Promise<void> {
+    let ownerPublicKey;
+    let signers;
+    if (isAccount(authority)) {
+      ownerPublicKey = authority.publicKey;
+      signers = [authority];
+    } else {
+      ownerPublicKey = authority;
+      signers = multiSigners;
+    }
+    const transaction = new Transaction();
+    transaction.add(
+      Token.createMintToInstruction(
+        TOKEN_PROGRAM_ID,
+        this.publicKey,
+        dest,
+        ownerPublicKey,
+        multiSigners,
+        amount,
+      ),
+    );
+
+    transaction.recentBlockhash = (
+      await this.connection.getRecentBlockhash()
+    ).blockhash;
+    transaction.feePayer = authority.publicKey;
+    //transaction.setSigners(payer.publicKey, mintAccount.publicKey );
+
+    let signed = await authority.signTransaction(transaction);
+
+    //   addLog('Got signature, submitting transaction');
+    let signature = await this.connection.sendRawTransaction(signed.serialize());
+
+    await this.connection.confirmTransaction(signature, 'max');
+  }
+
   /**
    * Burn tokens
    *
