@@ -492,16 +492,16 @@ export async function swap(selectedWallet, connection,tokenSwapPubkey,minta,mint
     selectedWallet)
   let poolAccount = SWAP_PROGRAM_OWNER_FEE_ADDRESS ? await poolToken.createAccount(selectedWallet.publicKey): null; //account pool
   let info;
-console.log("************** Info Account A Before swap *******************")
+// console.log("************** Info Account A Before swap *******************")
 
- info =await token1.getAccountInfo(userAccountA);
-console.log("mint A Pubkey = "+info.mint+" address account A = "+info.address+" amount = "+info.amount+" owner ="+info.owner+ " delegate = "+info.delegate);
+//  info =await token1.getAccountInfo(userAccountA);
+// console.log("mint A Pubkey = "+info.mint+" address account A = "+info.address+" amount = "+info.amount+" owner ="+info.owner+ " delegate = "+info.delegate);
 
-console.log("*************************************************")
-console.log("************** Info Account B Before swap *******************")
- info =await tokenB.getAccountInfo(userAccountB);
-console.log("mint B Pubkey = "+info.mint+" address account B = "+info.address+" amount = "+info.amount+" owner ="+info.owner+ " delegate = "+info.delegate);
-console.log("*************************************************")
+// console.log("*************************************************")
+// console.log("************** Info Account B Before swap *******************")
+//  info =await tokenB.getAccountInfo(userAccountB);
+// console.log("mint B Pubkey = "+info.mint+" address account B = "+info.address+" amount = "+info.amount+" owner ="+info.owner+ " delegate = "+info.delegate);
+// console.log("*************************************************")
  // let  accountPool = await poolToken.createAccount(selectedWallet.publicKey);
   let programIdHello = new PublicKey("FRTtufPDTq76ZBTMif3uHpWPBiq7L7k592p7hJCscYVs")
   let [programAddress, nonce1] = await PublicKey.findProgramAddress(
@@ -552,17 +552,17 @@ console.log("*************************************************")
   console.log("xxxx "+JSON.stringify(x))
   console.log("************** Info Account A After swap *******************")
 
-info =await token1.getAccountInfo(userAccountA);
-console.log("mint A Pubkey = "+info.mint+" address account A = "+info.address+" amount = "+info.amount+" owner ="+info.owner+ " delegate = "+info.delegate);
+// info =await token1.getAccountInfo(userAccountA);
+// console.log("mint A Pubkey = "+info.mint+" address account A = "+info.address+" amount = "+info.amount+" owner ="+info.owner+ " delegate = "+info.delegate);
 
-console.log("*************************************************")
+// console.log("*************************************************")
 
-console.log("************** Info Account B After swap *******************")
+// console.log("************** Info Account B After swap *******************")
 
- info =await tokenB.getAccountInfo(userAccountB);
-console.log("mint B Pubkey = "+info.mint+" address account B = "+info.address+" amount = "+info.amount+" owner ="+info.owner+ " delegate = "+info.delegate);
+//  info =await tokenB.getAccountInfo(userAccountB);
+// console.log("mint B Pubkey = "+info.mint+" address account B = "+info.address+" amount = "+info.amount+" owner ="+info.owner+ " delegate = "+info.delegate);
 
-console.log("*************************************************")
+// console.log("*************************************************")
   /*await sendAndConfirmTransaction(
     connection,
    transaction,

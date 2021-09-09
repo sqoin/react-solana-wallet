@@ -481,7 +481,7 @@ function SwapOriginal() {
 
     AccountA  <input type="text" onChange={(e) => setAccountA(e.target.value)} value={accountA}/>   mintB<input onChange={(e) => setMintB(e.target.value)} value={mintB}/>accountB <input onChange={(e) => setAccountB(e.target.value)} value={accountB}/> <br/>
     <br/><br/>Authority<input type="text" onChange={(e) => setAuthority(e.target.value)} value={autorithy}/> nonce<input type="text" onChange={(e) => setNonce(e.target.value)} value={nonce}/><br/> <br/>poolToken <input type="text" onChange={(e) => setPoolToken(e.target.value)} value={poolToken}/> feeAccount <input type="text" onChange={(e) => setFeeAccount(e.target.value)} value={feeAccount}/>  AccountPool:<input type="text" onChange={(e) => setAccountPool(e.target.value)} value={accountPool}/> 
-    <br/> <br/> <br/><button onClick={() => swapTokens()}>
+    <br/> <br/> <br/><button onClick={() => swapTokens()} disabled> <p> {tokenSwap}</p>
         swap Token
       </button>
       
