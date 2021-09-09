@@ -44,6 +44,11 @@ function SwapOriginal() {
   const [accountInfo, setAccountInfo] = useState()
   const [nonce, setNonce] = useState(252)
   const [idTransaction, setIdTransaction] = useState()
+  function refreshPage(){
+              
+    window.location.reload();
+   }
+
   // const[authority,setAuthority]=useState()
   const injectedWallet = useMemo(() => {
     try {

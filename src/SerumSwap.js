@@ -4,7 +4,8 @@ import './App.css';
 import Wallet from '@project-serum/sol-wallet-adapter';
 import { Connection, SystemProgram, Transaction, clusterApiUrl,PublicKey } from '@solana/web3.js';
 import { createMMStep, sendLamportToMMStep, sendTokenToMMStep, createTokenStep, createVaultStep, mintTokenToVaultStep, createMarketStep, swapAtoBStep, placeOrderStep } from './cli/serum-steps';
-
+import InfoAccount from './component/InfoAccount';
+import "./Saber.css"
 function toHex(buffer) {
   return Array.prototype.map
     .call(buffer, (x) => ('00' + x.toString(16)).slice(-2))
@@ -317,6 +318,8 @@ const [accountA,setAccountA]=useState("")
 
   return(
 <div className="App">
+<div id="sidebar"><InfoAccount selectedWallet={selectedWallet} connection={connection}></InfoAccount> </div>
+<div id="content-wrap">
       <h1>Serum Demo</h1>
       <div>Network: {network}</div>
       <div>
@@ -397,6 +400,7 @@ const [accountA,setAccountA]=useState("")
           swap A to B
       </button>
       <br></br>
+      </div>
     </div>
     
   );
