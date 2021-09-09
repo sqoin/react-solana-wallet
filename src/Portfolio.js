@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import './App.css';
 import Wallet from '@project-serum/sol-wallet-adapter';
 import { Connection, SystemProgram, Transaction, clusterApiUrl, PublicKey } from '@solana/web3.js';
-import { createNewPortfolio } from './Portfolio/cli/makeStepsPortfolio';
+import { createNewPortfolio , createNewUserPortfolio} from './Portfolio/cli/makeStepsPortfolio';
 
 
 
@@ -78,7 +78,19 @@ function Portfolio() {
 
     try {createNewPortfolio(selectedWallet, connection)
       .then(portfolio =>{
-        addLog("address of new portfolio :  "+ portfolio.portfolioAddress.toString());
+        addLog ("********************************************************************************************************");
+        addLog("************************************Info Portfolio Account *****************************");
+        addLog("address of new portfolio :  "+ portfolio.portfolioAddress.toString()+
+           "--- creator Portfolio : "+portfolio.creatorPortfolio.toString()+
+           " -- amount of Asset1  :" + portfolio.amountAsset1.property +
+           " -- address of Asset1 :" + portfolio.addressAsset1.toString() +
+           " -- period of Asset1 :" + portfolio.periodAsset1.property + 
+           " -- assetToSoldIntoAsset1 :" + portfolio.assetToSoldIntoAsset1.toString()+
+           " --metadataUrl : " + portfolio.metadataUrl.toString()+
+           " --metadataHash : " + portfolio.metadataHash.property);
+        addLog("************************************end info Portfolio Account ******************************")
+        addLog("********************************************************************************************************");
+       
         setPortfolioAccount(portfolio)
         console.log("address of new portfolio :  ", portfolio.portfolioAddress.toString());
         })
@@ -91,15 +103,27 @@ function Portfolio() {
       addLog("" + err);
     }
   }
-/*
+
   async function createUserPortfolio () {
     addLog("loading create user portfolio ... ");
 
-    try {createNewPortfolio(selectedWallet, connection)
+    try {createNewUserPortfolio(selectedWallet, connection)
       .then(usePortfolio =>{
-        addLog("address of new user portfolio :  "+ portfolio.portfolioAddress.toString());
-        setPortfolioAccount(portfolio)
-        console.log("address of new user portfolio :  ", portfolio.portfolioAddress.toString());
+
+        addLog("********************************************************************************************************");
+        addLog("********************************************Info User Portfolio Account *********************************");
+        addLog("address of new user portfolio : : " + usePortfolio.user_portfolio_address.toString() +
+        "--- portfolio_address : "+usePortfolio.portfolio_address.toString()+ 
+        " -- owner  :" + usePortfolio.owner.toString() +
+        " -- delegated amount :" + usePortfolio.delegatedAmount +
+        " -- delegate :" + usePortfolio.delegate.toString() 
+       );
+            addLog("*********************************************end info User Portfolio Account **************************");
+            addLog ("********************************************************************************************************");
+
+      
+        setPortfolioAccount(usePortfolio)
+        console.log("address of new user portfolio :  ", usePortfolio.user_portfolio_address.toString());
         })
       .catch(
         err => addLog("" + err)
@@ -109,7 +133,7 @@ function Portfolio() {
     catch (err) {
       addLog("" + err);
     }
-  }*/
+  }
 
     async function sendTransaction() {
         try {
@@ -182,7 +206,7 @@ function Portfolio() {
             <br></br>
             Create user portfolio account :
             <br></br>
-            {/* <button onClick={() => createUserPortfolio()}>Create user portfolio account</button>  */}
+            <button onClick={() => createUserPortfolio()}>Create user portfolio account</button> 
 
 
 

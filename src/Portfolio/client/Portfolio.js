@@ -1236,34 +1236,18 @@
       * @return UserPortfolio of the new empty account
       */
       async createUserPortfolio(
+        connection: Connection,
+         programId: PublicKey,
        owner:Account,
        portfolio_address: PublicKey,
        delegate: PublicKey | null,
        delegated_amount: number | null,
      
-        /*  splu_asset1: PublicKey,
     
-          splu_asset2: PublicKey | null,
- 
-          splu_asset3: PublicKey | null,
-  
-          splu_asset4: PublicKey | null,
- 
-          splu_asset5: PublicKey | null,
-      
-          splu_asset6: PublicKey | null,
-  
-         splu_asset7: PublicKey | null,
-      
-         splu_asset8: PublicKey | null,
- 
-         splu_asset9: PublicKey | null,*/
-      // valueAsset10: number | null,
-       //addressAsset10: PublicKey| null,
    ): Promise < Account > {
        // Allocate memory for the account
        const balanceNeeded = await Portfolio.getMinBalanceRentForExemptAccount(
-           this.connection,
+           connection,
        );
  
        const userPortfolioAccount = new Account();
@@ -1275,40 +1259,51 @@
                newAccountPubkey: userPortfolioAccount.publicKey,
                lamports: balanceNeeded,
                space: UserPortfolioLayout.span,
-               programId: this.programId,
+               programId: programId,
            }),
        );
  
        // const mintPublicKey = this.publicKey;
        transaction.add(
            Portfolio.createInitUserPortfolioInstruction(
-               this.programId,
+               programId,
                userPortfolioAccount.publicKey,
                owner.publicKey,
                portfolio_address,
                delegate,
                delegated_amount,
-              /* splu_asset1,
-               splu_asset2,
-               splu_asset3,
-               splu_asset4,
-               splu_asset5,
-               splu_asset6,
-               splu_asset7,
-               splu_asset8,
-               splu_asset9,*/
+         
            ),
     );
- 
+
+
+
+    
+    transaction.recentBlockhash = (
+        await connection.getRecentBlockhash()
+      ).blockhash;
+      transaction.feePayer = owner.publicKey;
+      //transaction.setSigners(payer.publicKey, mintAccount.publicKey );
+      transaction.partialSign(userPortfolioAccount);
+  
+      let signed = await owner.signTransaction(transaction);
+      
+     //   addLog('Got signature, submitting transaction');
+        let signature = await connection.sendRawTransaction(signed.serialize());
+  
+        await connection.confirmTransaction(signature, 'max');
+     
+
+ /*
        // Send the two instructions
        await sendAndConfirmTransaction(
            'createAccount and InitializeAccount',
-           this.connection,
+           connection,
            transaction,
            owner,
            userPortfolioAccount,
-       );
- 
+       );*/
+
        return userPortfolioAccount;
    }
  

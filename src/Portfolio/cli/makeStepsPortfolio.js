@@ -50,3 +50,7 @@ export async function makeStepsPortfolio(selectedWallet) {
 export async function createNewPortfolio(selectedWallet , connection) {  
     return createPortfolio(selectedWallet , connection);
   }
+  
+export async function createNewUserPortfolio(selectedWallet , connection) {  
+    return createUserPortfolio(selectedWallet , connection);
+  }
