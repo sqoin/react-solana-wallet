@@ -22,8 +22,8 @@ const DEX_PID = new PublicKey("DESVgJVGajEgKGXhb6XmqDHGz3VjdgP7rEVESBgxmroY");
 const decimals=2
 const options = Provider.defaultOptions();
 let TOKEN_PROGRAM_ID1= new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA");
-let mintedAmount=1000
-let sentAmount=10
+let mintedAmount=100000
+let sentAmount=1000
 let dexProgramId= new PublicKey("DESVgJVGajEgKGXhb6XmqDHGz3VjdgP7rEVESBgxmroY");
 //FgFxp8voPtbFqCgqSgGDwUDz7CWpHKZbE6w7WudXDxz
 const OpenOrders = require("@project-serum/serum").OpenOrders;
@@ -52,6 +52,9 @@ const bids = [
   [5.965, 82.8],
   [5.961, 25.4],
 ];
+
+let marketMaker1=null
+//JSON.parse({"_keypair":{"publicKey":{"0":142,"1":94,"2":174,"3":123,"4":251,"5":136,"6":225,"7":212,"8":196,"9":196,"10":171,"11":202,"12":237,"13":147,"14":206,"15":181,"16":159,"17":236,"18":6,"19":175,"20":98,"21":18,"22":138,"23":51,"24":85,"25":142,"26":70,"27":57,"28":207,"29":27,"30":71,"31":86},"secretKey":{"0":16,"1":168,"2":117,"3":228,"4":189,"5":52,"6":182,"7":22,"8":162,"9":178,"10":13,"11":236,"12":92,"13":227,"14":206,"15":15,"16":91,"17":89,"18":170,"19":141,"20":154,"21":62,"22":167,"23":112,"24":193,"25":180,"26":109,"27":12,"28":17,"29":31,"30":123,"31":161,"32":142,"33":94,"34":174,"35":123,"36":251,"37":136,"38":225,"39":212,"40":196,"41":196,"42":171,"43":202,"44":237,"45":147,"46":206,"47":181,"48":159,"49":236,"50":6,"51":175,"52":98,"53":18,"54":138,"55":51,"56":85,"57":142,"58":70,"59":57,"60":207,"61":27,"62":71,"63":86}}});
 
 
 export async function createTokenApi(selectedWallet, connection) {
@@ -104,6 +107,8 @@ export async function mintTokenToVaultApi(selectedWallet, connection, vaultPk, t
 
 export async function createMMApi() {
     const MARKET_MAKER = new Account();
+    console.log("marker maker: "+JSON.stringify(MARKET_MAKER))
+    marketMaker1=MARKET_MAKER
     return MARKET_MAKER.publicKey
 }
 
@@ -118,7 +123,7 @@ export async function sendLamportApi(selectedWallet , connection, to) {
             SystemProgram.transfer({
               fromPubkey: provider.wallet.publicKey,
               toPubkey: to,
-              lamports: 10000000,
+              lamports: 100000000,
             })
           );
           return tx;
@@ -167,7 +172,7 @@ export async function sendTokenApi(selectedWallet , connection, tokenPk, vault, 
           return tx;
         })()
         );
-      return tx;
+      return marketMakerTokenA;
 }
 
 export async function createMarketApi(
@@ -344,7 +349,7 @@ async function sendAndConfirmRawTransaction(
   return await connection.confirmTransaction(tx, commitment);
 }
 
-export async function placeOrder(selectedWallet, connection, marketPk, marketMaker, mmBaseToken, mmQuoteToken){
+export async function placeOrder(selectedWallet, connection, marketPk, marketMaker, mmToken, side){
   let provider= new Provider(connection, selectedWallet, options);
   const market = await Market.load(
     connection,
@@ -352,16 +357,19 @@ export async function placeOrder(selectedWallet, connection, marketPk, marketMak
     { commitment: "recent" },
     dexProgramId
   );
-  console.log("loaded"+market._decoded.ownAddress)
+  console.log("loaded "+market._decoded.baseLotSize)
+  console.log(JSON.stringify(marketMaker1))
+  console.log(marketMaker1.publicKey)
+  console.log(side)
   const {
     transaction,
     signers,
   } = await market.makePlaceOrderTransaction(connection, {
-      owner: new PublicKey(marketMaker),
-      payer: new PublicKey(mmBaseToken),
-      side: "sell",
-      price: new BN(6),
-      size: new BN(7),
+      owner: marketMaker1.publicKey,
+      payer: new PublicKey(mmToken),
+      side: side,
+      price: 1,
+      size: 10,
       orderType: "postOnly",
       clientId: undefined,
       openOrdersAddressKey: undefined,
@@ -369,24 +377,26 @@ export async function placeOrder(selectedWallet, connection, marketPk, marketMak
       feeDiscountPubkey: null,
       selfTradeBehavior: "abortTransaction",
     });
-    //await provider.send(transaction, signers.concat(marketMaker));
-    /*const {
+    await provider.send(transaction, signers.concat(marketMaker1));
+  /* const {
       transaction2,
       signers2,
-    } = await marketA.makePlaceOrderTransaction(provider.connection, {
-      owner: new PublicKey(marketMaker),
+    } = await market.makePlaceOrderTransaction(provider.connection, {
+      owner: marketMaker1.publicKey,
       payer: new PublicKey(mmQuoteToken),
       side: "buy",
-      price: 6.004,
-      size: 8.5,
+      price: 1,
+      size: 10,
       orderType: "postOnly",
       clientId: undefined,
       openOrdersAddressKey: undefined,
       openOrdersAccount: undefined,
       feeDiscountPubkey: null,
       selfTradeBehavior: "abortTransaction",
-    });*/
-    //await provider.send(transaction2, signers2.concat(marketMaker));
+    });
+
+    await provider.send(transaction2, signers2.concat(marketMaker1));*/
+    return "order placed"
 }
 
 export async function swapAtoBApi(selectedWallet, connection,  marketPk, tokenAPk, tokenBPk, vaultA, vaultB) {
@@ -401,7 +411,7 @@ export async function swapAtoBApi(selectedWallet, connection,  marketPk, tokenAP
   const idl=require('./serumSwap')
   console.log(idl)
   //const programId = new anchor.web3.PublicKey('64VhHFWyFgXxUaHi9tg4DWLd1xqdYNdTdsNSG3DWhRE3');
-  const programId = new anchor.web3.PublicKey('DS1mnbJcJRGimF4iqazbBQrd7dBMayqPdEq36XhC2soc');
+  const programId = new anchor.web3.PublicKey('J4jvVPcuEh1RBqPARriV7imYLSCCXYmGYQNHSqqzFcYC');
   const program = new anchor.Program(idl, programId);
   console.log(program)
   console.log("market => "+ marketPk)
@@ -445,10 +455,10 @@ export async function swapAtoBApi(selectedWallet, connection,  marketPk, tokenAP
     console.log("swap accounts => "+ JSON.stringify(SWAP_ACCOUNTS))
     // Swap exactly enough USDC to get 1.2 A tokens (best offer price is 6.041 USDC).
     let TAKER_FEE=0.0022
-    const expectedResultantAmount = 7.2;
+    const expectedResultantAmount = 6.041;
     const bestOfferPrice = 6.041;
     const amountToSpend = expectedResultantAmount * bestOfferPrice;
-    const swapAmount = new BN(10);
+    const swapAmount = new BN(1000);
     console.log("swap amount "+swapAmount)
     //const [tokenAChange, usdcChange] = await withBalanceChange(
     // const tx = new Transaction();

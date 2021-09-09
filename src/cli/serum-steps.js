@@ -30,8 +30,8 @@ export async function createMarketStep(selectedWallet , connection, tokenAPk, to
 export async function swapAtoBStep(selectedWallet , connection, market,tokenAPk, tokenBPk, vaultA, vaultB) {  
     return swapAtoBApi(selectedWallet , connection, market, tokenAPk, tokenBPk, vaultA, vaultB);
 }
-export async function placeOrderStep(selectedWallet , connection, market, marketMaker, tokenAPk, tokenBPk) {  
-    return placeOrder(selectedWallet , connection, market, marketMaker, tokenAPk, tokenBPk);
+export async function placeOrderStep(selectedWallet , connection, market, marketMaker, tokenPk,side) {  
+    return placeOrder(selectedWallet , connection, market, marketMaker, tokenPk,side);
 }
 
 
