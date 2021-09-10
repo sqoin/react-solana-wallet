@@ -84,6 +84,7 @@ function Portfolio() {
 
     try {createNewPortfolio(selectedWallet, connection)
       .then(portfolio =>{
+        addLog("success ");
         /*addLog ("********************************************************************************************************");
         addLog("************************************Info Portfolio Account *****************************");
         addLog("address of new portfolio :  "+ portfolio.portfolioAddress.toString()+
@@ -115,7 +116,7 @@ function Portfolio() {
 
     try {createNewUserPortfolio(selectedWallet, connection)
       .then(usePortfolio =>{
-
+        addLog("success ");
         /*addLog("********************************************************************************************************");
         addLog("********************************************Info User Portfolio Account *********************************");
         addLog("address of new user portfolio : : " + usePortfolio.user_portfolio_address.toString() +
@@ -151,7 +152,7 @@ function Portfolio() {
        // accountInfoSourceBefore ,accountInfoDestBefore , accountInfoSource ,accountInfoDest
           console.log ("success");
           console.log (JSON.stringify(accounts));
-
+          addLog("success ");
         /*addLog("********************************************************************************************************");
         addLog("********************************************Info SPLU PRIMARY BEFORE SWAP *********************************");
         addLog("address of SPLU PRIMARY : : " + accounts[0].address.toString() + 
