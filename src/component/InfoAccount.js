@@ -24,7 +24,7 @@ function InfoAccount(props) {
       }
 return(
    
-    <div>  <button onClick={() => getTokenAccountsByOwner()}>refresh</button>
+    <div>  <button onClick={() => getTokenAccountsByOwner()} className="btn btn-primary">refresh</button>
     <table >
 
     <thead>

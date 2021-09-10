@@ -27,14 +27,14 @@ function PortfolioComponent(props) {
             {portfolio && <>
                 <div>********************************************************************************************************</div>
                 <div>************************************Info Portfolio Account *****************************"</div>
-                <div>address of new portfolio :  {portfolio.portfolioAddress.toString()}
-                    --- creator Portfolio : {portfolio.creatorPortfolio.toString()}
-                    -- amount of Asset1  : {portfolio.amountAsset1.property}
-                    -- address of Asset1 : {portfolio.addressAsset1.toString()}
-                    -- period of Asset1 : {portfolio.periodAsset1.property}
-                    -- assetToSoldIntoAsset1 : {portfolio.assetToSoldIntoAsset1.toString()}
-                    --metadataUrl :  {portfolio.metadataUrl.toString()}
-                    --metadataHash : {portfolio.metadataHash.property}</div>
+                <div>address of new portfolio :  {portfolio.portfolioAddress.toString()}</div>
+                <div>--- creator Portfolio : {portfolio.creatorPortfolio.toString()}</div>
+                <div>  -- amount of Asset1  : {portfolio.amountAsset1.property}</div>
+                <div>  -- address of Asset1 : {portfolio.addressAsset1.toString()}</div>
+                <div> -- period of Asset1 : {portfolio.periodAsset1.property}</div>
+                <div> -- assetToSoldIntoAsset1 : {portfolio.assetToSoldIntoAsset1.toString()}</div>
+                <div> --metadataUrl :  {portfolio.metadataUrl.toString()}</div>
+                <div>  --metadataHash : {portfolio.metadataHash.property}</div>
                 <div>   ************************************end info Portfolio Account ******************************</div>
                 <div>  ********************************************************************************************************</div>
             </>}

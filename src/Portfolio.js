@@ -7,6 +7,7 @@ import { createNewPortfolio , createNewUserPortfolio , depositInPortfolio} from 
 import { AccountsCoder } from '@project-serum/anchor';
 import PortfolioComponent from "./component/PortfolioComponent";
 
+import InfoAccount from "./component/InfoAccount"
 
 
 
@@ -83,7 +84,7 @@ function Portfolio() {
 
     try {createNewPortfolio(selectedWallet, connection)
       .then(portfolio =>{
-        addLog ("********************************************************************************************************");
+        /*addLog ("********************************************************************************************************");
         addLog("************************************Info Portfolio Account *****************************");
         addLog("address of new portfolio :  "+ portfolio.portfolioAddress.toString()+
            "--- creator Portfolio : "+portfolio.creatorPortfolio.toString()+
@@ -95,7 +96,7 @@ function Portfolio() {
            " --metadataHash : " + portfolio.metadataHash.property);
         addLog("************************************end info Portfolio Account ******************************")
         addLog("********************************************************************************************************");
-       
+       */
         setPortfolioAccount(portfolio)
         console.log("address of new portfolio :  ", portfolio.portfolioAddress.toString());
         })
@@ -115,7 +116,7 @@ function Portfolio() {
     try {createNewUserPortfolio(selectedWallet, connection)
       .then(usePortfolio =>{
 
-        addLog("********************************************************************************************************");
+        /*addLog("********************************************************************************************************");
         addLog("********************************************Info User Portfolio Account *********************************");
         addLog("address of new user portfolio : : " + usePortfolio.user_portfolio_address.toString() +
         "--- portfolio_address : "+usePortfolio.portfolio_address.toString()+ 
@@ -126,7 +127,7 @@ function Portfolio() {
             addLog("*********************************************end info User Portfolio Account **************************");
             addLog ("********************************************************************************************************");
 
-      
+      */
         setUserPAccount(usePortfolio);
         console.log("address of new user portfolio :  ", usePortfolio.user_portfolio_address.toString());
         })
@@ -151,7 +152,7 @@ function Portfolio() {
           console.log ("success");
           console.log (JSON.stringify(accounts));
 
-        addLog("********************************************************************************************************");
+        /*addLog("********************************************************************************************************");
         addLog("********************************************Info SPLU PRIMARY BEFORE SWAP *********************************");
         addLog("address of SPLU PRIMARY : : " + accounts[0].address.toString() + 
         "----  amount OF SPLU PRIMARY :  "+accounts[0].amount)
@@ -185,7 +186,7 @@ function Portfolio() {
           " --splu_asset2 : " + accounts[4].splu_asset2.toString())
         addLog("*********************************************end info Portfolio Account **************************")
         addLog ("********************************************************************************************************");
- 
+ */
     
      
         })
@@ -232,8 +233,8 @@ function Portfolio() {
 
 
 
-      <div id="sidebar"><PortfolioComponent selectedWallet={selectedWallet} connection={connection} portfolio={portfolioAccount}
-      userPAccount = {userPAccount} depositAccounts={depositAccounts}></PortfolioComponent> </div>
+      <div id="sidebar">   <div id ="sidebaraccount"><InfoAccount selectedWallet={selectedWallet} connection={connection}></InfoAccount> </div>  <div id="secondDiv"><PortfolioComponent selectedWallet={selectedWallet} connection={connection} portfolio={portfolioAccount}
+      userPAccount = {userPAccount} depositAccounts={depositAccounts}></PortfolioComponent> </div> </div>
 
         <div id="content-wrap">
             <h1>PORTFOLIO Demo</h1>

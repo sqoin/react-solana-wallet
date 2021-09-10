@@ -7,6 +7,25 @@ div#sidebar {
   color: white;
   overflow: auto;
 }
+#sidebaraccount{
+ 
+  height: 50%;
+  top: 0;
+  bottom: 0;
+  background: #323a71;
+  color: white;
+  overflow: auto;
+}
+#secondDiv{
+  height: 50%;
+  
+  top: 0;
+  bottom: 0;
+  background: brown;
+  color: white;
+  overflow: auto;
+
+}
 
 div#content-wrap {
   width: 50%;
@@ -20,4 +39,10 @@ span{
    /*Fond des span jaune*/
   color: black; /*Couleur du texte noire*/
   margin: auto 5px;
+}
+a {
+
+  background-color: red;
+  text-decoration: none;
+  cursor: grab;
 }

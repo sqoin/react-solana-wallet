@@ -105,26 +105,26 @@ function HomePage() {
         <br></br>
         <br></br>
     
-        <button onClick={() => goSwapOriginal()}>Swap Original</button> 
+        <button onClick={() => goSwapOriginal()} className="btn btn-info">Swap Original</button> 
 
 
         <br></br>
         <br></br>
         <br></br>
 
-        <button onClick={() => goSerumSwap()}>Serum Swap</button> 
+        <button onClick={() => goSerumSwap()} className="btn btn-info">Serum Swap</button> 
 
         <br></br>
         <br></br>
         <br></br>
 
-        <button onClick={() => goPortfolio()}>Portfolio</button> 
+        <button onClick={() => goPortfolio()} className="btn btn-info">Portfolio</button> 
 
         <br></br>
         <br></br>
         <br></br>
 
-        <button onClick={() => goSaber()}>Saber</button> 
+        <button onClick={() => goSaber()} className="btn btn-info">Saber</button> 
 
 
 
