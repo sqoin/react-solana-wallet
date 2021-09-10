@@ -1,9 +1,11 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import './App.css';
+import './Portfolio.css'
 import Wallet from '@project-serum/sol-wallet-adapter';
 import { Connection, SystemProgram, Transaction, clusterApiUrl, PublicKey } from '@solana/web3.js';
 import { createNewPortfolio , createNewUserPortfolio , depositInPortfolio} from './Portfolio/cli/makeStepsPortfolio';
 import { AccountsCoder } from '@project-serum/anchor';
+import PortfolioComponent from "./component/PortfolioComponent";
 
 
 
@@ -41,6 +43,8 @@ function Portfolio() {
     }, [network]);
     const [selectedWallet, setSelectedWallet] = useState(undefined);
     const [portfolioAccount , setPortfolioAccount] = useState(undefined);
+    const [userPAccount , setUserPAccount] = useState(undefined);
+    const [depositAccounts , setDepositAccounts] = useState(undefined);
     const [, setConnected] = useState(false);
     useEffect(() => {
         if (selectedWallet) {
@@ -123,7 +127,7 @@ function Portfolio() {
             addLog ("********************************************************************************************************");
 
       
-        setPortfolioAccount(usePortfolio)
+        setUserPAccount(usePortfolio);
         console.log("address of new user portfolio :  ", usePortfolio.user_portfolio_address.toString());
         })
       .catch(
@@ -142,6 +146,7 @@ function Portfolio() {
 
     try {depositInPortfolio(selectedWallet, connection)
       .then(accounts =>{
+          setDepositAccounts(accounts);
        // accountInfoSourceBefore ,accountInfoDestBefore , accountInfoSource ,accountInfoDest
           console.log ("success");
           console.log (JSON.stringify(accounts));
@@ -223,7 +228,14 @@ function Portfolio() {
 
 
     return (
-        <div className="App">
+        <div className="App" id="main-wrap" >
+
+
+
+      <div id="sidebar"><PortfolioComponent selectedWallet={selectedWallet} connection={connection} portfolio={portfolioAccount}
+      userPAccount = {userPAccount} depositAccounts={depositAccounts}></PortfolioComponent> </div>
+
+        <div id="content-wrap">
             <h1>PORTFOLIO Demo</h1>
             <div>Network: {network}</div>
             <div>
@@ -275,7 +287,7 @@ function Portfolio() {
 
 
 
-           
+          </div> 
         </div>
     );
 
