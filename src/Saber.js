@@ -4,7 +4,8 @@ import Wallet from '@project-serum/sol-wallet-adapter';
 import { Connection, SystemProgram, Transaction, clusterApiUrl,PublicKey } from '@solana/web3.js';
 import { mintToken, createNewAccount , createMintTo , createTransfer} from './cli/makesteps';
 import { depositTokenPool } from './saber/cli/makeSteps';
-
+import InfoAccount from './component/InfoAccount';
+import  "./Saber.css"
 function toHex(buffer) {
   return Array.prototype.map
     .call(buffer, (x) => ('00' + x.toString(16)).slice(-2))
@@ -130,6 +131,8 @@ function Saber() {
 
     return (
         <div className="App">
+            <div id="sidebar"><InfoAccount selectedWallet={selectedWallet} connection={connection}></InfoAccount> </div>
+            <div id="content-wrap">
             <h1>SABER Demo</h1>
 
             <div>Network: {network}</div>
@@ -164,6 +167,7 @@ function Saber() {
             <br/>
             <div>
                     <button onClick={() => depositPool()}>Deposit tokens into the pool</button>
+                </div>
                 </div>
         </div>
     )

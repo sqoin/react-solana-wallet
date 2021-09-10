@@ -1,0 +1,18 @@
+div#sidebar {
+    position: fixed;
+    width: 50%;
+    top: 0;
+    bottom: 0;
+    background: #323a71;
+    color: white;
+    overflow: auto;
+  }
+  
+  div#content-wrap {
+    width: 50%;
+    float: right;
+  }
+  td{
+    padding: 10px;
+  }
+  
