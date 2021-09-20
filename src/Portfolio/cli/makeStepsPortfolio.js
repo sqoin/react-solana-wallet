@@ -14,9 +14,11 @@
     runDeposit,
 
     runApprove,
-    createPortfolio,
+ 
     createUserPortfolio,
-    runDepositPortfolio
+    runDepositPortfolio,
+    createPortfolios,createNewTestToken
+    
   } from './token-test';
 
 
@@ -33,7 +35,7 @@ export async function makeStepsPortfolio(selectedWallet) {
     console.log("Run test: runDeposit");
     await runDeposit();
     console.log("Run test: createPortfolio");
-    await createPortfolio();
+    await createPortfolios();
   
     console.log("Run test: createUserPortfolio");
     await createUserPortfolio();
@@ -47,8 +49,8 @@ export async function makeStepsPortfolio(selectedWallet) {
 
 
   
-export async function createNewPortfolio(selectedWallet , connection) {  
-    return createPortfolio(selectedWallet , connection);
+export async function createNewPortfolio(selectedWallet, connection,token,USDCToken,metaDataUrl,amountAsset1,amountAsset2,amountAsset3,periodAsset1,periodAsset2,periodAsset3,assetToSold1,assetToSold2,assetToSold3) {  
+    return createPortfolios(selectedWallet, connection,token,USDCToken,metaDataUrl,amountAsset1,amountAsset2,amountAsset3,periodAsset1,periodAsset2,periodAsset3,assetToSold1,assetToSold2,assetToSold3);
   }
   
 export async function createNewUserPortfolio(selectedWallet , connection) {  
@@ -58,4 +60,7 @@ export async function createNewUserPortfolio(selectedWallet , connection) {
 export async function depositInPortfolio(selectedWallet , connection) {  
   console.log ("in deposit")
     return runDepositPortfolio(selectedWallet , connection);
+  }
+  export async function createTestToken(selectedWallet,connection){
+    return createNewTestToken(selectedWallet,connection)
   }

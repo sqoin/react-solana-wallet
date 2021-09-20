@@ -3,11 +3,12 @@ import './App.css';
 import './Portfolio.css'
 import Wallet from '@project-serum/sol-wallet-adapter';
 import { Connection, SystemProgram, Transaction, clusterApiUrl, PublicKey } from '@solana/web3.js';
-import { createNewPortfolio , createNewUserPortfolio , depositInPortfolio} from './Portfolio/cli/makeStepsPortfolio';
+import { createTestToken,createNewPortfolio , createNewUserPortfolio , depositInPortfolio} from './Portfolio/cli/makeStepsPortfolio';
 import { AccountsCoder } from '@project-serum/anchor';
 import PortfolioComponent from "./component/PortfolioComponent";
 
 import InfoAccount from "./component/InfoAccount"
+import { createToken } from 'typescript';
 
 
 
@@ -24,6 +25,23 @@ function Portfolio() {
       setLogs((logs) => [...logs, log]);
     }
 
+
+
+////// input
+
+const [token, setToken] = useState("6ykyxd7bZFnvEHq61vnd69BkU3gabiDmKGEQb4sGiPQG");
+const [USDCToken, setUSDC] = useState("4A3a33ozsqA6ihMXRAzYeNwZv4df9RfJoLPh6ycZJVhE");
+const [metaDataUrl,setMetaDataUrl]=useState("aabbcc");
+const [amountAsset1,setAmountAsset1]=useState(2);
+const [periodAsset1,setPeriodAsset1]=useState(123);
+const [assetToSold1,setAssetToSold1]=useState("FAxFrLbWabNWgL1A9sLokNQbaBSq33iQHA2Y3zKk1g8x");
+const [amountAsset2,setAmountAsset2]=useState(3);
+const [periodAsset2,setPeriodAsset2]=useState(4);
+const [assetToSold2,setAssetToSold2]=useState("FAxFrLbWabNWgL1A9sLokNQbaBSq33iQHA2Y3zKk1g8x")
+const [amountAsset3,setAmountAsset3]=useState(3);
+const [periodAsset3,setPeriodAsset3]=useState(4);
+const [assetToSold3,setAssetToSold3]=useState("FAxFrLbWabNWgL1A9sLokNQbaBSq33iQHA2Y3zKk1g8x")
+
     const network = clusterApiUrl('devnet');
     const [providerUrl, setProviderUrl] = useState('https://www.sollet.io');
     const connection = useMemo(() => new Connection(network), [network]);
@@ -32,7 +50,6 @@ function Portfolio() {
         network,
     ]);
     const [tokenInfo, setTokenInfo] = useState("no Info");
-
 
     const injectedWallet = useMemo(() => {
         try {
@@ -82,7 +99,7 @@ function Portfolio() {
   async function createPortfolio () {
     addLog("loading create portfolio ... ");
 
-    try {createNewPortfolio(selectedWallet, connection)
+  createNewPortfolio(selectedWallet, connection,token,USDCToken,metaDataUrl,amountAsset1,amountAsset2,amountAsset3,periodAsset1,periodAsset2,periodAsset3,assetToSold1,assetToSold2,assetToSold3)
       .then(portfolio =>{
         /*addLog ("********************************************************************************************************");
         addLog("************************************Info Portfolio Account *****************************");
@@ -97,17 +114,11 @@ function Portfolio() {
         addLog("************************************end info Portfolio Account ******************************")
         addLog("********************************************************************************************************");
        */
-        setPortfolioAccount(portfolio)
-        console.log("address of new portfolio :  ", portfolio.portfolioAddress.toString());
+        // setPortfolioAccount(portfolio)
+        console.log("xx")
+        
         })
-      .catch(
-        err => addLog("" + err)
-      )
-           
-    }
-    catch (err) {
-      addLog("" + err);
-    }
+      
   }
 
   async function createUserPortfolio () {
@@ -228,6 +239,23 @@ function Portfolio() {
     }
 
 
+    //token
+async function createToken(){
+   addLog("create Token")
+   try{
+     createTestToken(selectedWallet,connection).then(
+       token=>{
+         setToken(token.publicKey)
+         addLog(" Token"+token.publicKey)
+       }
+     )
+     .catch(err=> addLog(""+err))
+   }
+ catch(err){
+   addLog(""+err)
+ }
+ }
+
     return (
         <div className="App" id="main-wrap" >
 
@@ -267,17 +295,48 @@ function Portfolio() {
             </div>
 
 
-          
+            <button onClick={() => createToken()}>Create Token</button> 
             <br></br>
             <br></br>
             Create portfolio account :
             <br></br>
+
+token <input type="text" onChange={(e) => setToken(e.target.value)} value ={token}/> 
+
+Usdc<input type="text" onChange={(e) => setUSDC(e.target.value)} value ={USDCToken}/> 
+metadataurl<input type ="text" onChange={(e)=> setMetaDataUrl(e.target.value)} value={metaDataUrl}/>
+<br/><br/><br/>
+
+Asset 1
+<br/>
+ amount asset <input type="number" onChange={(e) => setAmountAsset1(e.target.value)} value ={amountAsset1}/> 
+
+period asset<input type="number" onChange={(e) => setPeriodAsset1(e.target.value)} value ={periodAsset1}/> 
+sold to asset <input type="text" onChange={(e) => setAssetToSold1(e.target.value)} value ={assetToSold1}/> 
+<br/>
+Asset 2
+<br/>
+ amount asset <input type="number" onChange={(e) => setAmountAsset2(e.target.value)} value ={amountAsset2}/> 
+
+period asset<input type="number" onChange={(e) => setPeriodAsset2(e.target.value)} value ={periodAsset2}/> 
+sold to asset <input type="text" onChange={(e) => setAssetToSold2(e.target.value)} value ={assetToSold2}/> 
+<br/>
+Asset 3
+<br/>
+ amount asset <input type="number" onChange={(e) => setAmountAsset3(e.target.value)} value ={amountAsset3}/> 
+
+period asset<input type="number" onChange={(e) => setPeriodAsset3(e.target.value)} value ={periodAsset3}/> 
+sold to asset <input type="text" onChange={(e) => setAssetToSold3(e.target.value)} value ={assetToSold3}/> 
+<br/>
+
+
             <button onClick={() => createPortfolio()}>Create portfolio account</button> 
      
             <br></br>
             <br></br>
             Create user portfolio account :
             <br></br>
+            
             <button onClick={() => createUserPortfolio()}>Create user portfolio account</button> 
   
             <br></br>

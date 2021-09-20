@@ -87,7 +87,9 @@ function HomePage() {
       window.location.assign("/Saber");
   
     }
-
+ async function goMultisig(){
+     window.location.assign("/TransferMultisig")
+ }
     return (
         <div className="App">
             <h1>NOVA FINANCE</h1>
@@ -125,8 +127,11 @@ function HomePage() {
         <br></br>
 
         <button onClick={() => goSaber()} className="btn btn-info">Saber</button> 
+        <br></br>
+        <br></br>
+        <br></br>
 
-
+        <button onClick={() => goMultisig()} className="btn btn-info"> transfer Multisig</button> 
 
            
         </div>
