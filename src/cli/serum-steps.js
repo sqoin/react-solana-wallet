@@ -1,4 +1,4 @@
-import { createMMApi, createTokenApi, createVaultApi, mintTokenToVaultApi, sendTokenApi, sendLamportApi, createMarketApi, swapAtoBApi, placeOrder } from "./serum-api";
+import { createMMApi, createTokenApi, createVaultApi, mintTokenToVaultApi, sendTokenApi, sendLamportApi, createMarketApi, swapAtoBApi, placeOrder, placeOrderSell, placeOrderBuy } from "./serum-api";
 
 /*export async function mintTokenAStep(selectedWallet , connection) {  
     return mintTokenAApi(selectedWallet , connection);
@@ -30,8 +30,10 @@ export async function createMarketStep(selectedWallet , connection, tokenAPk, to
 export async function swapAtoBStep(selectedWallet , connection, market,tokenAPk, tokenBPk, vaultA, vaultB) {  
     return swapAtoBApi(selectedWallet , connection, market, tokenAPk, tokenBPk, vaultA, vaultB);
 }
-export async function placeOrderStep(selectedWallet , connection, market, marketMaker, tokenPk,side) {  
-    return placeOrder(selectedWallet , connection, market, marketMaker, tokenPk,side);
+
+
+export async function placeOrderStep(selectedWallet , connection, market, marketMaker, tokenPk,side,price,size) {  
+    return placeOrder(selectedWallet , connection, market, marketMaker, tokenPk,side,price,size);
 }
 
 

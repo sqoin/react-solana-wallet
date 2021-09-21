@@ -27,21 +27,40 @@ function SerumSwap() {
     network,
   ]);
   const [tokenInfo, setTokenInfo] = useState("no Info");
-  const [tokenAPk, setTokenAPk] = useState("5GXovGM3K9aGWrHmPmrckVA982oyUGJm7PKgBxLC1DiE")
+  const [tokenAPk, setTokenAPk] = useState("2d7gHknuBx9rrzE6nkvNBhJancVRDseGBRPDn5Q1gYeE")
 
-  const [tokenBPk, setTokenBPk] = useState("47KPT4TiEsQHLESCR4QgJ64CqUD1Tp1eZZrBcmHdFDRt")
-  const [vaultA, setVaultA] = useState("CmZTSNtXcB2Zd4kdaRQ9hHqHL72PM5vq22dWi9ZCXoRZ")
-  const [vaultB, setVaultB] = useState("AHs1kfbKbKBmyxGtBmY8yB9nqRttEcqSTSaBvKwRyohj")
-  const [MM, setMM] = useState("7JEgyXdQuzxbx9zzPwnu4oE6usz5Y9csVH6Xma4zf9i1")
-  const [mmTokenAPk, setMmTokenAPk] = useState("5fqQXQxqsuC8Jvczb15THzfNw55wYX2CD2gV9uRjivBT")
-  const [mmTokenBPk, setMmTokenBPk] = useState("6DR7EBRJkGsudLqVPqQ6yoCy25piBCxo9N9qv1J1bQKU")
-  const [market, setMarket] = useState("9tACHMVaFrFskMgsQXoWdX78Cqvw3sKxpX6p1v7JZotk")
+  const [tokenBPk, setTokenBPk] = useState("FZmuAAvdF3LbMoSBdy9YWEFEWERzVNTuYxywZ8AAegUK")
+  const [vaultA, setVaultA] = useState("AiKmUDZGUUMZAWF351DgMxR796saekJWqQ3LFSkQg3KN")
+  const [vaultB, setVaultB] = useState("HzeurHKZDTLA9ePBiBU3gB4uKBN9nRNLJJBVHf86jwJH")
+  const [mmTokenAPk, setMmTokenAPk] = useState("Cjc1SFUUC6pSUudF2mD7uNHZ9ntPhpaidRHMrumZSbyG")
+  const [mmTokenBPk, setMmTokenBPk] = useState("124DWxJv2C6dmkaGubVPdhS9np8Dzw1U8df3cyoFdKer")
+  const [market, setMarket] = useState("2F6Bt3NpKDrnPYBf5CYUjzEksYhWVCY7wu5zjwvdPaXi")
+  const [MM, setMM] = useState("AqaTJarrsPsLCECBG4PAfQ47vTBDVZHWyGq5erorxw9n")
+
   const [mintA, setMintA] = useState("")
   const [accountA, setAccountA] = useState("")
 
 
 
-
+  const asks = [
+    [6.041, 7.8],
+    [6.051, 72.3],
+    [6.055, 5.4],
+    [6.067, 15.7],
+    [6.077, 390.0],
+    [6.09, 24.0],
+    [6.11, 36.3],
+    [6.133, 300.0],
+    [6.167, 687.8],
+  ];
+  const bids = [
+    [6.004, 8.5],
+    [5.995, 12.9],
+    [5.987, 6.2],
+    [5.978, 15.3],
+    [5.965, 82.8],
+    [5.961, 25.4],
+  ];
 
 
   const injectedWallet = useMemo(() => {
@@ -211,6 +230,9 @@ function SerumSwap() {
   }
 
   async function sendTokenAToMM() {
+    console.log(tokenAPk)
+    console.log(vaultA)
+    console.log(MM)
     addLog("loading send token A to Market maker ... ");
     try {
       sendTokenToMMStep(selectedWallet, connection, tokenAPk, vaultA, MM).then(result => {
@@ -271,7 +293,7 @@ function SerumSwap() {
     let side = "sell"
     addLog("loading place order ... ");
     try {
-      placeOrderStep(selectedWallet, connection, market, MM, mmTokenAPk, side).then(result => {
+      placeOrderStep(selectedWallet, connection, market, MM, mmTokenAPk, side,6.041, 7.8).then(result => {
 
         addLog("Success =>" + JSON.stringify(result))
       })
@@ -293,7 +315,7 @@ function SerumSwap() {
     let side = "buy"
     addLog("loading place order ... ");
     try {
-      placeOrderStep(selectedWallet, connection, market, MM, mmTokenBPk, side).then(result => {
+      placeOrderStep(selectedWallet, connection, market, MM, mmTokenBPk, side,6.004, 8.5).then(result => {
         // placeOrderStep(selectedWallet, connection, market, MM, tokenAPk,tokenBPk).then(result =>{
         // setMarket(result) 
         addLog("Success =>" + JSON.stringify(result))
