@@ -11,12 +11,14 @@
     
   } from './portfolio-api';
 
-export async function createPortfolioApi(selectedWallet, connection,token,USDCToken,metaDataUrl,amountAsset1,amountAsset2,amountAsset3,amountAsset4,amountAsset5,amountAsset6,amountAsset7,amountAsset8,amountAsset9,
-  periodAsset1,periodAsset2,periodAsset3,periodAsset4,periodAsset5,periodAsset6,periodAsset7,periodAsset8,periodAsset9,
-  assetToSold1,assetToSold2,assetToSold3,assetToSold4,assetToSold5,assetToSold6,assetToSold7,assetToSold8,assetToSold9) {  
-    return createPortfolio(selectedWallet, connection,token,USDCToken,metaDataUrl,amountAsset1,amountAsset2,amountAsset3,amountAsset4,amountAsset5,amountAsset6,amountAsset7,amountAsset8,amountAsset9,
-      periodAsset1,periodAsset2,periodAsset3,periodAsset4,periodAsset5,periodAsset6,periodAsset7,periodAsset8,periodAsset9,
-      assetToSold1,assetToSold2,assetToSold3,assetToSold4,assetToSold5,assetToSold6,assetToSold7,assetToSold8,assetToSold9);
+export async function createPortfolioApi(selectedWallet, connection, token, metaDataUrl, 
+  asset1,amountAsset1,periodAsset1, asset2,amountAsset2,periodAsset2,asset3,amountAsset3,periodAsset3,
+  asset4, amountAsset4,periodAsset4, asset5,amountAsset5,periodAsset5,asset6 ,amountAsset6,
+  periodAsset6, asset7,amountAsset7,periodAsset7, asset8,amountAsset8,periodAsset8, asset9,amountAsset9,periodAsset9) {  
+    return createPortfolio(selectedWallet, connection, token, metaDataUrl, 
+      asset1,amountAsset1,periodAsset1, asset2,amountAsset2,periodAsset2,asset3,amountAsset3,periodAsset3,
+      asset4, amountAsset4,periodAsset4, asset5,amountAsset5,periodAsset5,asset6 ,amountAsset6,
+      periodAsset6, asset7,amountAsset7,periodAsset7, asset8,amountAsset8,periodAsset8, asset9,amountAsset9,periodAsset9);
   }
   
 export async function createUserPortfolioApi(selectedWallet, connection,token,portfolioAddress,amountPortfolio) {  

@@ -1,6 +1,6 @@
 import React from "react";
 import SerumSwap from "./SerumSwap";
-import SwapOriginal from "./SwapOriginal";
+import SwapOriginal from "./SwapPage.js";
 import PortfolioPage from "./PortfolioPage";
 import TransferMultisig from "./TransferMultisig";
 import HomePage from "./HomePage";

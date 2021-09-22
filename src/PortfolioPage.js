@@ -28,35 +28,35 @@ function PortfolioPage() {
 ////// input
 
 const [token, setToken] = useState("6ykyxd7bZFnvEHq61vnd69BkU3gabiDmKGEQb4sGiPQG");
-const [USDCToken, setUSDC] = useState("4A3a33ozsqA6ihMXRAzYeNwZv4df9RfJoLPh6ycZJVhE");
+
 const [metaDataUrl,setMetaDataUrl]=useState("aabbcc");
 const [amountAsset1,setAmountAsset1]=useState(2);
-const [periodAsset1,setPeriodAsset1]=useState(123);
-const [assetToSold1,setAssetToSold1]=useState("FAxFrLbWabNWgL1A9sLokNQbaBSq33iQHA2Y3zKk1g8x");
+const [periodAsset1,setPeriodAsset1]=useState(30);
+const [asset1,setAsset1]=useState("4A3a33ozsqA6ihMXRAzYeNwZv4df9RfJoLPh6ycZJVhE");
 const [amountAsset2,setAmountAsset2]=useState(3);
 const [periodAsset2,setPeriodAsset2]=useState(4);
-const [assetToSold2,setAssetToSold2]=useState("FAxFrLbWabNWgL1A9sLokNQbaBSq33iQHA2Y3zKk1g8x")
+const [asset2,setAsset2]=useState("4A3a33ozsqA6ihMXRAzYeNwZv4df9RfJoLPh6ycZJVhE")
 const [amountAsset3,setAmountAsset3]=useState(3);
-const [periodAsset3,setPeriodAsset3]=useState(4);
-const [assetToSold3,setAssetToSold3]=useState("FAxFrLbWabNWgL1A9sLokNQbaBSq33iQHA2Y3zKk1g8x")
+const [periodAsset3,setPeriodAsset3]=useState(7);
+const [asset3,setAsset3]=useState("4A3a33ozsqA6ihMXRAzYeNwZv4df9RfJoLPh6ycZJVhE")
 const [amountAsset4,setAmountAsset4]=useState(3);
-const [periodAsset4,setPeriodAsset4]=useState(4);
-const [assetToSold4,setAssetToSold4]=useState("FAxFrLbWabNWgL1A9sLokNQbaBSq33iQHA2Y3zKk1g8x")
+const [periodAsset4,setPeriodAsset4]=useState(8);
+const [asset4,setAsset4]=useState("4A3a33ozsqA6ihMXRAzYeNwZv4df9RfJoLPh6ycZJVhE")
 const [amountAsset5,setAmountAsset5]=useState(3);
-const [periodAsset5,setPeriodAsset5]=useState(4);
-const [assetToSold5,setAssetToSold5]=useState("FAxFrLbWabNWgL1A9sLokNQbaBSq33iQHA2Y3zKk1g8x")
+const [periodAsset5,setPeriodAsset5]=useState(5);
+const [asset5,setAsset5]=useState("4A3a33ozsqA6ihMXRAzYeNwZv4df9RfJoLPh6ycZJVhE")
 const [amountAsset6,setAmountAsset6]=useState(3);
 const [periodAsset6,setPeriodAsset6]=useState(4);
-const [assetToSold6,setAssetToSold6]=useState("FAxFrLbWabNWgL1A9sLokNQbaBSq33iQHA2Y3zKk1g8x")
+const [asset6,setAsset6]=useState("4A3a33ozsqA6ihMXRAzYeNwZv4df9RfJoLPh6ycZJVhE")
 const [amountAsset7,setAmountAsset7]=useState(3);
 const [periodAsset7,setPeriodAsset7]=useState(4);
-const [assetToSold7,setAssetToSold7]=useState("FAxFrLbWabNWgL1A9sLokNQbaBSq33iQHA2Y3zKk1g8x")
+const [asset7,setAsset7]=useState("4A3a33ozsqA6ihMXRAzYeNwZv4df9RfJoLPh6ycZJVhE")
 const [amountAsset8,setAmountAsset8]=useState(3);
 const [periodAsset8,setPeriodAsset8]=useState(4);
-const [assetToSold8,setAssetToSold8]=useState("FAxFrLbWabNWgL1A9sLokNQbaBSq33iQHA2Y3zKk1g8x")
+const [asset8,setAsset8]=useState("4A3a33ozsqA6ihMXRAzYeNwZv4df9RfJoLPh6ycZJVhE")
 const [amountAsset9,setAmountAsset9]=useState(3);
 const [periodAsset9,setPeriodAsset9]=useState(4);
-const [assetToSold9,setAssetToSold9]=useState("FAxFrLbWabNWgL1A9sLokNQbaBSq33iQHA2Y3zKk1g8x")
+const [asset9,setAsset9]=useState("4A3a33ozsqA6ihMXRAzYeNwZv4df9RfJoLPh6ycZJVhE")
 const [portfolioAddress,setPortfolioAddress]=useState("8EdcbESWUDqgxUeq9ykcax5hQQhSF9cinWk8yiVFFs9B")
 const [amountPortfolio,setAmountPortfolio]=useState(5)
 const [userPortfolioAccount,setUserPortfolioAccount]=useState("BqZom3cQevaDpBxmBQKeE9d5ny5v27qnUtUv67roKAgh")
@@ -120,9 +120,10 @@ const[infoPortfolio,setInfoPortfolio]=useState("")
   async function createPortfolioFunction() {
     addLog("loading create portfolio ... ");
 
-    createPortfolioApi(selectedWallet, connection,token,USDCToken,metaDataUrl,amountAsset1,amountAsset2,amountAsset3,amountAsset4,amountAsset5,amountAsset6,amountAsset7,amountAsset8,amountAsset9,
-    periodAsset1,periodAsset2,periodAsset3,periodAsset4,periodAsset5,periodAsset6,periodAsset7,periodAsset8,periodAsset9,
-    assetToSold1,assetToSold2,assetToSold3,assetToSold4,assetToSold5,assetToSold6,assetToSold7,assetToSold8,assetToSold9)
+    createPortfolioApi(selectedWallet, connection, token, metaDataUrl, 
+      asset1,amountAsset1,periodAsset1, asset2,amountAsset2,periodAsset2,asset3,amountAsset3,periodAsset3,
+      asset4, amountAsset4,periodAsset4, asset5,amountAsset5,periodAsset5,asset6 ,amountAsset6,
+      periodAsset6, asset7,amountAsset7,periodAsset7, asset8,amountAsset8,periodAsset8, asset9,amountAsset9,periodAsset9)
       .then(portfolio =>{
         addLog ("********************************************************************************************************");
         addLog("************************************Info Portfolio Account *****************************");
@@ -311,7 +312,6 @@ const[infoPortfolio,setInfoPortfolio]=useState("")
 
 token <input type="text" onChange={(e) => setToken(e.target.value)} value ={token}/> 
 
-Usdc<input type="text" onChange={(e) => setUSDC(e.target.value)} value ={USDCToken}/> 
 metadataurl<input type ="text" onChange={(e)=> setMetaDataUrl(e.target.value)} value={metaDataUrl}/>
 <br/><br/><br/>
 
@@ -329,63 +329,63 @@ Asset 1
  amount asset <input type="number" onChange={(e) => setAmountAsset1(e.target.value)} value ={amountAsset1}/> 
 
 period asset<input type="number" onChange={(e) => setPeriodAsset1(e.target.value)} value ={periodAsset1}/> 
-sold to asset <input type="text" onChange={(e) => setAssetToSold1(e.target.value)} value ={assetToSold1}/> 
+sold to asset <input type="text" onChange={(e) => setAsset1(e.target.value)} value ={asset1}/> 
 <br/>
 Asset 2
 <br/>
  amount asset <input type="number" onChange={(e) => setAmountAsset2(e.target.value)} value ={amountAsset2}/> 
 
 period asset<input type="number" onChange={(e) => setPeriodAsset2(e.target.value)} value ={periodAsset2}/> 
-sold to asset <input type="text" onChange={(e) => setAssetToSold2(e.target.value)} value ={assetToSold2}/> 
+sold to asset <input type="text" onChange={(e) => setAsset2(e.target.value)} value ={asset2}/> 
 <br/>
 Asset 3
 <br/>
  amount asset <input type="number" onChange={(e) => setAmountAsset3(e.target.value)} value ={amountAsset3}/> 
 
 period asset<input type="number" onChange={(e) => setPeriodAsset3(e.target.value)} value ={periodAsset3}/> 
-sold to asset <input type="text" onChange={(e) => setAssetToSold3(e.target.value)} value ={assetToSold3}/> 
+sold to asset <input type="text" onChange={(e) => setAsset3(e.target.value)} value ={asset3}/> 
 <br/>
 Asset 4
 <br/>
  amount asset <input type="number" onChange={(e) => setAmountAsset4(e.target.value)} value ={amountAsset4}/> 
 
 period asset<input type="number" onChange={(e) => setPeriodAsset4(e.target.value)} value ={periodAsset4}/> 
-sold to asset <input type="text" onChange={(e) => setAssetToSold4(e.target.value)} value ={assetToSold4}/> 
+sold to asset <input type="text" onChange={(e) => setAsset4(e.target.value)} value ={asset4}/> 
 <br/>
 Asset 5
 <br/>
  amount asset <input type="number" onChange={(e) => setAmountAsset5(e.target.value)} value ={amountAsset5}/> 
 
 period asset<input type="number" onChange={(e) => setPeriodAsset5(e.target.value)} value ={periodAsset5}/> 
-sold to asset <input type="text" onChange={(e) => setAssetToSold5(e.target.value)} value ={assetToSold5}/> 
+sold to asset <input type="text" onChange={(e) => setAsset5(e.target.value)} value ={asset5}/> 
 <br/>
 Asset 6
 <br/>
  amount asset <input type="number" onChange={(e) => setAmountAsset6(e.target.value)} value ={amountAsset6}/> 
 
 period asset<input type="number" onChange={(e) => setPeriodAsset6(e.target.value)} value ={periodAsset6}/> 
-sold to asset <input type="text" onChange={(e) => setAssetToSold6(e.target.value)} value ={assetToSold6}/> 
+sold to asset <input type="text" onChange={(e) => setAsset6(e.target.value)} value ={asset6}/> 
 <br/>
 Asset 7
 <br/>
  amount asset <input type="number" onChange={(e) => setAmountAsset7(e.target.value)} value ={amountAsset7}/> 
 
 period asset<input type="number" onChange={(e) => setPeriodAsset7(e.target.value)} value ={periodAsset7}/> 
-sold to asset <input type="text" onChange={(e) => setAssetToSold7(e.target.value)} value ={assetToSold7}/> 
+sold to asset <input type="text" onChange={(e) => setAsset7(e.target.value)} value ={asset7}/> 
 <br/>
 Asset 8
 <br/>
  amount asset <input type="number" onChange={(e) => setAmountAsset8(e.target.value)} value ={amountAsset8}/> 
 
 period asset<input type="number" onChange={(e) => setPeriodAsset8(e.target.value)} value ={periodAsset8}/> 
-sold to asset <input type="text" onChange={(e) => setAssetToSold8(e.target.value)} value ={assetToSold8}/> 
+sold to asset <input type="text" onChange={(e) => setAsset8(e.target.value)} value ={asset8}/> 
 <br/>
 Asset 9
 <br/>
  amount asset <input type="number" onChange={(e) => setAmountAsset9(e.target.value)} value ={amountAsset9}/> 
 
 period asset<input type="number" onChange={(e) => setPeriodAsset9(e.target.value)} value ={periodAsset9}/> 
-sold to asset <input type="text" onChange={(e) => setAssetToSold9(e.target.value)} value ={assetToSold9}/> 
+sold to asset <input type="text" onChange={(e) => setAsset9(e.target.value)} value ={asset9}/> 
 <br/>
 <br/>
 <br/>

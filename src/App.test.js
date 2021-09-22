@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import App from './SwapOriginal';
+import App from './SwapPage.js';
 
 test('renders learn react link', () => {
   render(<App />);
