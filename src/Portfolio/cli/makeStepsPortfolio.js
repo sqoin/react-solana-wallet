@@ -1,5 +1,3 @@
-
-
 /**
  * Exercises the token program
  *
@@ -7,60 +5,25 @@
  */
 
  import {
-    loadTokenProgram,
-    createMint,
-    createAccount,
-
-    runDeposit,
-
-    runApprove,
- 
     createUserPortfolio,
     runDepositPortfolio,
-    createPortfolios,createNewTestToken
+    createPortfolio
     
-  } from './token-test';
+  } from './portfolio-api';
 
+export async function createPortfolioApi(selectedWallet, connection,token,USDCToken,metaDataUrl,amountAsset1,amountAsset2,amountAsset3,amountAsset4,amountAsset5,amountAsset6,amountAsset7,amountAsset8,amountAsset9,
+  periodAsset1,periodAsset2,periodAsset3,periodAsset4,periodAsset5,periodAsset6,periodAsset7,periodAsset8,periodAsset9,
+  assetToSold1,assetToSold2,assetToSold3,assetToSold4,assetToSold5,assetToSold6,assetToSold7,assetToSold8,assetToSold9) {  
+    return createPortfolio(selectedWallet, connection,token,USDCToken,metaDataUrl,amountAsset1,amountAsset2,amountAsset3,amountAsset4,amountAsset5,amountAsset6,amountAsset7,amountAsset8,amountAsset9,
+      periodAsset1,periodAsset2,periodAsset3,periodAsset4,periodAsset5,periodAsset6,periodAsset7,periodAsset8,periodAsset9,
+      assetToSold1,assetToSold2,assetToSold3,assetToSold4,assetToSold5,assetToSold6,assetToSold7,assetToSold8,assetToSold9);
+  }
+  
+export async function createUserPortfolioApi(selectedWallet, connection,token,portfolioAddress,amountPortfolio) {  
+    return createUserPortfolio(selectedWallet, connection,token,portfolioAddress,amountPortfolio);
+  }
 
-export async function makeStepsPortfolio(selectedWallet) {
-    console.log("********** NoVa FINaNCe PorTFolIo PROJECT **********");
-    console.log('Run test: loadTokenProgram');
-    await loadTokenProgram();
-    console.log('Run test: createMint');
-    await createMint();
-    console.log("Run test: createAccount");
-    await createAccount();
-    console.log("Run test : runApprove")
-    await runApprove();
-    console.log("Run test: runDeposit");
-    await runDeposit();
-    console.log("Run test: createPortfolio");
-    await createPortfolios();
-  
-    console.log("Run test: createUserPortfolio");
-    await createUserPortfolio();
-  
-    console.log("Run test: deposit portfolio");
-    await runDepositPortfolio();
+export async function depositInPortfolioApi(selectedWallet, connection,portfolioAccount,userPAccount) {  
+    return runDepositPortfolio(selectedWallet, connection,portfolioAccount,userPAccount);
+  }
  
-    console.log(" *************** Finish *************** ");
-
-  }
-
-
-  
-export async function createNewPortfolio(selectedWallet, connection,token,USDCToken,metaDataUrl,amountAsset1,amountAsset2,amountAsset3,periodAsset1,periodAsset2,periodAsset3,assetToSold1,assetToSold2,assetToSold3) {  
-    return createPortfolios(selectedWallet, connection,token,USDCToken,metaDataUrl,amountAsset1,amountAsset2,amountAsset3,periodAsset1,periodAsset2,periodAsset3,assetToSold1,assetToSold2,assetToSold3);
-  }
-  
-export async function createNewUserPortfolio(selectedWallet , connection) {  
-    return createUserPortfolio(selectedWallet , connection);
-  }
-
-export async function depositInPortfolio(selectedWallet , connection) {  
-  console.log ("in deposit")
-    return runDepositPortfolio(selectedWallet , connection);
-  }
-  export async function createTestToken(selectedWallet,connection){
-    return createNewTestToken(selectedWallet,connection)
-  }

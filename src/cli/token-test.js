@@ -12,14 +12,14 @@ import {
 } from '@solana/web3.js';
 import * as BufferLayout from 'buffer-layout';
 import * as Layout from './layout';
+
 import {
   Token,
   TOKEN_PROGRAM_ID,
   ASSOCIATED_TOKEN_PROGRAM_ID,
   NATIVE_MINT,
-  u64,
-
-} from '../client/token';
+  u64
+} from "@solana/spl-token";
 import {
   TokenSwap
 } from '../swap/index'

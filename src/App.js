@@ -1,7 +1,7 @@
 import React from "react";
 import SerumSwap from "./SerumSwap";
 import SwapOriginal from "./SwapOriginal";
-import Portfolio from "./Portfolio";
+import PortfolioPage from "./PortfolioPage";
 import TransferMultisig from "./TransferMultisig";
 import HomePage from "./HomePage";
 import Saber from "./Saber";
@@ -63,7 +63,7 @@ function SwapOriginalLink() {
 }
 function PortfolioLink() {
   return (
-   <Portfolio/>
+   <PortfolioPage/>
   );
 }
 function TransferMultisigLink() {
