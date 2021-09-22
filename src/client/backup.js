@@ -282,7 +282,7 @@ const MultisigLayout = BufferLayout.struct([
 /**
  * An ERC20-like Token
  */
-export class Token {
+export class backup {
   /**
    * @private
    */

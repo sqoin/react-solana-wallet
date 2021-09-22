@@ -14,11 +14,11 @@ import * as Layout from './layout';
 
 import {
   Token,
-  TOKEN_PROGRAM_ID,
+  ORIGINE_PROGRAMM_ID,
   
 
   u64
-} from "@solana/spl-token";
+} from "../client/token";
 import {
   TokenSwap
 } from '../swap/index'
@@ -89,25 +89,27 @@ export async function createTokenSwapA(selectedWallet, connection): Promise<void
     TOKEN_SWAP_PROGRAM_ID,
   )
 
-  let token = new Token(
-    connection,
-    selectedWallet.publicKey,
-    TOKEN_PROGRAM_ID,
-    selectedWallet)
+  // let token = new Token(
+  //   connection,
+  //   selectedWallet.publicKey,
+  //   ORIGINE_PROGRAMM_ID,
+  //   selectedWallet)
 
 
-  mintA = await token.createMint(
+  mintA = await Token.createMint(
     connection,
     selectedWallet,
     selectedWallet.publicKey,
     null,
     testTokenDecimals,
     programId,
+    programId,
+    programId
   );
 
   let ret= { "mintA": mintA.publicKey, "authority": authority.toBase58(),"nonce":nonce};
  
-  console.log("mintA" + mintA.publicKey.toBase58())
+  // console.log("mintA" + mintA.publicKey.toBase58())
   
   return ret;
 }
@@ -119,23 +121,26 @@ export async function createTokenSwapB(selectedWallet, connection): Promise<void
   )
 
   
-  let token = new Token(
-    connection,
-    selectedWallet.publicKey,
-    TOKEN_PROGRAM_ID,
-    selectedWallet)
+  // let token = new Token(
+  //   connection,
+  //   selectedWallet.publicKey,
+  //   ORIGINE_PROGRAMM_ID,
+  //   selectedWallet)
+  
 
-
-  mintB = await token.createMint(
+  
+  mintB = await Token.createMint(
     connection,
     selectedWallet,
-    
     selectedWallet.publicKey,
     null,
     testTokenDecimals,
     programId,
+    programId,
+    programId
   );
- 
+
+ console.log("mintb"+JSON.stringify(mintB))
   let ret= { "mintB": mintB.publicKey, "authority": authority.toBase58(),"nonce":nonce};
   return ret;
 }
@@ -144,7 +149,7 @@ export async function createAccountTokenSwapA(selectedWallet, connection,mint,au
   let token = new Token(
     connection,
    mint,
-    TOKEN_PROGRAM_ID,
+   new PublicKey( ORIGINE_PROGRAMM_ID),
     selectedWallet)
 
   tokenAccountA = await token.createAccount(autority);
@@ -156,7 +161,7 @@ export async function createAccountTokenSwapB(selectedWallet, connection,mint,au
   let token = new Token(
     connection,
    mint,
-    TOKEN_PROGRAM_ID,
+    new PublicKey(ORIGINE_PROGRAMM_ID),
     selectedWallet)
   tokenAccountB = await token.createAccount(autority);
   return tokenAccountB;
@@ -167,12 +172,13 @@ export async function createMintTokenA(selectedWallet,connection,mintAddress,acc
   let testToken = new Token(
     connection,
     new PublicKey(mintAddress),
-   TOKEN_PROGRAM_ID,
+    new PublicKey(ORIGINE_PROGRAMM_ID),
     selectedWallet
 );
+console.log("testToken"+testToken)
   await testToken.mintTo(accountAddress, selectedWallet, [], 1000);
   const mintInfo = await testToken.getAccountInfo(new PublicKey(accountAddress))
-  console.log(mintInfo)
+  console.log("mintInfo"+mintInfo)
 
   return  mintInfo;
 }
@@ -181,7 +187,7 @@ export async function createMintTokenB(selectedWallet,connection,mintAddress,acc
 let testToken = new Token(
   connection,
   new PublicKey(mintAddress),
-  TOKEN_PROGRAM_ID,
+  new PublicKey(ORIGINE_PROGRAMM_ID),
   selectedWallet
 );
 await testToken.mintTo(accountAddress, selectedWallet, [], 1000);
@@ -197,21 +203,24 @@ export async function createPoolTokenSwap(selectedWallet, connection, autority):
 
   const ownerKey = SWAP_PROGRAM_OWNER_FEE_ADDRESS || owner.publicKey.toString();
 
-console.log(autority)
-  let token = new Token(
-    connection,
-    selectedWallet.publicKey,
-    TOKEN_PROGRAM_ID,
-    selectedWallet)
+  // let token = new Token(
+  //   connection,
+  //   selectedWallet.publicKey,
+  //   new PublicKey(ORIGINE_PROGRAMM_ID),
+  //   selectedWallet)
 
-   poolToken = await token.createMint(
+  poolToken = await Token.createMint(
     connection,
     selectedWallet,
    new PublicKey(autority),
     null,
     testTokenDecimals,
-    TOKEN_PROGRAM_ID,
+    programId,
+    programId,
+    programId
   );
+  
+
 let  feeAccount = await poolToken.createAccount(new PublicKey(ownerKey));
 let  accountPool = await poolToken.createAccount(selectedWallet.publicKey);
 let infoPool = { "poolToken": poolToken.publicKey, "accountPool": accountPool, "feeAccount": feeAccount }
@@ -236,7 +245,7 @@ export async function swapToken(selectedWallet, connection,minta,mintb,accounta,
       new PublicKey(feeaccount),
       new PublicKey(accountpool),
       TOKEN_SWAP_PROGRAM_ID,
-      TOKEN_PROGRAM_ID,
+      ORIGINE_PROGRAMM_ID,
       Nonce,
       TRADING_FEE_NUMERATOR,
       TRADING_FEE_DENOMINATOR,
@@ -262,7 +271,7 @@ export async function swap(selectedWallet, connection,tokenSwapPubkey,minta,mint
   let token1= new Token(
     connection,
     minta,
-    TOKEN_PROGRAM_ID,
+    ORIGINE_PROGRAMM_ID,
     selectedWallet)
   let userAccountA = await token1.createAccount(selectedWallet.publicKey)
   await token1.mintTo(userAccountA, selectedWallet, [], 100000);
@@ -278,14 +287,14 @@ export async function swap(selectedWallet, connection,tokenSwapPubkey,minta,mint
   let tokenB = new Token(
     connection,
     mintb,
-    TOKEN_PROGRAM_ID,
+    ORIGINE_PROGRAMM_ID,
     selectedWallet)
   let userAccountB = await tokenB.createAccount(selectedWallet.publicKey)
   
   let poolToken = new Token(
     connection,
     new PublicKey( pooltoken),
-    TOKEN_PROGRAM_ID,
+    ORIGINE_PROGRAMM_ID,
     selectedWallet)
   let poolAccount = SWAP_PROGRAM_OWNER_FEE_ADDRESS ? await poolToken.createAccount(selectedWallet.publicKey): null; //account pool
   let info;
@@ -305,7 +314,7 @@ export async function swap(selectedWallet, connection,tokenSwapPubkey,minta,mint
   { pubkey: userAccountB, isSigner: false, isWritable: true },
   { pubkey: poolToken.publicKey, isSigner: false, isWritable: true },
   { pubkey: new PublicKey(feeaccount), isSigner: false, isWritable: true },
-  { pubkey: TOKEN_PROGRAM_ID, isSigner: false, isWritable: true },
+  { pubkey: ORIGINE_PROGRAMM_ID, isSigner: false, isWritable: true },
   { pubkey: poolAccount, isSigner: false, isWritable: true },
   { pubkey: programAddress, isSigner: false, isWritable: true },
   { pubkey: TOKEN_SWAP_PROGRAM_ID, isSigner: false, isWritable: true },
@@ -471,7 +480,7 @@ let multisigAccount = new PublicKey("7owzsQm3T8rirScNC8RDEd3qdJJTzGETKqte6eHL1XT
   let token = new Token(
     connection,
     selectedWallet.publicKey,
-    TOKEN_PROGRAM_ID,
+    ORIGINE_PROGRAMM_ID,
     selectedWallet)
   tokenMint = await token.createMintMult(
   connection,
@@ -497,7 +506,7 @@ let spluMultisig = new PublicKey("5xdN1WLKNepbUjZKfs9Lc44qNqzv9FJ2ZoDhQjRcmMdG")
 let token = new Token(
   connection,
   mintAccount,
-  TOKEN_PROGRAM_ID,
+  ORIGINE_PROGRAMM_ID,
   selectedWallet)
 
    let res = await token.mintToMultisig(
@@ -521,7 +530,7 @@ export async function mintMultisig2 (selectedWallet, connection ,mintAccount ,ra
   let token = new Token(
     connection,
     mintAccount,
-    TOKEN_PROGRAM_ID,
+    ORIGINE_PROGRAMM_ID,
     selectedWallet)
   
      await token.mintToMultisig2(
@@ -542,7 +551,7 @@ export async function createAccountMulti(selectedWallet , connection , mintPubKe
  let token = new Token(
   connection,
   mintPubKey,
-  TOKEN_PROGRAM_ID,
+  ORIGINE_PROGRAMM_ID,
   selectedWallet)
 
 

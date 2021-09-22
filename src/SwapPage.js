@@ -15,13 +15,13 @@ function SwapPage() {
   const network = "https://api.devnet.solana.com";
   const [providerUrl, setProviderUrl] = useState('https://www.sollet.io');
   const connection = useMemo(() => new Connection(network), [network]);
-  const [mintA, setMintA] = useState("2H7pHDKoz4JDamRz6kqHPJdPL98bJrPcRgiSmDS4jMc6")
-  const [mintB, setMintB] = useState("6Ao2C6GwrMixBhEuprGNQnkkwxBDMmyLUgAngxMdXo3w");
-  const [accountA, setAccountA] = useState("6vsRuRUKixC883YoMe4oLwTFnVre5jDFwKtvZpML89Tn")
-  const [accountB, setAccountB] = useState("4WyqmkKgR85ytWnHLh55DJGJKMLJF7vPscpy8fKQLNXP")
+  const [mintA, setMintA] = useState("5WzD3VpTaEMnpYZh7k4Jj5AtGXKJ2Mat9RhQwjW7Gv8Y")
+  const [mintB, setMintB] = useState("9YDmzDTe9i5NEPv4q5sPNTNJ5YyLgRMSFTEAHR5LxeDG");
+  const [accountA, setAccountA] = useState("28c9sCoUjrnWSVDUmBz2d5qKZCqRuPDciBDAvP7Aeggn")
+  const [accountB, setAccountB] = useState("BHTG9JU888rNb7dUFNQHZ2m1Y2yhBKzXf4JyRi1TpXty")
   const [poolToken, setPoolToken] = useState("4gGRwSj4SqiEGaog1cpyJiEx9CDs8amyCmAQ9Fw2mguF")
   const [accountPool, setAccountPool] = useState("C7AqEeNK5eb5SKGYaDrgna322vKCSxkwCr3MgvdTPxYk")
-  const [autorithy, setAuthority] = useState("9e3Q8RhBCqJJSLjJ6uUSuF8NPYpzA82v4DLZnyWUa519")
+  const [autorithy, setAuthority] = useState("CXb3qTpPEcKjMdSGuEzqMzQR8Z6KKbCvm9oqM6pZKzpB")
   const [tokenSwap, setTokenSwap] = useState("Af2btwAACYUsjzcGfDLDncRehPz2YT11DqEfhMaWXhrZ")
   const [feeAccount, setFeeAccount] = useState("BHCJqVxfhwt8Uf47pw2rwxfAYYSkU3LeB2FBAEtr1Sv8")
   const [nonce, setNonce] = useState(252)
@@ -100,21 +100,21 @@ function SwapPage() {
   //create token A
   async function createTokenASwap() {
     addLog("loading create Mint A... ");
-    try {
+    //try {
       createTokenA(selectedWallet, connection).then(token => {
         setMintA(token.mintA)
         setAuthority(token.authority)
         setNonce(token.nonce)
         addLog("publickey tokenA   " + token.mintA + " authorty = " + token.authority)
       })
-        .catch(
-          err => addLog("" + err)
-        )
+    //     .catch(
+    //       err => addLog("" + err)
+    //     )
 
-    }
-    catch (err) {
-      addLog("" + err);
-    }
+    // }
+    // catch (err) {
+    //   addLog("" + err);
+    // }
 
   }
   //create token B
@@ -147,7 +147,7 @@ function SwapPage() {
     try {
       createNewAccountTokenA(selectedWallet, connection, mint, autority)
         .then(account => {
-
+          addLog("account   " +account);
           setAccountA(account)
         })
         .catch(
@@ -213,7 +213,7 @@ function SwapPage() {
   async function createPool() {
     addLog("loading create pool... ");
     let autority = autorithy
-    try {
+    //try {
       createPoolToken(selectedWallet, connection, autority)
         .then(token => {
           console.log("createPool result " + token)
@@ -223,12 +223,12 @@ function SwapPage() {
 
           addLog("accountPool" + token.accountPool + " tokenPool" + token.poolToken + "feeAccount" + token.feeAccount)
         })
-        .catch(
-          err => addLog("" + err)
-        )
-    } catch (err) {
-      addLog("" + err);
-    }
+    //     .catch(
+    //       err => addLog("" + err)
+    //     )
+    // } catch (err) {
+    //   addLog("" + err);
+    // }
   }
   async function swapTokens() {
     addLog("loading swap token... ");
