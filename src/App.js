@@ -12,6 +12,7 @@ import {
   Route,
   Link
 } from "react-router-dom";
+import QuarryFarm from "./quarry-farm";
 
 export default function App() {
   return (
@@ -36,6 +37,9 @@ export default function App() {
         </Route>
         <Route exact path="/Saber">
           <SaberLink />
+        </Route>
+        <Route exact path="/QuarryFarm">
+          <QuarryLink />
         </Route>
 
       </Switch>
@@ -74,6 +78,11 @@ function TransferMultisigLink() {
 function SaberLink() {
   return (
    <Saber/>
+  );
+}
+function QuarryLink() {
+  return (
+   <QuarryFarm/>
   );
 }
 

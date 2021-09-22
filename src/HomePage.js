@@ -87,6 +87,12 @@ function HomePage() {
       window.location.assign("/Saber");
   
     }
+  
+  async function goQuarry() {
+  
+      window.location.assign("/QuarryFarm");
+  
+    }
 
     return (
         <div className="App">
@@ -125,6 +131,12 @@ function HomePage() {
         <br></br>
 
         <button onClick={() => goSaber()} className="btn btn-info">Saber</button> 
+
+        <br></br>
+        <br></br>
+        <br></br>
+
+        <button onClick={() => goQuarry()} className="btn btn-info">Quarry Farm</button> 
 
 
 
