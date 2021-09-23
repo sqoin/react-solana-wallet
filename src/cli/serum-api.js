@@ -349,7 +349,8 @@ async function sendAndConfirmRawTransaction(
   return await connection.confirmTransaction(tx, commitment);
 }
 
-export async function placeOrder(selectedWallet, connection, marketPk, marketMaker, mmToken, side){
+
+export async function placeOrder(selectedWallet, connection, marketPk, marketMaker, mmToken, side,price,size){
   let provider= new Provider(connection, selectedWallet, options);
   const market = await Market.load(
     connection,
@@ -361,6 +362,7 @@ export async function placeOrder(selectedWallet, connection, marketPk, marketMak
   console.log(JSON.stringify(marketMaker1))
   console.log(marketMaker1.publicKey)
   console.log(side)
+
   const {
     transaction,
     signers,
@@ -368,8 +370,8 @@ export async function placeOrder(selectedWallet, connection, marketPk, marketMak
       owner: marketMaker1.publicKey,
       payer: new PublicKey(mmToken),
       side: side,
-      price: 1,
-      size: 10,
+      price:price,
+      size: size,
       orderType: "postOnly",
       clientId: undefined,
       openOrdersAddressKey: undefined,
@@ -378,24 +380,7 @@ export async function placeOrder(selectedWallet, connection, marketPk, marketMak
       selfTradeBehavior: "abortTransaction",
     });
     await provider.send(transaction, signers.concat(marketMaker1));
-  /* const {
-      transaction2,
-      signers2,
-    } = await market.makePlaceOrderTransaction(provider.connection, {
-      owner: marketMaker1.publicKey,
-      payer: new PublicKey(mmQuoteToken),
-      side: "buy",
-      price: 1,
-      size: 10,
-      orderType: "postOnly",
-      clientId: undefined,
-      openOrdersAddressKey: undefined,
-      openOrdersAccount: undefined,
-      feeDiscountPubkey: null,
-      selfTradeBehavior: "abortTransaction",
-    });
 
-    await provider.send(transaction2, signers2.concat(marketMaker1));*/
     return "order placed"
 }
 
@@ -407,11 +392,9 @@ export async function swapAtoBApi(selectedWallet, connection,  marketPk, tokenAP
   let provider= new Provider(connection1, selectedWallet, options);
   anchor.setProvider(provider);
   console.log(provider.connection)
-  //const idl = JSON.parse(require('fs').readFile('./serumSwap.json', 'utf8'));
   const idl=require('./serumSwap')
   console.log(idl)
-  //const programId = new anchor.web3.PublicKey('64VhHFWyFgXxUaHi9tg4DWLd1xqdYNdTdsNSG3DWhRE3');
-  const programId = new anchor.web3.PublicKey('J4jvVPcuEh1RBqPARriV7imYLSCCXYmGYQNHSqqzFcYC');
+  const programId = new anchor.web3.PublicKey('FD7vz4fQSEZfHx5iixCz1i2V4Km1w2UiEDhAR99DeKkE');
   const program = new anchor.Program(idl, programId);
   console.log(program)
   console.log("market => "+ marketPk)
@@ -455,23 +438,15 @@ export async function swapAtoBApi(selectedWallet, connection,  marketPk, tokenAP
     console.log("swap accounts => "+ JSON.stringify(SWAP_ACCOUNTS))
     // Swap exactly enough USDC to get 1.2 A tokens (best offer price is 6.041 USDC).
     let TAKER_FEE=0.0022
-    const expectedResultantAmount = 6.041;
+    const expectedResultantAmount = 7.2;
     const bestOfferPrice = 6.041;
     const amountToSpend = expectedResultantAmount * bestOfferPrice;
-    const swapAmount = new BN((10 / (1 - TAKER_FEE)) * 10 ** 2);
+    const swapAmount = new BN((amountToSpend * 10 ** 2));
     console.log("swap amount "+swapAmount)
-    //const [tokenAChange, usdcChange] = await withBalanceChange(
-    // const tx = new Transaction();
-     /* tx.add(
-        await OpenOrders.makeCreateAccountTransaction(
-          connection,
-          marketA._decoded.ownAddress,
-          selectedWallet.publicKey,
-          openOrdersA.publicKey,
-          dexProgramId
-        )
-      );
-      await program.provider.send(tx, [openOrdersA]);*/
+    const [tokenAChange, usdcChange] = await withBalanceChange(
+      program.provider,
+      [new PublicKey(vaultA) , new PublicKey(vaultB) ],
+      async () => {
       await program.rpc.swap(
         Side.Bid,
         swapAmount,
@@ -491,5 +466,39 @@ export async function swapAtoBApi(selectedWallet, connection,  marketPk, tokenAP
           signers: [openOrdersA],
         }
       );
+      }
+      );
+      console.log("tokenAChange"+tokenAChange)
+      console.log("expectedResultantAmount"+expectedResultantAmount)
+      console.log("usdcChange"+usdcChange)
+
+      console.log("swapAmount.toNumber() / 10 ** 6"+ (swapAmount.toNumber() / 10 ** 2))
+
         return "ok"
+}
+
+async function withBalanceChange(provider, addrs, fn) {
+  const beforeBalances = [];
+  for (let k = 0; k < addrs.length; k += 1) {
+    beforeBalances.push(
+      (await serumCmn.getTokenAccount(provider, addrs[k])).amount
+    );
+  }
+
+  await fn();
+
+  const afterBalances = [];
+  for (let k = 0; k < addrs.length; k += 1) {
+    afterBalances.push(
+      (await serumCmn.getTokenAccount(provider, addrs[k])).amount
+    );
+  }
+
+  const deltas = [];
+  for (let k = 0; k < addrs.length; k += 1) {
+    deltas.push(
+      (afterBalances[k].toNumber() - beforeBalances[k].toNumber()) / 10 ** 2
+    );
+  }
+  return deltas;
 }
