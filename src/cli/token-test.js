@@ -140,7 +140,7 @@ export async function createTokenSwapB(selectedWallet, connection): Promise<void
     programId
   );
 
- console.log("mintb"+JSON.stringify(mintB))
+
   let ret= { "mintB": mintB.publicKey, "authority": authority.toBase58(),"nonce":nonce};
   return ret;
 }
@@ -245,7 +245,7 @@ export async function swapToken(selectedWallet, connection,minta,mintb,accounta,
       new PublicKey(feeaccount),
       new PublicKey(accountpool),
       TOKEN_SWAP_PROGRAM_ID,
-      ORIGINE_PROGRAMM_ID,
+      new PublicKey(ORIGINE_PROGRAMM_ID),
       Nonce,
       TRADING_FEE_NUMERATOR,
       TRADING_FEE_DENOMINATOR,

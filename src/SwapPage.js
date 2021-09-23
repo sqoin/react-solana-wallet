@@ -15,16 +15,16 @@ function SwapPage() {
   const network = "https://api.devnet.solana.com";
   const [providerUrl, setProviderUrl] = useState('https://www.sollet.io');
   const connection = useMemo(() => new Connection(network), [network]);
-  const [mintA, setMintA] = useState("5WzD3VpTaEMnpYZh7k4Jj5AtGXKJ2Mat9RhQwjW7Gv8Y")
-  const [mintB, setMintB] = useState("9YDmzDTe9i5NEPv4q5sPNTNJ5YyLgRMSFTEAHR5LxeDG");
-  const [accountA, setAccountA] = useState("28c9sCoUjrnWSVDUmBz2d5qKZCqRuPDciBDAvP7Aeggn")
-  const [accountB, setAccountB] = useState("BHTG9JU888rNb7dUFNQHZ2m1Y2yhBKzXf4JyRi1TpXty")
-  const [poolToken, setPoolToken] = useState("4gGRwSj4SqiEGaog1cpyJiEx9CDs8amyCmAQ9Fw2mguF")
-  const [accountPool, setAccountPool] = useState("C7AqEeNK5eb5SKGYaDrgna322vKCSxkwCr3MgvdTPxYk")
-  const [autorithy, setAuthority] = useState("CXb3qTpPEcKjMdSGuEzqMzQR8Z6KKbCvm9oqM6pZKzpB")
+  const [mintA, setMintA] = useState("8TjfZNAg3KBpW8eAbD9kBkwa4QyYS1LNARLWYrmHn2AY")
+  const [mintB, setMintB] = useState("HsfuMAHUBkij97qv7VxjmfJJBVEaSSy8mHm3YBtcrh2P");
+  const [accountA, setAccountA] = useState("HhHmLqT63mt5KNr2qpZytmmDn4Q9TqyrXdcSZijVZVVz")
+  const [accountB, setAccountB] = useState("87cTTQ3bsiFqrHwwuxK2kUh8iZjQ14T9KV1c4YQ24JcL")
+  const [poolToken, setPoolToken] = useState("7Wdmn7qAiq6XKQWcwVAg62qKyuRrQposgfesJgV2Yngi")
+  const [accountPool, setAccountPool] = useState("HhCHdqp7xagbSm3S36Fzip9hNmfg3ikJjpgzQDML1CLs")
+  const [autorithy, setAuthority] = useState("6bp6FKx6R47oosSX47i6Ux2S5KRcJsvFgXsA3ZetSaL4")
   const [tokenSwap, setTokenSwap] = useState("Af2btwAACYUsjzcGfDLDncRehPz2YT11DqEfhMaWXhrZ")
-  const [feeAccount, setFeeAccount] = useState("BHCJqVxfhwt8Uf47pw2rwxfAYYSkU3LeB2FBAEtr1Sv8")
-  const [nonce, setNonce] = useState(252)
+  const [feeAccount, setFeeAccount] = useState("3KQNZ5E9Yvi25myqJf4n7tEQA8LY99pJWTSLb2jBM2uB")
+  const [nonce, setNonce] = useState(255)
   const [idTransaction, setIdTransaction] = useState()
   const injectedWallet = useMemo(() => {
     try {
@@ -100,21 +100,21 @@ function SwapPage() {
   //create token A
   async function createTokenASwap() {
     addLog("loading create Mint A... ");
-    //try {
+    try {
       createTokenA(selectedWallet, connection).then(token => {
         setMintA(token.mintA)
         setAuthority(token.authority)
         setNonce(token.nonce)
         addLog("publickey tokenA   " + token.mintA + " authorty = " + token.authority)
       })
-    //     .catch(
-    //       err => addLog("" + err)
-    //     )
+        .catch(
+          err => addLog("" + err)
+        )
 
-    // }
-    // catch (err) {
-    //   addLog("" + err);
-    // }
+    }
+    catch (err) {
+      addLog("" + err);
+    }
 
   }
   //create token B
@@ -213,7 +213,7 @@ function SwapPage() {
   async function createPool() {
     addLog("loading create pool... ");
     let autority = autorithy
-    //try {
+    try {
       createPoolToken(selectedWallet, connection, autority)
         .then(token => {
           console.log("createPool result " + token)
@@ -223,12 +223,12 @@ function SwapPage() {
 
           addLog("accountPool" + token.accountPool + " tokenPool" + token.poolToken + "feeAccount" + token.feeAccount)
         })
-    //     .catch(
-    //       err => addLog("" + err)
-    //     )
-    // } catch (err) {
-    //   addLog("" + err);
-    // }
+        .catch(
+          err => addLog("" + err)
+        )
+    } catch (err) {
+      addLog("" + err);
+    }
   }
   async function swapTokens() {
     addLog("loading swap token... ");
@@ -241,7 +241,7 @@ function SwapPage() {
     let accountpool = accountPool
     let autority = autorithy
     let Nonce = nonce
-    try {
+    //try {
       createSwapTokens(selectedWallet, connection, minta, mintb, accounta, accountb, pooltoken, feeaccount, accountpool, autority, Nonce)
         .then(token => {
           setTokenSwap(token.tokenSwap)
@@ -250,13 +250,13 @@ function SwapPage() {
             JSON.stringify(token.tokenSwap))
         }
         )
-        .catch(
-          err => addLog("" + err)
-        )
-    }
-    catch (err) {
-      addLog("" + err);
-    }
+    //     .catch(
+    //       err => addLog("" + err)
+    //     )
+    // }
+    // catch (err) {
+    //   addLog("" + err);
+    // }
 
   }
   async function swap() {
