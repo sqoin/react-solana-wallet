@@ -134,9 +134,6 @@ function HomePage() {
         <br></br>
         <br></br>
 
-<<<<<<< HEAD
-        <button onClick={() => goMultisig()} className="btn btn-info"> transfer Multisig</button> 
-=======
         <br></br>
         <br></br>
         <br></br>
@@ -144,7 +141,6 @@ function HomePage() {
         <button onClick={() => goQuarry()} className="btn btn-info">Quarry Farm</button> 
 
 
->>>>>>> 944af6e
 
            
         </div>
