@@ -86,9 +86,13 @@ function HomePage() {
       window.location.assign("/Saber");
   
     }
- async function goMultisig(){
-     window.location.assign("/TransferMultisig")
- }
+  
+  async function goQuarry() {
+  
+      window.location.assign("/QuarryFarm");
+  
+    }
+
     return (
         <div className="App">
             <h1>NOVA FINANCE</h1>
@@ -130,7 +134,17 @@ function HomePage() {
         <br></br>
         <br></br>
 
+<<<<<<< HEAD
         <button onClick={() => goMultisig()} className="btn btn-info"> transfer Multisig</button> 
+=======
+        <br></br>
+        <br></br>
+        <br></br>
+
+        <button onClick={() => goQuarry()} className="btn btn-info">Quarry Farm</button> 
+
+
+>>>>>>> 944af6e
 
            
         </div>

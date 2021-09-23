@@ -143,7 +143,7 @@ const[infoPortfolio,setInfoPortfolio]=useState("")
 
     try {createUserPortfolioApi(selectedWallet, connection,token,portfolioAddress,amountPortfolio)
       .then(usePortfolio =>{
-
+        addLog("success ");
         /*addLog("********************************************************************************************************");
         addLog("********************************************Info User Portfolio Account *********************************");
         addLog("address of new user portfolio : : " + usePortfolio.user_portfolio_address.toString() +
@@ -181,7 +181,7 @@ const[infoPortfolio,setInfoPortfolio]=useState("")
        // accountInfoSourceBefore ,accountInfoDestBefore , accountInfoSource ,accountInfoDest
          addLog("success");
           console.log (JSON.stringify(accounts));
-
+          addLog("success ");
         /*addLog("********************************************************************************************************");
         addLog("********************************************Info SPLU PRIMARY BEFORE SWAP *********************************");
         addLog("address of SPLU PRIMARY : : " + accounts[0].address.toString() + 
