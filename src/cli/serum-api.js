@@ -23,8 +23,9 @@ const decimals=2
 const options = Provider.defaultOptions();
 let TOKEN_PROGRAM_ID1= new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA");
 let mintedAmount=100000
-let sentAmount=1000
+let sentAmount=10000
 let dexProgramId= new PublicKey("DESVgJVGajEgKGXhb6XmqDHGz3VjdgP7rEVESBgxmroY");
+export const ORIGINE_PROGRAMM_ID="TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
 //FgFxp8voPtbFqCgqSgGDwUDz7CWpHKZbE6w7WudXDxz
 const OpenOrders = require("@project-serum/serum").OpenOrders;
 const Side = {
@@ -53,27 +54,27 @@ const bids = [
   [5.961, 25.4],
 ];
 
-let marketMaker1=null
-//JSON.parse({"_keypair":{"publicKey":{"0":142,"1":94,"2":174,"3":123,"4":251,"5":136,"6":225,"7":212,"8":196,"9":196,"10":171,"11":202,"12":237,"13":147,"14":206,"15":181,"16":159,"17":236,"18":6,"19":175,"20":98,"21":18,"22":138,"23":51,"24":85,"25":142,"26":70,"27":57,"28":207,"29":27,"30":71,"31":86},"secretKey":{"0":16,"1":168,"2":117,"3":228,"4":189,"5":52,"6":182,"7":22,"8":162,"9":178,"10":13,"11":236,"12":92,"13":227,"14":206,"15":15,"16":91,"17":89,"18":170,"19":141,"20":154,"21":62,"22":167,"23":112,"24":193,"25":180,"26":109,"27":12,"28":17,"29":31,"30":123,"31":161,"32":142,"33":94,"34":174,"35":123,"36":251,"37":136,"38":225,"39":212,"40":196,"41":196,"42":171,"43":202,"44":237,"45":147,"46":206,"47":181,"48":159,"49":236,"50":6,"51":175,"52":98,"53":18,"54":138,"55":51,"56":85,"57":142,"58":70,"59":57,"60":207,"61":27,"62":71,"63":86}}});
-
+let marketMaker1= new Account([79,210,88,255,234,27,51,95,180,84,206,170,166,68,214,72,134,146,53,232,31,214,224,209,115,57,240,102,107,132,66,240,0,232,189,162,182,225,220,18,208,181,51,214,156,136,202,71,28,190,221,179,120,209,141,69,213,115,126,242,0,82,95,231]);
 
 export async function createTokenApi(selectedWallet, connection) {
 
- let token = new Token(
+ /*let token = new Token(
   connection,
   selectedWallet.publicKey,
   TOKEN_PROGRAM_ID1,
-  selectedWallet)
+  selectedWallet)*/
 
-let tokenA = await token.createMint(
+let tokenA = await Token.createMint(
   connection,
   selectedWallet, 
   selectedWallet.publicKey,
   null,
   decimals,
+  TOKEN_PROGRAM_ID1,
+  TOKEN_PROGRAM_ID1,
   TOKEN_PROGRAM_ID1
 );  
-  console.log("mintA =>"+tokenA.publicKey.toBase58())
+  console.log("mintA =>")
   return tokenA;
 }
 
@@ -437,13 +438,13 @@ export async function swapAtoBApi(selectedWallet, connection,  marketPk, tokenAP
 
     console.log("swap accounts => "+ JSON.stringify(SWAP_ACCOUNTS))
     // Swap exactly enough USDC to get 1.2 A tokens (best offer price is 6.041 USDC).
-    let TAKER_FEE=0.0022
+    /*let TAKER_FEE=0.0022
     const expectedResultantAmount = 7.2;
     const bestOfferPrice = 6.041;
-    const amountToSpend = expectedResultantAmount * bestOfferPrice;
-    const swapAmount = new BN((amountToSpend * 10 ** 2));
+    const amountToSpend = expectedResultantAmount * bestOfferPrice;*/
+    const swapAmount = new BN((2 * 10 ** 2));
     console.log("swap amount "+swapAmount)
-    const [tokenAChange, usdcChange] = await withBalanceChange(
+    const [tokenAChange, tokenBChange] = await withBalanceChange(
       program.provider,
       [new PublicKey(vaultA) , new PublicKey(vaultB) ],
       async () => {
@@ -469,10 +470,10 @@ export async function swapAtoBApi(selectedWallet, connection,  marketPk, tokenAP
       }
       );
       console.log("tokenAChange"+tokenAChange)
-      console.log("expectedResultantAmount"+expectedResultantAmount)
-      console.log("usdcChange"+usdcChange)
+     // console.log("expectedResultantAmount"+expectedResultantAmount)
+      console.log("usdcChange"+tokenBChange)
 
-      console.log("swapAmount.toNumber() / 10 ** 6"+ (swapAmount.toNumber() / 10 ** 2))
+      //console.log("swapAmount.toNumber() / 10 ** 6"+ (swapAmount.toNumber() / 10 ** 2))
 
         return "ok"
 }

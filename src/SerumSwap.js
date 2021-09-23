@@ -27,15 +27,15 @@ function SerumSwap() {
     network,
   ]);
   const [tokenInfo, setTokenInfo] = useState("no Info");
-  const [tokenAPk, setTokenAPk] = useState("2d7gHknuBx9rrzE6nkvNBhJancVRDseGBRPDn5Q1gYeE")
+  const [tokenAPk, setTokenAPk] = useState("3U4sUoPi7LzMPDxGcxQX4e1C5BZMg94peHBo6xASQbv7")
 
-  const [tokenBPk, setTokenBPk] = useState("FZmuAAvdF3LbMoSBdy9YWEFEWERzVNTuYxywZ8AAegUK")
-  const [vaultA, setVaultA] = useState("AiKmUDZGUUMZAWF351DgMxR796saekJWqQ3LFSkQg3KN")
-  const [vaultB, setVaultB] = useState("HzeurHKZDTLA9ePBiBU3gB4uKBN9nRNLJJBVHf86jwJH")
-  const [mmTokenAPk, setMmTokenAPk] = useState("Cjc1SFUUC6pSUudF2mD7uNHZ9ntPhpaidRHMrumZSbyG")
-  const [mmTokenBPk, setMmTokenBPk] = useState("124DWxJv2C6dmkaGubVPdhS9np8Dzw1U8df3cyoFdKer")
-  const [market, setMarket] = useState("2F6Bt3NpKDrnPYBf5CYUjzEksYhWVCY7wu5zjwvdPaXi")
-  const [MM, setMM] = useState("AqaTJarrsPsLCECBG4PAfQ47vTBDVZHWyGq5erorxw9n")
+  const [tokenBPk, setTokenBPk] = useState("3hVBPDeLwJyEVY5swGKd1giWCgjKJtgoz35Ash9jKsoZ")
+  const [vaultA, setVaultA] = useState("BCUaDh1bjUPZ2piS9pDme1NxiUct5WModqdQgh3ms6W")
+  const [vaultB, setVaultB] = useState("FjjxiyZLZcJ8WrAohhrAB1qgTdXo2McSBA6ztXtxmK6v")
+  const [mmTokenAPk, setMmTokenAPk] = useState("E28kb4Md1hf3wu8PNM3dK8wdiBJtpp88Y6VoteCPBn52")
+  const [mmTokenBPk, setMmTokenBPk] = useState("4JX5CF8ZHoJaUnompoj1Z6d8wNXfPYjdAobJBoSFNeHT")
+  const [market, setMarket] = useState("98sa6Ee5NySSo9u9vprhvWgNFM72oNbkGz37YJwBXmms")
+  const [MM, setMM] = useState("14YqZ3X4SgS3ybWH3DLLpjgDNaQah9ri7YkRDC5xLsKc")
 
   const [mintA, setMintA] = useState("")
   const [accountA, setAccountA] = useState("")
@@ -293,7 +293,7 @@ function SerumSwap() {
     let side = "sell"
     addLog("loading place order ... ");
     try {
-      placeOrderStep(selectedWallet, connection, market, MM, mmTokenAPk, side,6.041, 7.8).then(result => {
+      placeOrderStep(selectedWallet, connection, market, MM, mmTokenAPk, side,1, 20).then(result => {
 
         addLog("Success =>" + JSON.stringify(result))
       })
@@ -315,7 +315,7 @@ function SerumSwap() {
     let side = "buy"
     addLog("loading place order ... ");
     try {
-      placeOrderStep(selectedWallet, connection, market, MM, mmTokenBPk, side,6.004, 8.5).then(result => {
+      placeOrderStep(selectedWallet, connection, market, MM, mmTokenBPk, side,1, 20).then(result => {
         // placeOrderStep(selectedWallet, connection, market, MM, tokenAPk,tokenBPk).then(result =>{
         // setMarket(result) 
         addLog("Success =>" + JSON.stringify(result))
