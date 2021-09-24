@@ -3,7 +3,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import Wallet from '@project-serum/sol-wallet-adapter';
 import { Account, Connection, SystemProgram, Transaction} from '@solana/web3.js';
 
-    import {createWithSeed ,metaUpdTitle,findProgramAddress} from "./nft/utils/token-Func";
+    import {createWithSeed ,metaUpdTitle,findProgramAddress,createAndInitializeMintWithMeta} from "./nft/utils/token-Func";
 import {META_WRITER_PROGRAM_ID,TOKEN_PROGRAM_ID,ATACC_PROGRAM_ID} from "./nft/utils/pogramAdresses";
 
 
@@ -18,8 +18,10 @@ function NftPage() {
 const[title,setTitle]=useState("");
 const[url,setUrl]=useState("");
 const[data,setData]=useState("");
-const[mint,setMint]=useState("");
-
+// const[mint,setMint]=useState("");
+const mint=new Account();
+  const amount = 1;
+  const decimals = 0;
   const injectedWallet = useMemo(() => {
     try {
       console.log(network)
@@ -100,27 +102,72 @@ function toBytes(str) {
   }
   return arr
 }
+
+async function InitializaInstruction(wallet,
+  connection,
+  mint,
+  amount,
+  decimals,
+  meta){
+
+
+  let txid = await createAndInitializeMintWithMeta({
+    wallet,
+    connection,
+    mint,
+    amount,
+    decimals,
+    meta,
+  })
+  console.log(txid)
+}
+
+
 async function setTitleFunction(){
-  const mint=new Account();
+  let txid;
+  
+  let meta = {}
+ 
+  const authorPubkey = await createWithSeed(mint, 'nft_meta_author', META_WRITER_PROGRAM_ID)
+  console.log("MetaAuthorAccount will be: "+authorPubkey.toString());
+
+  // meta data - title - max 100 char UTF-8 plain text describing item
+
+  const titlePubkey = await createWithSeed(mint, 'nft_meta_title', META_WRITER_PROGRAM_ID)
+  console.log("MetaTitleAccount is: "+titlePubkey.toString());
+
+  const titleBytes = toBytes(title)
+  const uriPubkey = await createWithSeed(mint, 'nft_meta_uri', META_WRITER_PROGRAM_ID)
+  const uriBytes = toBytes(url)
+  const dataPubkey = await createWithSeed(mint, 'nft_meta_data', META_WRITER_PROGRAM_ID)
+  console.log("MetaDataAccount will be: "+dataPubkey.toString());
+  const dataBytes = toBytes(data)
+  meta.authorPubkey = authorPubkey
+  meta.titlePubkey = titlePubkey
+  meta.titleBytes = titleBytes
+   meta.uriPubkey = uriPubkey
+   meta.uriBytes = uriBytes
+
+  meta.dataPubkey = dataPubkey 
+  meta.dataBytes = dataBytes
+
+
+
   const tpa = await findProgramAddress( [ wallet.publicKey.toBuffer(), TOKEN_PROGRAM_ID.toBuffer(), mint.publicKey.toBuffer() ], ATACC_PROGRAM_ID)
   const taccPK = tpa.PK; 
   const taccSeeds = tpa.seeds; 
 
-  console.log("TokenAccount will be: "+taccPK.toString());
   
-  const authorPubkey = await createWithSeed(mint, "", META_WRITER_PROGRAM_ID)
-  addLog("MetaAuthorAccount will be: "+authorPubkey.toString());
-  const titlePubkey = await createWithSeed(mint, title, META_WRITER_PROGRAM_ID)
-  console.log("MetaAuthorAccount will be: "+titlePubkey.toString());
-  addLog("publickey"+titlePubkey)
-  let meta = {}
-  const titleBytes = toBytes(title)
-  meta.authorPubkey = authorPubkey
-  meta.titlePubkey = titlePubkey
-  meta.titleBytes = titleBytes
-let txid
+
+let tx=InitializaInstruction( wallet,
+  connection,
+  mint,
+  amount,
+  decimals,
+  meta)
+
  
-console.log("wallet"+wallet)
+console.log("metaauthor",meta.authorPubkey.toBase58())
     //try {
       txid = await metaUpdTitle({
         wallet,
@@ -174,8 +221,60 @@ async function mintNftFunction(){
 
 }
 async function transfertNftFunction(){
+  const chunkSize = 957 
+  const numChunks = Math.ceil(data.length / chunkSize)
 
+
+  for(let chunk=0; chunk<numChunks; chunk++) {
+
+    console.log("Write chunk "+ (chunk+1) +" of "+numChunks)
+
+    let processed = false;
+
+    while( !processed ) {
+
+  
+          txid = await metaUpdData({
+            wallet,
+            connection,
+            mint,
+            meta,
+            chunkSize,
+            chunk
+          })
+       
+
+        console.log("Data set tx:"+txid)
+
+        // wait for transaction to be mined
+
+  
+          tStatus = await connection.confirmTransaction(txid)
+      
+
+            // wasn't found after 30 seconds, probably got dropped
+            // need to make new transaction and submit it
+            // does not happen often....
+
+            console.log("Transaction not found in ledger after 30 seconds, try with new transaction")
+            continue
+        }
+
+        processed = true
+
+        if (tStatus.value.err) {
+            playVideo(false)
+            console.log("FAILED - by node (node ran program but program failed)")
+            console.log(tStatus.value.err)
+           
+            return
+        }
+    }
+
+    console.log("Data set done "+ (chunk+1) +" of "+numChunks);
 }
+
+
  
 
   return (
@@ -231,7 +330,7 @@ title <input onChange={(e)=> setTitle(e.target.value)} value={title}/>
 <br></br>
 <br></br>
 <br></br>
-mint <input onChange={(e)=> setMint( e.target.value)} value={mint}/>
+{/* mint <input onChange={(e)=> setMint( e.target.value)} value={mint}/> */}
 <button onClick={() => mintNftFunction()} className="btn btn-primary" > mint Nft</button>
 <br></br>
 <br></br>
