@@ -2,6 +2,7 @@ import React from "react";
 import SerumSwap from "./SerumSwap";
 import SwapOriginal from "./SwapPage.js";
 import PortfolioPage from "./PortfolioPage";
+import SwapPortfolio from "./SwapPortfolio";
 import TransferMultisig from "./TransferMultisig";
 import HomePage from "./HomePage";
 import Saber from "./Saber";
@@ -44,6 +45,10 @@ export default function App() {
         <Route exact path="/Nft">
           <NftLink />
         </Route>
+        <Route exact path="/SwapPortfolio">
+          <SwapPortfolioLink />
+        </Route>
+       
       </Switch>
     </div>
   </Router>
@@ -92,5 +97,10 @@ function NftLink() {
   return (
    <NftPage/>
   );
+}
+  function SwapPortfolioLink() {
+    return (
+     <SwapPortfolio/>
+    );
 }
 

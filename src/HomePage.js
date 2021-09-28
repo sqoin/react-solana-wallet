@@ -93,6 +93,12 @@ function HomePage() {
   
     }
 
+    async function goSwapPortfolio() {
+  
+        window.location.assign("/SwapPortfolio");
+    
+      }
+
     return (
         <div className="App">
             <h1>NOVA FINANCE</h1>
@@ -140,7 +146,12 @@ function HomePage() {
 
         <button onClick={() => goQuarry()} className="btn btn-info">Quarry Farm</button> 
 
+        <br></br>
+        <br></br>
+        <button onClick={() => goSwapPortfolio()} className="btn btn-info">Swap Portfolio</button> 
 
+        <br></br>
+        <br></br>
 
            
         </div>
