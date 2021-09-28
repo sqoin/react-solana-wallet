@@ -5,7 +5,7 @@ import PortfolioPage from "./PortfolioPage";
 import TransferMultisig from "./TransferMultisig";
 import HomePage from "./HomePage";
 import Saber from "./Saber";
-
+import NftPage from "./NftPage"
 import {
   BrowserRouter as Router,
   Switch,
@@ -41,7 +41,9 @@ export default function App() {
         <Route exact path="/QuarryFarm">
           <QuarryLink />
         </Route>
-
+        <Route exact path="/Nft">
+          <NftLink />
+        </Route>
       </Switch>
     </div>
   </Router>
@@ -86,4 +88,9 @@ function QuarryLink() {
   );
 }
 
+function NftLink() {
+  return (
+   <NftPage/>
+  );
+}
 
