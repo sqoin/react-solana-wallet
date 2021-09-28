@@ -1,17 +1,165 @@
 import React, { useEffect, useMemo, useState } from 'react';
 
 import Wallet from '@project-serum/sol-wallet-adapter';
-import { Account, Connection, SystemProgram, Transaction} from '@solana/web3.js';
+import { Account, Connection, SystemProgram, Transaction,PublicKey} from '@solana/web3.js';
 
-    import {createWithSeed ,metaUpdTitle,findProgramAddress,createAndInitializeMintWithMeta} from "./nft/utils/token-Func";
+    import {createWithSeed ,metaUpdTitle,findProgramAddress,createAndInitializeMintWithMeta,metaUpdData} from "./nft/utils/token-Func";
 import {META_WRITER_PROGRAM_ID,TOKEN_PROGRAM_ID,ATACC_PROGRAM_ID} from "./nft/utils/pogramAdresses";
 
-
+import  "./NftPage.css"
 function NftPage() {
   const [logs, setLogs] = useState([]);
   function addLog(log) {
     setLogs((logs) => [...logs, log]);
   }
+  const mainDiv = {
+    display: 'flex',
+    backgroundColor: "black",
+    width: "100%",
+    textAlign: 'center',
+    marginTop: "10px",
+    marginBottom: "10px",
+    overflowX:"hidden",
+  } 
+
+  const leftPane = {
+    backgroundColor: "black",
+    height: "100%",
+    width: "50%",
+    textAlign: "left",
+    marginRight: "5px",
+  }
+
+  const leftPaneTop = {
+    display: 'flex',
+    backgroundColor: "black",
+    height: "500px",
+    width: "100%",
+    textAlign: "left",
+  } 
+
+  const leftPaneBottom = {
+    backgroundColor: "#1a2029",
+    width: "100%",
+    textAlign: "left",
+  } 
+
+  const rightPane = {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: "#1a2029",
+    height: "100%",
+    width: "50%",
+    textAlign: "center",
+    marginLeft: "5px",
+    overflow:"hidden",
+  } 
+
+  const row = {
+    display: 'flex',
+    marginTop: "5px",
+    flexDirection: "row",
+    flexWrap: "wrap",
+    width: "100%",
+  } 
+
+  const col = {
+    flexDirection: "column",
+    flexBasis: "100%",
+    flex: 1,
+  } 
+
+  const leftCol = {
+    paddingTop: "5px",
+    height: "100%",
+  } 
+
+  const rightCol = {
+    textAlign: "left",
+    height: "100%",
+  } 
+
+  const vanityInput = {
+	borderColor:"white",	  
+	color:"white",
+	fontSize:"large",
+    width:"400px",
+  }
+
+  const submitButton ={
+	backgroundColor:"#2abdd2",
+	color:"black",
+	width:"100%",
+  } 
+  
+  const svgImage ={
+	  position:"absolute",
+	  top:"17vh",
+	  right:"17vw",
+  } 
+  
+  const titleInput = {
+	borderColor:"white",	  
+	color:"white",
+	fontSize:"large",
+    width:"400px",
+  }
+
+  const uriInput = {
+	borderColor:"white",	  
+	color:"white",
+	fontSize:"large",
+    width:"400px",
+  }
+
+  const dataInput = {
+	color:"black",
+	fontSize:"large",
+    marginTop: '5px',
+    width:"400px",
+  }
+
+  const inputDescr = {
+    padding: '10px',
+    paddingTop: '10px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'left',
+  } 
+
+  const inputBoxDiv = {
+    padding: '10px',
+  } 
+
+  const shim = {
+    height: "20px",
+  }
+
+  const textOutput = {
+	fontSize:"small",
+  }
+  const style = {
+    mainDiv,  
+    leftPane, 
+    leftPaneTop, 
+    leftPaneBottom, 
+      row,
+      col, 
+      leftCol, 
+      rightCol, 
+    rightPane,  
+    vanityInput,
+    titleInput,
+    uriInput,
+    dataInput,
+    inputDescr,
+    inputBoxDiv,
+      shim,
+      submitButton,
+      svgImage,
+      textOutput,
+    }
   const network = "https://api.devnet.solana.com";
   const [providerUrl, setProviderUrl] = useState('https://www.sollet.io');
   const connection = useMemo(() => new Connection(network), [network]);
@@ -102,6 +250,11 @@ function toBytes(str) {
   }
   return arr
 }
+function uintToString(uintArray) {
+  var encodedString = String.fromCharCode.apply(null, uintArray),
+      decodedString = decodeURIComponent(escape(encodedString));
+  return decodedString;
+}
 
 async function InitializaInstruction(wallet,
   connection,
@@ -123,11 +276,108 @@ async function InitializaInstruction(wallet,
 }
 
 
-async function setTitleFunction(){
-  let txid;
+// async function setTitleFunction(){
+//   let txid;
+  
+//   let meta = {}
+ 
+//   const authorPubkey = await createWithSeed(mint, 'nft_meta_author', META_WRITER_PROGRAM_ID)
+//   console.log("MetaAuthorAccount will be: "+authorPubkey.toString());
+
+//   // meta data - title - max 100 char UTF-8 plain text describing item
+
+//   const titlePubkey = await createWithSeed(mint, 'nft_meta_title', META_WRITER_PROGRAM_ID)
+//   console.log("MetaTitleAccount is: "+titlePubkey.toString());
+
+//   const titleBytes = toBytes(title)
+//   const uriPubkey = await createWithSeed(mint, 'nft_meta_uri', META_WRITER_PROGRAM_ID)
+//   const uriBytes = toBytes(url)
+//   const dataPubkey = await createWithSeed(mint, 'nft_meta_data', META_WRITER_PROGRAM_ID)
+//   console.log("MetaDataAccount will be: "+dataPubkey.toString());
+//   const dataBytes = toBytes(data)
+//   meta.authorPubkey = authorPubkey
+//   meta.titlePubkey = titlePubkey
+//   meta.titleBytes = titleBytes
+//    meta.uriPubkey = uriPubkey
+//    meta.uriBytes = uriBytes
+
+//   meta.dataPubkey = dataPubkey 
+//   meta.dataBytes = dataBytes
+
+
+
+//   const tpa = await findProgramAddress( [ wallet.publicKey.toBuffer(), TOKEN_PROGRAM_ID.toBuffer(), mint.publicKey.toBuffer() ], ATACC_PROGRAM_ID)
+//   const taccPK = tpa.PK; 
+//   const taccSeeds = tpa.seeds; 
+
+  
+
+// let tx=InitializaInstruction( wallet,
+//   connection,
+//   mint,
+//   amount,
+//   decimals,
+//   meta)
+
+ 
+// console.log("metaauthor",meta.authorPubkey.toBase58())
+//     //try {
+//       txid = await metaUpdTitle({
+//         wallet,
+//         connection,
+//         mint,
+//         meta,
+//       })
+//     // } catch (error) {
+//     //   //playVideo(false)
+//     //   console.log("REJECTED - was not submitted (probably because transaction simulation failed; funds? recentblockhash?)")
+//     //   console.log(error)
+//     //   //document.getElementById('status')!.innerHTML = "Title update transaction rejected: "+error.toString()
+//     //   return
+//     // } 
+
+//     console.log("Title set tx:"+txid)
+
+//     // wait for transaction to be mined
+
+//   let  tStatus = await connection.confirmTransaction(txid)
+
+//     if (tStatus.value.err) {
+//      // playVideo(false)
+//       console.log("FAILED - by node (node ran program but program failed)")
+//       console.log(tStatus.value.err)
+//       //document.getElementById('status')!.innerHTML = "Title update transaction "+txid+" failed: "+tStatus.value.err
+//       return
+//     }
+
+//     console.log("Title set done")
+
+
+
+// }
+// async function setUrlFunction(){
+//   const mint=new Account();
+//   const uriPubkey = await createWithSeed(mint, url, META_WRITER_PROGRAM_ID)
+//   console.log("MetaURIAccount will be: "+uriPubkey.toString());
+//   addLog("MetaURIAccount will be: "+uriPubkey.toString())
+
+// }
+
+// async function setDataFunction(){
+//   const dataPubkey = await createWithSeed(mint, data, META_WRITER_PROGRAM_ID)
+//   console.log("MetaDataAccount will be: "+dataPubkey.toString());
+
+//   addLog("MetaDataAccount will be: : "+dataPubkey.toString())
+// }
+
+// async function mintNftFunction(){
+
+// }
+async function transfertNftFunction(){
   
   let meta = {}
- 
+
+
   const authorPubkey = await createWithSeed(mint, 'nft_meta_author', META_WRITER_PROGRAM_ID)
   console.log("MetaAuthorAccount will be: "+authorPubkey.toString());
 
@@ -152,7 +402,6 @@ async function setTitleFunction(){
   meta.dataBytes = dataBytes
 
 
-
   const tpa = await findProgramAddress( [ wallet.publicKey.toBuffer(), TOKEN_PROGRAM_ID.toBuffer(), mint.publicKey.toBuffer() ], ATACC_PROGRAM_ID)
   const taccPK = tpa.PK; 
   const taccSeeds = tpa.seeds; 
@@ -166,64 +415,11 @@ let tx=InitializaInstruction( wallet,
   decimals,
   meta)
 
- 
-console.log("metaauthor",meta.authorPubkey.toBase58())
-    //try {
-      txid = await metaUpdTitle({
-        wallet,
-        connection,
-        mint,
-        meta,
-      })
-    // } catch (error) {
-    //   //playVideo(false)
-    //   console.log("REJECTED - was not submitted (probably because transaction simulation failed; funds? recentblockhash?)")
-    //   console.log(error)
-    //   //document.getElementById('status')!.innerHTML = "Title update transaction rejected: "+error.toString()
-    //   return
-    // } 
 
-    console.log("Title set tx:"+txid)
-
-    // wait for transaction to be mined
-
-  let  tStatus = await connection.confirmTransaction(txid)
-
-    if (tStatus.value.err) {
-     // playVideo(false)
-      console.log("FAILED - by node (node ran program but program failed)")
-      console.log(tStatus.value.err)
-      //document.getElementById('status')!.innerHTML = "Title update transaction "+txid+" failed: "+tStatus.value.err
-      return
-    }
-
-    console.log("Title set done")
-
-
-
-}
-async function setUrlFunction(){
-  const mint=new Account();
-  const uriPubkey = await createWithSeed(mint, url, META_WRITER_PROGRAM_ID)
-  console.log("MetaURIAccount will be: "+uriPubkey.toString());
-  addLog("MetaURIAccount will be: "+uriPubkey.toString())
-
-}
-
-async function setDataFunction(){
-  const dataPubkey = await createWithSeed(mint, data, META_WRITER_PROGRAM_ID)
-  console.log("MetaDataAccount will be: "+dataPubkey.toString());
-
-  addLog("MetaDataAccount will be: : "+dataPubkey.toString())
-}
-
-async function mintNftFunction(){
-
-}
-async function transfertNftFunction(){
   const chunkSize = 957 
   const numChunks = Math.ceil(data.length / chunkSize)
-
+  console.log("data"+data.length)
+console.log("numChunks"+numChunks)
 
   for(let chunk=0; chunk<numChunks; chunk++) {
 
@@ -234,7 +430,7 @@ async function transfertNftFunction(){
     while( !processed ) {
 
   
-          txid = await metaUpdData({
+        let   txid = await metaUpdData({
             wallet,
             connection,
             mint,
@@ -249,29 +445,33 @@ async function transfertNftFunction(){
         // wait for transaction to be mined
 
   
-          tStatus = await connection.confirmTransaction(txid)
+       let   tStatus = await connection.confirmTransaction(txid)
       
-
-            // wasn't found after 30 seconds, probably got dropped
-            // need to make new transaction and submit it
-            // does not happen often....
-
-            console.log("Transaction not found in ledger after 30 seconds, try with new transaction")
-            continue
+       processed = true
+            
         }
 
-        processed = true
+        
 
-        if (tStatus.value.err) {
-            playVideo(false)
-            console.log("FAILED - by node (node ran program but program failed)")
-            console.log(tStatus.value.err)
-           
-            return
-        }
+     
     }
 
-    console.log("Data set done "+ (chunk+1) +" of "+numChunks);
+    const metaDataAccount = await connection.getAccountInfo(new PublicKey(dataPubkey.toString()))
+
+    if ( metaDataAccount ) {
+
+      const svgText = uintToString(metaDataAccount.data)
+
+      let svgDiv = document.getElementById("svgDiv")
+
+      if(svgDiv){
+        svgDiv.innerHTML = svgText
+      }
+
+    } else {
+        console.log("No idea, it should exist, as we just made it")
+    }
+
 }
 
 
@@ -310,35 +510,37 @@ async function transfertNftFunction(){
             <div key={i}>{log}</div>
           ))}
         </div>
-
+<div className="col-12">
 <br></br>
 title <input onChange={(e)=> setTitle(e.target.value)} value={title}/>
-<button onClick={() => setTitleFunction()} className="btn btn-primary" > set title</button>
+{/* <button onClick={() => setTitleFunction()} className="btn btn-primary" > set title</button> */}
 <br></br>
 <br></br>
 <br></br>
 <br></br>
  url <input onChange={(e)=> setUrl( e.target.value)} value={url}/>
-<button onClick={() => setUrlFunction()} className="btn btn-primary" > set url</button>
+{/* <button onClick={() => setUrlFunction()} className="btn btn-primary" > set url</button> */}
 <br></br>
 <br></br>
 <br></br>
 <br></br>
  data <textarea onChange={(e)=> setData( e.target.value)} value={data}/>
-<button onClick={() => setDataFunction()} className="btn btn-primary" > set  data</button>
+{/* <button onClick={() => setDataFunction()} className="btn btn-primary" > set  data</button> */}
 <br></br>
 <br></br>
 <br></br>
 <br></br>
 {/* mint <input onChange={(e)=> setMint( e.target.value)} value={mint}/> */}
-<button onClick={() => mintNftFunction()} className="btn btn-primary" > mint Nft</button>
+{/* <button onClick={() => mintNftFunction()} className="btn btn-primary" > mint Nft</button> */}
 <br></br>
 <br></br>
 <br></br>
 <br></br>
 <button onClick={() => transfertNftFunction()} className="btn btn-primary" > transfert Nft</button>
- 
+</div>
+<div  className="col-12 showImage" id='svgDiv' style={style.svgImage}></div>
     </div>
+    
   );
 
 
