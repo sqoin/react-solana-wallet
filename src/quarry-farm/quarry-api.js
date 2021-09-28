@@ -37,7 +37,7 @@ const { web3, BN } = anchor;
 const DAILY_REWARDS_RATE = new BN(1_000000 * web3.LAMPORTS_PER_SOL);
 const ANNUAL_REWARDS_RATE = DAILY_REWARDS_RATE.mul(new BN(365));
 const rewardsShare = DAILY_REWARDS_RATE.div(new BN(10));
-const mintWrapperId = new PublicKey("QMWoBmAyJLAsA1Lh9ugMTw2gciTihncciphzdNzdZYV")
+const mintWrapperId = new PublicKey("33v2cQJfPJN9P5TLuPD3Jnpu9iRnZr6t113QJSW75b7q")
 const DEFAULT_DECIMALS = 6;
 const DEFAULT_HARD_CAP = 1_000_000_000_000;
 export const QUARRY_FEE_TO = new PublicKey(
@@ -189,13 +189,13 @@ export async function stakeApi(selectedWallet, connection, rewarderKey, stakeTok
   let sdk = makeSDK(connection, selectedWallet);
   let mine = sdk.mine;
   let provider=sdk.provider;
-  let rewarder = await mine.loadRewarderWrapper(new PublicKey(rewarderKey));
+  let rewarder = await mine.loadRewarderWrapper(new PublicKey(rewarderKey));//get 
   console.log("rewarder => "+JSON.stringify(rewarderKey))
   let stakeToken = Token.fromMint(stakeTokenMint, DEFAULT_DECIMALS, {
     name: "stake token", chainId: 103
-  });
+  });//lp 
   console.log("stake token => "+JSON.stringify(stakeToken))
-  let quarry = await rewarder.getQuarry(stakeToken);
+  let quarry = await rewarder.getQuarry(stakeToken);//get 
   console.log("quarry => "+quarry)
 
   const amount = 1_000_000000;
