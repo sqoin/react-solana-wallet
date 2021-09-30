@@ -261,7 +261,7 @@ function SwapPage() {
   }
   async function swap() {
     addLog("loading swap ......");
-    try {
+    //try {
       let minta = mintA
       let mintb = mintB
       let accounta = accountA
@@ -270,8 +270,8 @@ function SwapPage() {
       let feeaccount = feeAccount
       let accountpool = accountPool
       let autority = autorithy
-      let tokenSwapPubkey = new PublicKey(tokenSwap)
-      createSwap(selectedWallet, connection, tokenSwapPubkey, new PublicKey(minta), mintb, accounta, accountb, pooltoken, feeaccount, accountpool, autority).then(
+      let tokenSwapPubkey = tokenSwap
+      createSwap(selectedWallet, connection, tokenSwapPubkey, minta, mintb, accounta, accountb, pooltoken, feeaccount, accountpool, autority).then(
         token => {
           setIdTransaction(token)
           addLog(JSON.stringify(token))
@@ -279,10 +279,10 @@ function SwapPage() {
         }
       )
 
-    }
-    catch (err) {
-      addLog("" + err)
-    }
+    // }
+    // catch (err) {
+    //   addLog("" + err)
+    // }
 
 
   }
