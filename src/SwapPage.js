@@ -183,8 +183,8 @@ function SwapPage() {
     mintTokenA(
       selectedWallet,
       connection,
-      MINT_ADDRESS,
-      ACCOUNT_ADDRESS
+      mintA,
+      accountA
     ).then((account) => addLog(
       "amount" + account.amount + "  addres" + account.address));
 

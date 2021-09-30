@@ -7,6 +7,7 @@ import TransferMultisig from "./TransferMultisig";
 import HomePage from "./HomePage";
 import Saber from "./Saber";
 import NftPage from "./NftPage"
+import PortfolioBeta from "./PortfolioBeta";
 import {
   BrowserRouter as Router,
   Switch,
@@ -14,6 +15,7 @@ import {
   Link
 } from "react-router-dom";
 import QuarryFarm from "./quarry-farm";
+
 
 export default function App() {
   return (
@@ -47,6 +49,9 @@ export default function App() {
         </Route>
         <Route exact path="/SwapPortfolio">
           <SwapPortfolioLink />
+        </Route>
+        <Route exact path="/PortfolioBeta">
+          <PortfolioBetaLink />
         </Route>
        
       </Switch>
@@ -102,5 +107,10 @@ function NftLink() {
     return (
      <SwapPortfolio/>
     );
+    
 }
-
+function PortfolioBetaLink() {
+  return (
+   <PortfolioBeta/>
+  );
+}
