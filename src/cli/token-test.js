@@ -232,7 +232,7 @@ export async function swapToken(selectedWallet, connection,minta,mintb,accounta,
 
 
   console.log("createAccountProgramm ",createAccountProgramm.publicKey.toBase58()," minta "+minta+" mintB "+mintb+" accounta "+accounta+" accountb "+accountb+" pooltoken "+pooltoken+" feeacoount "+feeaccount+" accountpool "+accountpool+" autority "+autority+" nonce "+Nonce)
-    let tokenSwap=new TokenSwap(connection,null,null,null,new PublicKey(pooltoken),new PublicKey(feeaccount),new PublicKey(autority),new PublicKey(accounta),new PublicKey(accountb), new PublicKey(minta),new PublicKey(mintb),null,null,null,null,null,null,null,null,null,selectedWallet)
+    let tokenSwap=new TokenSwap(connection,null,null,null,pooltoken,feeaccount,autority,accounta,accountb, minta,mintb,null,null,null,null,null,null,null,null,null,selectedWallet)
     testTokenSwap = await tokenSwap.createTokenSwap(
       connection,
       selectedWallet,
@@ -272,11 +272,12 @@ export async function swap(selectedWallet, connection,tokenSwapPubkey,minta,mint
   let token1= new Token(
     connection,
     minta,
-    ORIGINE_PROGRAMM_ID,
+    new PublicKey(ORIGINE_PROGRAMM_ID),
     selectedWallet)
+    console.log("token1"+token1)
   let userAccountA = await token1.createAccount(selectedWallet.publicKey)
   await token1.mintTo(userAccountA, selectedWallet, [], 100000);
-  /***GHOST */
+ 
   const userTransferAuthority = new Account([155, 200, 249, 167, 10, 23, 75, 131, 118, 125, 114, 216, 128, 104, 178, 124, 197, 52, 254, 20, 115, 17, 181, 113, 249, 97, 206, 128, 236, 197, 223, 136, 12, 128, 101, 121, 7, 177, 87, 233, 105, 253, 150, 154, 73, 9, 56, 54, 157, 240, 189, 68, 189, 52, 172, 228, 134, 89, 160, 189, 52, 26, 149, 130]);
   await token1.approve(
     userAccountA,
@@ -284,43 +285,64 @@ export async function swap(selectedWallet, connection,tokenSwapPubkey,minta,mint
     selectedWallet,
     [],
     100000,
+    connection
   );
   let tokenB = new Token(
     connection,
     mintb,
-    ORIGINE_PROGRAMM_ID,
+    new PublicKey(ORIGINE_PROGRAMM_ID),
     selectedWallet)
   let userAccountB = await tokenB.createAccount(selectedWallet.publicKey)
   
   let poolToken = new Token(
     connection,
  pooltoken,
-    ORIGINE_PROGRAMM_ID,
+ new PublicKey(ORIGINE_PROGRAMM_ID),
     selectedWallet)
   let poolAccount = SWAP_PROGRAM_OWNER_FEE_ADDRESS ? await poolToken.createAccount(selectedWallet.publicKey): null; //account pool
   let info;
 
-  let programIdHello = new PublicKey("FRTtufPDTq76ZBTMif3uHpWPBiq7L7k592p7hJCscYVs")
+  let programIdHello = new PublicKey("7TCZZ6GY1cvoMbmqEw1gDQH69ne5NFFmhQrq2eCbycet")
   let [programAddress, nonce1] = await PublicKey.findProgramAddress(
     [userTransferAuthority.publicKey.toBuffer()],
     programIdHello,
   );
 
+  // const keys = [{ pubkey:tokenSwapPubkey, isSigner: false, isWritable: true },
+  // { pubkey: new PublicKey(autority), isSigner: false, isWritable: true },  //authority 
+  // { pubkey: userTransferAuthority.publicKey, isSigner: true, isWritable: true },
+  // { pubkey: userAccountA, isSigner: false, isWritable: true },
+  // { pubkey: accounta, isSigner: false, isWritable: true },
+  // { pubkey: accountb, isSigner: false, isWritable: true },
+  // { pubkey: userAccountB, isSigner: false, isWritable: true },
+  // { pubkey: poolToken.publicKey, isSigner: false, isWritable: true },
+  // { pubkey: feeaccount, isSigner: false, isWritable: true },
+  // { pubkey: new PublicKey(ORIGINE_PROGRAMM_ID), isSigner: false, isWritable: true },
+  // { pubkey: poolAccount, isSigner: false, isWritable: true },
+  // { pubkey: programAddress, isSigner: false, isWritable: true },
+  // { pubkey: TOKEN_SWAP_PROGRAM_ID, isSigner: false, isWritable: true },
+  // { pubkey: userTransferAuthority.publicKey, isSigner: false, isWritable: false },
+  // ]
+console.log(accounta+"accounta")
+  // let accountA=new PublicKey(accounta)
+  // let accountB=new PublicKey(accountb)
+  // let feeAccount=new PublicKey(feeaccount)
+
   const keys = [{ pubkey:tokenSwapPubkey, isSigner: false, isWritable: true },
-  { pubkey: new PublicKey(autority), isSigner: false, isWritable: true },  //authority 
-  { pubkey: userTransferAuthority.publicKey, isSigner: true, isWritable: true },
-  { pubkey: userAccountA, isSigner: false, isWritable: true },
-  { pubkey: new PublicKey(accounta), isSigner: false, isWritable: true },
-  { pubkey: new PublicKey(accountb), isSigner: false, isWritable: true },
-  { pubkey: userAccountB, isSigner: false, isWritable: true },
-  { pubkey: poolToken.publicKey, isSigner: false, isWritable: true },
-  { pubkey: new PublicKey(feeaccount), isSigner: false, isWritable: true },
-  { pubkey: ORIGINE_PROGRAMM_ID, isSigner: false, isWritable: true },
-  { pubkey: poolAccount, isSigner: false, isWritable: true },
-  { pubkey: programAddress, isSigner: false, isWritable: true },
-  { pubkey: TOKEN_SWAP_PROGRAM_ID, isSigner: false, isWritable: true },
-  { pubkey: userTransferAuthority.publicKey, isSigner: false, isWritable: false },
-  ]
+    { pubkey: new PublicKey(autority), isSigner: false, isWritable: true },  //authority 
+    { pubkey: userTransferAuthority.publicKey, isSigner: true, isWritable: true },
+    { pubkey: userAccountA, isSigner: false, isWritable: true },
+    { pubkey: accounta, isSigner: false, isWritable: true },
+    { pubkey: accountb, isSigner: false, isWritable: true },
+    { pubkey: userAccountB, isSigner: false, isWritable: true },
+    { pubkey: poolToken.publicKey, isSigner: false, isWritable: true },
+    { pubkey: feeaccount, isSigner: false, isWritable: true },
+    { pubkey: programId , isSigner: false, isWritable: false},
+    { pubkey: poolAccount, isSigner: false, isWritable: true },
+    { pubkey: programAddress, isSigner: false, isWritable: false },
+    { pubkey: TOKEN_SWAP_PROGRAM_ID, isSigner: false, isWritable: false },
+    { pubkey: userTransferAuthority.publicKey, isSigner: false, isWritable: false },
+    ]
 
   const instruction = new TransactionInstruction({
     keys,
