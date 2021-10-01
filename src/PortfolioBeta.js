@@ -5,6 +5,7 @@ import { Connection, clusterApiUrl,PublicKey } from '@solana/web3.js';
 
 import InfoAccount from './component/InfoAccount';
 import  "./Saber.css"
+import { createPortfolioBetaApi } from './Portfolio/cli/makeStepsPortfolio';
 function toHex(buffer) {
   return Array.prototype.map
     .call(buffer, (x) => ('00' + x.toString(16)).slice(-2))
@@ -73,6 +74,22 @@ function PortfolioBeta() {
   
 
 
+///create Portfolio function
+async function createPortfolioFunction(){
+  createPortfolioBetaApi(selectedWallet,connection).then(portfolio=>(
+    addLog("portfolio"+portfolio)
+  
+  ))
+
+
+
+
+
+}
+
+
+
+
     return (
         <div className="App">
             <div id="sidebar"><InfoAccount selectedWallet={selectedWallet} connection={connection}></InfoAccount> </div>
@@ -109,7 +126,7 @@ function PortfolioBeta() {
         ))}
       </div>
             <br/>
-        
+        <button onClick={createPortfolioFunction}> create Portfolio</button>
                 </div>
         </div>
     )
