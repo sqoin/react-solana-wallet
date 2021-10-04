@@ -26,13 +26,52 @@ function PortfolioSwap() {
   const [feeAccount, setFeeAccount] = useState("3KQNZ5E9Yvi25myqJf4n7tEQA8LY99pJWTSLb2jBM2uB")
   const [nonce, setNonce] = useState(255)
   const [idTransaction, setIdTransaction] = useState()
+  const [selectedPortfolio, setSelectedPortfolio] = useState("3KQNZ5E9Yvi25myqJf4n7tEQA8LY99pJWTSLb2jBM2uB")
   const [amount, setAmount] = useState()
-  const [asset1, setAsset1] = useState("3KQNZ5E9Yvi25myqJf4n7tEQA8LY99pJWTSLb2jBM2uB")
-  const [asset2, setAsset2] = useState("3KQNZ5E9Yvi25myqJf4n7tEQA8LY99pJWTSLb2jBM2uB")
-  const [asset3, setAsset3] = useState("3KQNZ5E9Yvi25myqJf4n7tEQA8LY99pJWTSLb2jBM2uB")
+  const [primqrySpl, setPrimqrySPL] = useState("DJmqhE59DfjcaQQZDnXfwMgr5tFuhr9kLZ6DrDVMkhCK")
+  const [asset1, setAsset1] = useState({
+    mint:"BwqSJyayGjy8QX1KJmkHudbmL6oTwHxe35Qn2U4bkMva", 
+    authority:"5tPusF93mBW51Pk74QKVPuJPDGXWvBseZhMSwNYNmGba", 
+    nonce:255, 
+    accountA:"CmBfHFd9aJWZLq3LsMZpwRAdu4trArL53im6KMyWdZfn", 
+    accountB:"EoHG4u9MefpAWqCyFxmX7yqJZ9C3W2d5XJicsHq9TUHZ",
+    tokenPool:"DGrTtggnU63nPqtu19oagEfv2dD8vYAz7ZC4pyrRSqGQ",
+    feeAccount:"3k93BqooCRJ8qTV5k2KfA3d58sb1CMsdmGVxBYQdSuet",
+    poolAccount:"9cTrH5H4NVG1RnmVepARZtoecCve6qBdWxAKVMQEXoqi",
+    swapAccount:"G4tUewgmvD3pFngBvDz1Syqv53VZL41NKiMgqgxFW9nw"})
+  const [asset2, setAsset2] = useState({
+    mint:"HSLeSKe94bFqcd9jjfGimH88StXEbjCaMFvPf9PDY1h9", 
+    authority:"ERt88q6H27MPrVFGdCq7wuWgB9QTL7Z8WYVt8YPA6jMm", 
+    nonce:254, 
+    accountA:"EZBT3v8YFe3Hrrekqy8hkCeEagAr9RqnC3YjrsYMyTPv", 
+    accountB:"HMG9JH92vzTLng3ngC8WCgU2vmg3YLToXg6Qqt5PWBgk",
+    tokenPool:"6kbt7eGBLQCqotKnoGZ8rmasTxgDKJ3ywhsYFh3NAhTb",
+    feeAccount:"6dtPRTBGTk9ZnK7mRVbqd5jWttfHLHQAXH5FY6ZHKBG8",
+    poolAccount:"DHg5Vj3GQAh4R9fwz55jdArqkcCrmDhjQVhNwtiaf89Q",
+    swapAccount:"31SonfVzUX49y2fzBe7inkQwHQAsBEfDTgY8cLbLYVgy"})
+  const [asset3, setAsset3] = useState({
+    mint:"BCdSHa5xKfsDigfppk7NpGsiXQGv8N2CAK1HV4v9YrGC", 
+    authority:"4WeZy11TDm9Z158hRvewmk7abE9gtjyW4rkrBaQZHxGq", 
+    nonce:254, 
+    accountA:"4WeZy11TDm9Z158hRvewmk7abE9gtjyW4rkrBaQZHxGq", 
+    accountB:"1y1SiJoLWJN7TaXTDdhPVEWSgVGsee5XhRzX6YnZqTN",
+    tokenPool:"ErwuH4eScqtH8omCBHdA7sRAMmBU7hJFe36C8DkVjLch",
+    feeAccount:"83HzR78WEp8eoajZeQ2eQd9PgzKszcgyZXpmyfXfUJCo",
+    poolAccount:"8ZC97ukfhwrYsLN3jiJvyo61877AdgVfdSC1Hw5EwWsM",
+    swapAccount:"Fxkt1SnqCok8LgcuGXB79ALSu3svXRBiio49ddDL4AJN"})
+  const [asset4, setAsset4] = useState({
+    mint:"CjUNx6dXmEaTSLeVpDuMkTzRR4snrBQCF6tW2vZfzv8r", 
+    authority:"ExSCkS99FkifZkwxoP97tWBiJruM2XNzR7NqSh8si3dR", 
+    nonce:255, 
+    accountA:"3orhqB1zN6RCpDs1JBVbd8o4bjPiPRnBB6iqhXMBDbeE", 
+    accountB:"Hd22r9oRunVxb9DWMA1XXW2dCGki2HWahwvG3x2V3Ygp",
+    tokenPool:"2hzvhiFFc2WpnXuMUKyZhfs6WQDF5bHawKXtG56142Ld",
+    feeAccount:"DiRtTs5ArmZt7xgtrMQtRzbRBx6iizkQ9eF5SwxELxdb",
+    poolAccount:"C6j3Sxr5yFL1yWzeYaFTYyu6GKeS5nSQRRCi52BqLdr6",
+    swapAccount:"FP56YxndBU8kgDgZSmudxwu4bS9WyV1WBEb8budujAYJ"})
   const [portfolios, setPortfolios] = useState([
     "3KQNZ5E9Yvi25myqJf4n7tEQA8LY99pJWTSLb2jBM2uB",
-    "3KQNZ5E9Yvi25myqJf4n7tEQA8LY99pJWTSLb2jBM2uB"
+    "87cTTQ3bsiFqrHwwuxK2kUh8iZjQ14T9KV1c4YQ24JcL"
   ]);
   const injectedWallet = useMemo(() => {
     try {
@@ -364,9 +403,8 @@ let  MakeItem = function(X) {
         </div>
         <br></br> <br></br>*********************************************************************************************<br></br>
         <label>Select a portfolio  :  </label>
-        <select>{portfolios.map(MakeItem)}</select>
+        <select onChange={(e) => setSelectedPortfolio(e.target.value)}>{portfolios.map(MakeItem)}</select>
         <br></br>
-
         <br></br>
         <span> Asset 1 :  </span> <input onChange={(e) => setAsset1(e.target.value)} value={asset1}></input>  
         <br></br>
