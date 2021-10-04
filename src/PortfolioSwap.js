@@ -3,7 +3,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import './App.css';
 import Wallet from '@project-serum/sol-wallet-adapter';
 import { Connection, SystemProgram, Transaction, PublicKey } from '@solana/web3.js';
-import { createTokenA, createNewAccountTokenA, mintTokenA, createTokenB, createNewAccountTokenB, mintTokenB, createPoolToken, createSwapTokens, createSwap } from "./cli/makesteps"
+import { createTokenA, createNewAccountTokenA, mintTokenA, createTokenB, createNewAccountTokenB, mintTokenB, createPoolToken, createSwapTokens, createSwap } from "./cli/makestepsPortfolioSwap"
 import "./PortfolioSwap.css"
 import InfoAccount from "./component/InfoAccount"
 
@@ -12,7 +12,7 @@ function PortfolioSwap() {
   function addLog(log) {
     setLogs((logs) => [...logs, log]);
   }
-  const network = "https://api.devnet.solana.com";
+  const network = "https://psytrbhymqlkfrhudd.dev.genesysgo.net:8899"
   const [providerUrl, setProviderUrl] = useState('https://www.sollet.io');
   const connection = useMemo(() => new Connection(network), [network]);
   const [mintA, setMintA] = useState("8TjfZNAg3KBpW8eAbD9kBkwa4QyYS1LNARLWYrmHn2AY")
@@ -26,6 +26,14 @@ function PortfolioSwap() {
   const [feeAccount, setFeeAccount] = useState("3KQNZ5E9Yvi25myqJf4n7tEQA8LY99pJWTSLb2jBM2uB")
   const [nonce, setNonce] = useState(255)
   const [idTransaction, setIdTransaction] = useState()
+  const [amount, setAmount] = useState()
+  const [asset1, setAsset1] = useState("3KQNZ5E9Yvi25myqJf4n7tEQA8LY99pJWTSLb2jBM2uB")
+  const [asset2, setAsset2] = useState("3KQNZ5E9Yvi25myqJf4n7tEQA8LY99pJWTSLb2jBM2uB")
+  const [asset3, setAsset3] = useState("3KQNZ5E9Yvi25myqJf4n7tEQA8LY99pJWTSLb2jBM2uB")
+  const [portfolios, setPortfolios] = useState([
+    "3KQNZ5E9Yvi25myqJf4n7tEQA8LY99pJWTSLb2jBM2uB",
+    "3KQNZ5E9Yvi25myqJf4n7tEQA8LY99pJWTSLb2jBM2uB"
+  ]);
   const injectedWallet = useMemo(() => {
     try {
       console.log(network)
@@ -97,6 +105,11 @@ function PortfolioSwap() {
       addLog('Error: ' + e.message);
     }
   }
+
+let  MakeItem = function(X) {
+    return <option>{X}</option>;
+};
+
   //create token A
   async function createTokenASwap() {
     addLog("loading create Mint A... ");
@@ -326,10 +339,11 @@ function PortfolioSwap() {
           ))}
         </div>
 
+        <h1>Primary SPL</h1>
 
         <button onClick={() => createTokenASwap()} className="btn btn-primary">
 
-          createTokenA
+          Create primary spl token
         </button>
         <br></br>
 
@@ -337,7 +351,7 @@ function PortfolioSwap() {
         <div className=" col-12">
           <span>   Mint A:   </span>   <input type="text" onChange={(e) => setMintA(e.target.value)} value={mintA} />  <span> Authority: </span><input type="text" onChange={(e) => setAuthority(e.target.value)} value={autorithy} /> <button onClick={() => createAccountA()} className="btn btn-primary">
 
-            CreateAccountA
+            Create primary spl vault
           </button>
         </div>
         <br></br>
@@ -345,54 +359,28 @@ function PortfolioSwap() {
         <br></br>
         <div className=" col-12">
           <span>    Mint A:  </span><input type="text" onChange={(e) => setMintA(e.target.value)} value={mintA} />  <span>Account A: </span><input type="text" onChange={(e) => setAccountA(e.target.value)} value={accountA} />  <button onClick={() => mintTokenSwapA()} className="btn btn-primary">
-            MintTokenA
+            Mint primary spl token
           </button>
         </div>
         <br></br> <br></br>*********************************************************************************************<br></br>
-        <button onClick={() => createTokenBSwap()} className="btn btn-primary">
-          CreateTokenB
-        </button>
+        <label>Select a portfolio  :  </label>
+        <select>{portfolios.map(MakeItem)}</select>
         <br></br>
 
         <br></br>
-        <span> MintB:  </span> <input onChange={(e) => setMintB(e.target.value)} value={mintB}></input>  <span>  Authority:</span><input type="text" onChange={(e) => setAuthority(e.target.value)} value={autorithy} />  <button onClick={() => createAccountB()} className="btn btn-primary">
-
-
-          CreateAccountB
+        <span> Asset 1 :  </span> <input onChange={(e) => setAsset1(e.target.value)} value={asset1}></input>  
+        <br></br>
+        <span> Asset 2 :  </span> <input onChange={(e) => setAsset2(e.target.value)} value={asset2}></input> 
+        <br></br>
+        <span> Asset 3 :  </span> <input onChange={(e) => setAsset3(e.target.value)} value={asset3}></input> 
+        <br></br>
+        <br></br>
+        <span> Amount:  </span> <input onChange={(e) => setAmount(e.target.value)} value={amount}></input>  <button onClick={() => mintTokenSwapB()} className="btn btn-primary">
+           Deposit in portfolio
         </button>
         <br></br>
-
         <br></br>
-        <span> MintB: </span> <input onChange={(e) => setMintB(e.target.value)} value={mintB}></input> <span> Account B:</span> <input onChange={(e) => setAccountB(e.target.value)} value={accountB}></input> <button onClick={() => mintTokenSwapB()} className="btn btn-primary">
-
-          MintTokenB
-        </button>
-        <br></br> <br></br>*********************************************************************************************<br></br>
-
-        <span>  Authority:</span><input onChange={(e) => setAuthority(e.target.value)} value={autorithy}></input> <button onClick={() => createPool()} className="btn btn-primary">
-
-          createPool
-        </button>
-        <br></br> <br></br>*********************************************************************************************<br></br>
-        <span>    mintA :</span><input onChange={(e) => setMintA(e.target.value)} value={mintA} />
-
-        <span>   AccountA  </span> <input type="text" onChange={(e) => setAccountA(e.target.value)} value={accountA} /> <br /><br /> <span> mintB </span><input onChange={(e) => setMintB(e.target.value)} value={mintB} /> <span>accountB </span> <input onChange={(e) => setAccountB(e.target.value)} value={accountB} /> <br />
-        <br /><br /> <span>Authority </span><input type="text" onChange={(e) => setAuthority(e.target.value)} value={autorithy} /> <span>nonce </span><input type="text" onChange={(e) => setNonce(e.target.value)} value={nonce} /><br /> <br /><span>poolToken </span> <input type="text" onChange={(e) => setPoolToken(e.target.value)} value={poolToken} /> <span>feeAccount </span><input type="text" onChange={(e) => setFeeAccount(e.target.value)} value={feeAccount} />  <span>AccountPool: </span><input type="text" onChange={(e) => setAccountPool(e.target.value)} value={accountPool} />
-        <br /> <br /> <br /><button onClick={() => swapTokens()} className="btn btn-primary" >
-          swap Token
-        </button>
-
-        <br></br> <br></br>*********************************************************************************************<br></br>
-        <span>  mintA : </span><input onChange={(e) => setMintA(e.target.value)} value={mintA} />
-
-        <span>   AccountA  </span><input type="text" onChange={(e) => setAccountA(e.target.value)} value={accountA} />
-        <br /> <br /> <span>mintB </span><input onChange={(e) => setMintB(e.target.value)} value={mintB} /> <span>accountB </span> <input onChange={(e) => setAccountB(e.target.value)} value={accountB} /> <br />  <br /><br /> <span>Authority </span><input type="text" onChange={(e) => setAuthority(e.target.value)} value={autorithy} /> <span>token Swap </span><input type="text" onChange={(e) => setTokenSwap(e.target.value)} value={tokenSwap} /> <br /> <br /> <span>poolToken </span><input type="text" onChange={(e) => setPoolToken(e.target.value)} value={poolToken} /> <span>feeAccount </span><input type="text" onChange={(e) => setFeeAccount(e.target.value)} value={feeAccount} />  <span>AccountPool: </span><input type="text" onChange={(e) => setAccountPool(e.target.value)} value={accountPool} />
-        <br /> <br /> <br /><button onClick={() => swap()} className="btn btn-primary"> Swap</button>
-        <br></br>
-        <br />
-        <br />
-        {
-          idTransaction && <a onClick={createDynamicURL} >transaction swap explora </a>}
+       
 
 
       </div>
