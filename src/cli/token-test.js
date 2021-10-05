@@ -178,10 +178,11 @@ export async function createMintTokenA(selectedWallet,connection,mintAddress,acc
 );
 console.log("testToken"+testToken)
   await testToken.mintTo(accountAddress, selectedWallet, [], 1000);
-  const mintInfo = await testToken.getAccountInfo(accountAddress)
-  console.log("mintInfo"+mintInfo)
+  //const mintInfo = await testToken.getAccountInfo(accountAddress)
+  //console.log("mintInfo"+mintInfo)
 
-  return  mintInfo;
+ // return  mintInfo;
+ return ("OK");
 }
 export async function createMintTokenB(selectedWallet,connection,mintAddress,accountAddress): Promise<void> {
  
@@ -192,10 +193,11 @@ let testToken = new Token(
   selectedWallet
 );
 await testToken.mintTo(accountAddress, selectedWallet, [], 1000);
-const mintInfo = await testToken.getAccountInfo(accountAddress)
-console.log(mintInfo)
+//const mintInfo = await testToken.getAccountInfo(accountAddress)
+//console.log(mintInfo)
 
-return  mintInfo;
+//return  mintInfo;
+return ("OK");
 
 }
 
