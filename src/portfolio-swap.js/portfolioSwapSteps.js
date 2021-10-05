@@ -22,7 +22,7 @@ import {
     mintMultisig,
     mintMultisig2
   } from '../cli/token-test';
-import { createpoolsApi, createSwapTokensApi } from './portfolio-swap-api';
+import { createpoolsApi, createSwapTokensApi, createToken, createVault, mintToken, swapApi } from './portfolio-swap-api';
   
  
   export async function createUserTokenStep(selectedWallet , connection) {  
@@ -38,15 +38,15 @@ import { createpoolsApi, createSwapTokensApi } from './portfolio-swap-api';
   }
 
   export async function createTokenStep(selectedWallet , connection) {  
-    return createTokenSwapA(selectedWallet , connection);
+    return createToken(selectedWallet , connection);
   }
 
   export async function createNewAccountStep(selectedWallet, connection,mint,autority) {  
-    return createAccountTokenSwapA(selectedWallet, connection,mint,autority);
+    return createVault(selectedWallet, connection,mint,autority);
   }
   
   export async function mintTokenStep(selectedWallet , connection,mintAddress, accountAddress) {  
-    return createMintTokenA(selectedWallet , connection,mintAddress,accountAddress);
+    return mintToken(selectedWallet , connection,mintAddress,accountAddress);
   }
 
   export async function createPoolStep(selectedWallet, connection, accounts) {  
@@ -56,12 +56,8 @@ import { createpoolsApi, createSwapTokensApi } from './portfolio-swap-api';
     return createSwapTokensApi(selectedWallet, connection,userToken, userVault, pools);
   }
   
-  export async function createSwap(selectedWallet, connection,tokenSwapPubkey,minta,mintb,accounta,accountb,pooltoken,feeaccount,accountpool,autority){
-  
-    return swap(selectedWallet, connection,tokenSwapPubkey,minta,mintb,accounta,accountb,pooltoken,feeaccount,accountpool,autority)
-  }
-  export async function getTokenAccountsByOwnerSolet (selectedWallet,connection){
-    return allTokenAccountsByOwner(selectedWallet,connection)
+  export async function swapStep(selectedWallet, connection,tokenSwapPubkey,minta,mintb,accounta,accountb,pooltoken,feeaccount,accountpool,autority){
+    return swapApi(selectedWallet, connection,tokenSwapPubkey,minta,mintb,accounta,accountb,pooltoken,feeaccount,accountpool,autority)
   }
   
   

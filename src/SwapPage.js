@@ -102,6 +102,7 @@ function SwapPage() {
     addLog("loading create Mint A... ");
     try {
       createTokenA(selectedWallet, connection).then(token => {
+        console.log("token.authority A", token.authority);
         setMintA(token.mintA)
         setAuthority(token.authority)
         setNonce(token.nonce)
@@ -122,7 +123,7 @@ function SwapPage() {
     addLog("loading create mint B ... ");
     try {
       createTokenB(selectedWallet, connection).then(token => {
-
+        console.log("token.authority B", token.authority);
         setMintB(token.mintB)
 
         setAuthority(token.authority)

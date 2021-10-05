@@ -3,24 +3,26 @@ import './App.css';
 import Wallet from '@project-serum/sol-wallet-adapter';
 import { Connection, SystemProgram, Transaction, PublicKey } from '@solana/web3.js';
 import InfoAccount from "./component/InfoAccount"
-import { createNewAccountStep, createPoolStep, createSwapTokensStep, createTokenStep, createUserAccountStep, createUserTokenStep, mintTokenStep, mintUserTokenStep } from './portfolio-swap.js/portfolioSwapSteps';
+import { createNewAccountStep, createPoolStep, createSwapTokensStep, createTokenStep, createUserAccountStep, createUserTokenStep, mintTokenStep, mintUserTokenStep, swapStep } from './portfolio-swap.js/portfolioSwapSteps';
 
 
 function SwapPortfolio() {
     const [logs, setLogs] = useState([]);
+    const [swapTokens, setSwapTokens] = useState([]);
+    const [authority, setAuthority] = useState("");
     const [assets, setAssets] = useState([
-        {token:"B7MX1yxwtdS4sa1pFZgwSpKRZ1MYnfzrwyLG1R5A4gRK", authority:"GzZzfnabg5MuWmj3L7CHQipXXi7kauZraXyMQAJLy9Fz", nonce:254},
-        {token:"BJgm1fXBq5DYSo6UL49n3Es1E6iDPCszrW5sSf77SXfu", authority:"GzZzfnabg5MuWmj3L7CHQipXXi7kauZraXyMQAJLy9Fz", nonce:254}
+        {token:"zA18GJkmtRz7HZ7SwwytwmE9fxKTZX2icD4da4oDBxu", authority:"Dv6gTCbWZAo4onW4mFdcSZ2f3K5Zqa6vLQR1cMwsbdxi", nonce:253},
+        {token:"53VmLJDCRDsen9SxiV7xk9eTqNCFeYF8EGseoDfpkiCY", authority:"Dv6gTCbWZAo4onW4mFdcSZ2f3K5Zqa6vLQR1cMwsbdxi", nonce:253}
     ]);
     const [accounts, setAccounts] = useState([
-        {asset:{token:"B7MX1yxwtdS4sa1pFZgwSpKRZ1MYnfzrwyLG1R5A4gRK", authority:"GzZzfnabg5MuWmj3L7CHQipXXi7kauZraXyMQAJLy9Fz", nonce:254},account:"8hxMR9nX68TcdT1GhYMqenEXS6HnfXdrmNHJZGBbE725"},
-        {asset:{token:"BJgm1fXBq5DYSo6UL49n3Es1E6iDPCszrW5sSf77SXfu", authority:"GzZzfnabg5MuWmj3L7CHQipXXi7kauZraXyMQAJLy9Fz", nonce:254},account:"6DqdErNTW8vXCh4LNjh2cx33PmBBEg24ZqB2xerF7pd5"},
+        {asset:{token:"zA18GJkmtRz7HZ7SwwytwmE9fxKTZX2icD4da4oDBxu", authority:"Dv6gTCbWZAo4onW4mFdcSZ2f3K5Zqa6vLQR1cMwsbdxi", nonce:253},account:"GquLrEL5R4gKNKk5iqpYNyswLcB8e9soWAxyiNRjH7M4"},
+        {asset:{token:"53VmLJDCRDsen9SxiV7xk9eTqNCFeYF8EGseoDfpkiCY", authority:"Dv6gTCbWZAo4onW4mFdcSZ2f3K5Zqa6vLQR1cMwsbdxi", nonce:253},account:"9hEMQpcBs9VBFCSJnmd7o2bSh16FcibFB5t5eUtQMs2Q"},
     ]);
-    const [userToken, setUserToken] = useState("3wJ7p9A37fTHCWETxphZoKfJSBhccMtdn4bfJ2Mw7Ry4");
-    const [userVault, setUserVault] = useState("9asrznJrZdFfpN76PefacruAsuB7prYaVZmJZ4KGVejT");
+    const [userToken, setUserToken] = useState("5aZJMp4w1Rs7hQNrxwvV8cVjeCXPotADXttFQ8B1cga8");
+    const [userVault, setUserVault] = useState("4qKkqLwCUtq6bVg1wVKNfq8AhiqU2jTiyJVsjNr17agc");
     const [pools, setPools] = useState([
-        {account:accounts[0],poolToken:"91cKSPytsLVewmezsBJZvZvnJPbiVNZ2dvJtK23Sb47L", accountPool:"2obNi9NR8nerGbWKo4X1366XrBNdGuSB1UEkVnmk2YrF", feeAccount:"G1GNeFS4eBp4myDeUXqtJ7sbqgtm6mRfLt4vVaBw4uRh"},
-        {account:accounts[1],poolToken:"GVLhTBxnAeVy4EjqCNfaN9K7stcAdpLVLGfUsSYbud9w", accountPool:"62xS4Gtvyf6u3Go2v6gGBcF4DoBfwe6v7ithRuCStXKZ", feeAccount:"J6x3sbvm6XFnVYHo3DptqhCBUTvubkcnBriYbR2ZU6y2"},
+        {account:accounts[0],poolToken:"52qUadP541ZPXcAW6LVB21ovkzMwkWY72sP3tD4eLxxd", accountPool:"E7GwzQMiwZzjxQ3mx8sAcdsitefLR2dKYP4hNacSayk5", feeAccount:"Hbxb6Qxw2n3zGkBr16YzSy6sJkunG8CqkTUvqp7UdCNb"},
+        {account:accounts[1],poolToken:"32Eu5dWsZtXEj7DmnRwKYbTrkfwCowChDRPcZgBg7mvT", accountPool:"J5hqzoWZbCG3waG6E9qFfqPMD3YtWA2wmsCCRCg5JGPS", feeAccount:"J5QrfPB9fRNQBRGvpdye47rKHpR46Kj88SaMycm5WuMR"},
     ]);
 
     function addLog(log) {
@@ -101,9 +103,10 @@ function SwapPortfolio() {
     async function createUserToken() {
         addLog("loading create user token ... ");
         try {
-          createUserTokenStep(selectedWallet, connection).then(result => {
-            setUserToken(result.publicKey)
-            addLog("user Token public key => " + result.publicKey+ " authority => "+ selectedWallet.publicKey)
+          createTokenStep(selectedWallet, connection).then(token => {
+            setUserToken(token.mintA)
+            setAuthority(token.authority)
+            addLog("user Token public key => " + token.mintA+ " authority => "+ token.authority)
           })
             .catch(
               err => addLog("" + err)
@@ -117,7 +120,7 @@ function SwapPortfolio() {
       async function createUserVault() {
         addLog("loading create user vault ... ");
         try {
-          createUserAccountStep(selectedWallet, connection, userToken).then(result => {
+          createNewAccountStep(selectedWallet, connection, userToken,authority).then(result => {
             setUserVault(result)
             addLog("vault pk => " + result)
           })
@@ -133,7 +136,7 @@ function SwapPortfolio() {
       async function mintUserToken() {
         addLog("loading mint user token ... ");
         try {
-          mintUserTokenStep(selectedWallet, connection, userVault, userToken).then(result => {
+            mintTokenStep(selectedWallet, connection, userToken,userVault).then(result => {
             addLog("user token successfully minted")
           })
             .catch(
@@ -167,6 +170,7 @@ function SwapPortfolio() {
     async function createAccounts() {
         addLog("loading create accounts ... ");
         try {
+            setAccounts([])
             assets.forEach(asset => {
                 createNewAccountStep(selectedWallet, connection, asset.token, asset.authority).then(account => {
                     addLog("mint   " + asset.token + "account   " + account);
@@ -224,7 +228,23 @@ function SwapPortfolio() {
         addLog("loading create swap tokens ... ");
         try {
                 createSwapTokensStep(selectedWallet, connection, userToken, userVault, pools).then(swapTokens => {
-                    addLog(JSON.stringify(swapTokens));
+                    setSwapTokens(swapTokens)
+                    addLog("swap tokens ok");
+                })
+                .catch(
+                    err => {addLog("" + err) 
+                    throw(err)}
+                )
+        }
+        catch (err) {addLog("" + err) 
+        throw(err)}
+    }
+
+    async function Swap() {
+        addLog("loading swap ... ");
+        try {
+                swapStep(selectedWallet, connection, userToken, userVault, swapTokens, authority).then(result => {
+                    addLog("swap ok");
                 })
                 .catch(
                     err => {addLog("" + err) 
@@ -297,7 +317,7 @@ function SwapPortfolio() {
                 <button onClick={() => createSwapTokens()} className="btn btn-primary"> create swap tokens </button>
                 <br />
                 <br />
-                <button className="btn btn-primary">Swap </button>
+                <button onClick={() => Swap()} className="btn btn-primary">Swap </button>
                 <br />
                 <br />
                 <div className="logs">
