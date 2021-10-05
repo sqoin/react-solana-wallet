@@ -96,13 +96,9 @@ export async function mintToSig2(selectedWallet , connection , mintAccount ,rawT
 
 /*********************************** Portfolio****************************************/
 
-export async function depositInPortfolio(selectedWallet, connection,   portfolioAddress,UserPortfolioAccount,tokenSwap,autority ,
-spluPRIMARY , managerPRIMARY ,manager_asset1 , splu_asset1 , tokenPool , feeAccount , 
-TOKEN_PROGRAM_ID,tokenAccountPool  , TOKEN_SWAP_PROGRAM_ID  ,
-amount  ,  minta , mintb) {  
+export async function depositInPortfolio(selectedWallet, connection,   portfolioAddress,UserPortfolioAccount,
+  TOKEN_PROGRAM_ID  , TOKEN_SWAP_PROGRAM_ID  ,amount ,asset1,asset2 ) {  
 
-  return depositPortfolio(selectedWallet, connection,   portfolioAddress,UserPortfolioAccount,tokenSwap,autority ,
-             spluPRIMARY , managerPRIMARY ,manager_asset1 , splu_asset1 , tokenPool , feeAccount , 
-              TOKEN_PROGRAM_ID,tokenAccountPool  , TOKEN_SWAP_PROGRAM_ID  ,
-              amount  , minta , mintb);
+  return depositPortfolio(selectedWallet, connection,   portfolioAddress,UserPortfolioAccount,
+    TOKEN_PROGRAM_ID  , TOKEN_SWAP_PROGRAM_ID  ,amount ,asset1,asset2 );
 }

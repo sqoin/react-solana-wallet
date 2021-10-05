@@ -268,10 +268,8 @@ export async function swapToken(selectedWallet, connection,minta,mintb,accounta,
   }
 
 
-  export async function depositPortfolio (myAccount, connection,   portfolioAddress,UserPortfolioAccount,tokenSwap,autority ,
-    spluPRIMARY , managerPRIMARY ,manager_asset1 , splu_asset1 , tokenPool , feeAccount , 
-     TOKEN_PROGRAM_ID,tokenAccountPool  , TOKEN_SWAP_PROGRAM_ID  ,
-     amount , minta , mintb){
+  export async function depositPortfolio (myAccount, connection,   portfolioAddress,UserPortfolioAccount,
+    TOKEN_PROGRAM_ID  , TOKEN_SWAP_PROGRAM_ID  ,amount ,asset1,asset2 ){
 
 /*
       let token1= new Token(
@@ -299,29 +297,33 @@ export async function swapToken(selectedWallet, connection,minta,mintb,accounta,
         selectedWallet)
       let userAccountB = await tokenB.createAccount(selectedWallet.publicKey)
       */
+      
 
+
+
+          
       
       let splmPRIMARY= new Token(
         connection,
-        new PublicKey(minta),
+        new PublicKey(asset1.minta),
         new PublicKey(ORIGINE_PROGRAMM_ID),
         myAccount)
         console.log("splmPRIMARY"+splmPRIMARY)
      
-      await splmPRIMARY.mintTo(new PublicKey (spluPRIMARY), myAccount, [], 100000);
+      await splmPRIMARY.mintTo(new PublicKey (asset1.spluPRIMARY), myAccount, [], 100000);
      
 
             
       let splmAsset1= new Token(
         connection,
-        new PublicKey(mintb),
+        new PublicKey(asset1.mintb),
         new PublicKey(ORIGINE_PROGRAMM_ID),
         myAccount)
-        await splmAsset1.mintTo(new PublicKey (manager_asset1), myAccount, [], 100000);
+        await splmAsset1.mintTo(new PublicKey (asset1.managerAsset1), myAccount, [], 100000);
 
       const userTransferAuthority = new Account([155, 200, 249, 167, 10, 23, 75, 131, 118, 125, 114, 216, 128, 104, 178, 124, 197, 52, 254, 20, 115, 17, 181, 113, 249, 97, 206, 128, 236, 197, 223, 136, 12, 128, 101, 121, 7, 177, 87, 233, 105, 253, 150, 154, 73, 9, 56, 54, 157, 240, 189, 68, 189, 52, 172, 228, 134, 89, 160, 189, 52, 26, 149, 130]);
       await splmPRIMARY.approve(
-        new PublicKey(spluPRIMARY),
+        new PublicKey(asset1.spluPRIMARY),
         userTransferAuthority.publicKey,
         myAccount,
         [],
@@ -342,17 +344,17 @@ export async function swapToken(selectedWallet, connection,minta,mintb,accounta,
       const keys=[
         {pubkey: new PublicKey(portfolioAddress), isSigner: false, isWritable: false},
         {pubkey: new PublicKey(UserPortfolioAccount), isSigner: false, isWritable: false},         
-        {pubkey: new PublicKey(tokenSwap), isSigner: false, isWritable: true},
-        {pubkey: new PublicKey(autority), isSigner: false, isWritable: true},  //authority 
+        {pubkey: new PublicKey(asset1.tokenSwap), isSigner: false, isWritable: true},
+        {pubkey: new PublicKey(asset1.autority), isSigner: false, isWritable: true},  //authority 
         {pubkey: userTransferAuthority.publicKey, isSigner: true, isWritable: true},
-        {pubkey: new PublicKey(spluPRIMARY), isSigner: false, isWritable: true},
-        {pubkey: new PublicKey(managerPRIMARY), isSigner: false, isWritable: true},
-        {pubkey: new PublicKey(manager_asset1), isSigner: false, isWritable: true},
-        {pubkey: new PublicKey(splu_asset1), isSigner: false, isWritable: true},
-        {pubkey: new PublicKey(tokenPool), isSigner: false, isWritable: true},
-        {pubkey: new PublicKey(feeAccount), isSigner: false, isWritable: true},
+        {pubkey: new PublicKey(asset1.spluPRIMARY), isSigner: false, isWritable: true},
+        {pubkey: new PublicKey(asset1.managerPRIMARY), isSigner: false, isWritable: true},
+        {pubkey: new PublicKey(asset1.managerAsset1), isSigner: false, isWritable: true},
+        {pubkey: new PublicKey(asset1.spluAsset1), isSigner: false, isWritable: true},
+        {pubkey: new PublicKey(asset1.tokenPool), isSigner: false, isWritable: true},
+        {pubkey: new PublicKey(asset1.feeAccount), isSigner: false, isWritable: true},
         {pubkey: new PublicKey(TOKEN_PROGRAM_ID), isSigner: false, isWritable: false},
-        {pubkey: new PublicKey(tokenAccountPool), isSigner: false, isWritable: true},
+        {pubkey: new PublicKey(asset1.tokenAccountPool), isSigner: false, isWritable: true},
         {pubkey: programAddress, isSigner: false, isWritable: false},
         {pubkey: new PublicKey(TOKEN_SWAP_PROGRAM_ID), isSigner: false, isWritable: false},
         {pubkey: createAccountProgram.publicKey,isSigner:false,isWritable:false},
@@ -361,17 +363,17 @@ export async function swapToken(selectedWallet, connection,minta,mintb,accounta,
       const keys2=[
         {pubkey: new PublicKey(portfolioAddress), isSigner: false, isWritable: false},
         {pubkey: new PublicKey(UserPortfolioAccount), isSigner: false, isWritable: false},         
-        {pubkey: new PublicKey(tokenSwap), isSigner: false, isWritable: true},
-        {pubkey: new PublicKey(autority), isSigner: false, isWritable: true},  //authority 
+        {pubkey: new PublicKey(asset2.tokenSwap), isSigner: false, isWritable: true},
+        {pubkey: new PublicKey(asset2.autority), isSigner: false, isWritable: true},  //authority 
         {pubkey: userTransferAuthority.publicKey, isSigner: true, isWritable: true},
-        {pubkey: new PublicKey(spluPRIMARY), isSigner: false, isWritable: true},
-        {pubkey: new PublicKey(managerPRIMARY), isSigner: false, isWritable: true},
-        {pubkey: new PublicKey(manager_asset1), isSigner: false, isWritable: true},
-        {pubkey: new PublicKey(splu_asset1), isSigner: false, isWritable: true},
-        {pubkey: new PublicKey(tokenPool), isSigner: false, isWritable: true},
-        {pubkey: new PublicKey(feeAccount), isSigner: false, isWritable: true},
+        {pubkey: new PublicKey(asset2.spluPRIMARY), isSigner: false, isWritable: true},
+        {pubkey: new PublicKey(asset2.managerPRIMARY), isSigner: false, isWritable: true},
+        {pubkey: new PublicKey(asset2.managerAsset1), isSigner: false, isWritable: true},
+        {pubkey: new PublicKey(asset2.splu_asset1), isSigner: false, isWritable: true},
+        {pubkey: new PublicKey(asset2.tokenPool), isSigner: false, isWritable: true},
+        {pubkey: new PublicKey(asset2.feeAccount), isSigner: false, isWritable: true},
         {pubkey: new PublicKey(TOKEN_PROGRAM_ID), isSigner: false, isWritable: false},
-        {pubkey: new PublicKey(tokenAccountPool), isSigner: false, isWritable: true},
+        {pubkey: new PublicKey(asset2.tokenAccountPool), isSigner: false, isWritable: true},
         {pubkey: programAddress, isSigner: false, isWritable: false},
         {pubkey: new PublicKey(TOKEN_SWAP_PROGRAM_ID), isSigner: false, isWritable: false},
         {pubkey: createAccountProgram.publicKey,isSigner:false,isWritable:false},

@@ -30,33 +30,35 @@ function PortfolioSwap() {
     const [amount, setAmount] = useState()
     const [primqrySpl, setPrimqrySPL] = useState("DJmqhE59DfjcaQQZDnXfwMgr5tFuhr9kLZ6DrDVMkhCK")
 
+
+
     const [asset1, setAsset1] = useState({
         createAccountProgramm : "8RfDxCrS4yCpHwuj131AJbYTL4QquzCB6TXrs3Hj7vun",
          minta :"5BGi9aydFLs335WuaYJTABqLbXCKdxVdpfrB2R1QtFFc",
          mintb :"D1FAA8qeo17WYgze53U3VEAVknVASCbVGBMszQ76fdK8",
-         accounta :"HwsA9mBjnZEaNjM2edvoAsCYfd3LFT7fMcWehZNqwfvv",
-          accountb :"DexCKvu85btXYWJVuvvNb1y9WnE4gZgkRLKrjswzT4Kz",
-          pooltoken :"FfVcqbB9UDdJfeTrrPcArNwxQRkUd1hCod3r1E4HLWFW",
-          feeacoount :"EzbYEZe1d8iT5T6wkAF126aDwcprkSwBfMaAVtHwo2mv",
-          accountpool :"FFKo6NYVzbv43fKHrQ1RY7UejLLbfRGF8pZDXnKZvgEh",
+         managerPRIMARY :"HwsA9mBjnZEaNjM2edvoAsCYfd3LFT7fMcWehZNqwfvv",
+          managerAsset1 :"DexCKvu85btXYWJVuvvNb1y9WnE4gZgkRLKrjswzT4Kz",
+          tokenPool :"FfVcqbB9UDdJfeTrrPcArNwxQRkUd1hCod3r1E4HLWFW",
+          feeAcoount :"EzbYEZe1d8iT5T6wkAF126aDwcprkSwBfMaAVtHwo2mv",
+          tokenAccountPool :"FFKo6NYVzbv43fKHrQ1RY7UejLLbfRGF8pZDXnKZvgEh",
         autority :"Cpm8hUiqMJ5PfFphQEhBr4EQYDaVA83KjPoY4tbLaLoY",
-        tokenswap : "8RfDxCrS4yCpHwuj131AJbYTL4QquzCB6TXrs3Hj7vun",
-        userAccountA  : "Dkqz2HsXovLDuPrbz1wffNLJnnemEnq3c8adTEniCnPT",
-        userAccountB : "CEnv2giFo1B9mDzWLsByvLujVWKXZox4dfdtBvjSqAJf",
+        tokenSwap : "8RfDxCrS4yCpHwuj131AJbYTL4QquzCB6TXrs3Hj7vun",
+        spluPRIMARY  : "Dkqz2HsXovLDuPrbz1wffNLJnnemEnq3c8adTEniCnPT",
+        spluAsset1 : "CEnv2giFo1B9mDzWLsByvLujVWKXZox4dfdtBvjSqAJf",
     })
     const [asset2, setAsset6] = useState({
         createAccountProgramm : "65HtXX63thUK1tptxaneP9ffHCLhizfttbwFze8Z8x8F",
         minta :"5BGi9aydFLs335WuaYJTABqLbXCKdxVdpfrB2R1QtFFc",
         mintb :"HFdGgdFaRJEj8BLpyjZmzDexkaQhFqrLt2bFyMxvMDw9",
-        accounta :"2RwSdPn6buiyq7QEvUBen3kychLcWzWXgGWoXzaAEUbb",
-        accountb :"HKaKzf1VCNBBivheFQABGLFbzVthCS5qD2ho5dPy8Zjv",
-        pooltoken :"94tkdNZnetJkyUbYziBsCzRUqkMpMVAcAKvHkS6hztFm",
-        feeacoount :"2wrmL8Q6KAHbXMbVY8j4uzyH8QsdzzTnaD9q3Dh4YzHa",
-        accountpool :"2m2SgJ821gtos4oMfKXPFdYFG3SWy1ka4Ltt5yxm9xWJ",
+        managerPRIMARY :"2RwSdPn6buiyq7QEvUBen3kychLcWzWXgGWoXzaAEUbb",
+        managerAsset1 :"HKaKzf1VCNBBivheFQABGLFbzVthCS5qD2ho5dPy8Zjv",
+        tokenPool :"94tkdNZnetJkyUbYziBsCzRUqkMpMVAcAKvHkS6hztFm",
+        feeAcoount :"2wrmL8Q6KAHbXMbVY8j4uzyH8QsdzzTnaD9q3Dh4YzHa",
+        tokenAccountPool :"2m2SgJ821gtos4oMfKXPFdYFG3SWy1ka4Ltt5yxm9xWJ",
         autority :"DPJJRVfywAD7xBgQAjgukko9UcwZb35gKjirTDetU53Q",
-        tokenswap : "65HtXX63thUK1tptxaneP9ffHCLhizfttbwFze8Z8x8F",
-        userAccountA  : "J6qsWE5a67QY2332Xv5WtCqiy1Hqfe7EPAzjQmVWFrKY",
-        userAccountB : "Gf4Johh55ngCafXPR95sGSgwEtPHCXpebzeWFs7PeEGc",
+        tokenSwap : "65HtXX63thUK1tptxaneP9ffHCLhizfttbwFze8Z8x8F",
+        spluPRIMARY  : "J6qsWE5a67QY2332Xv5WtCqiy1Hqfe7EPAzjQmVWFrKY",
+        spluAsset1 : "Gf4Johh55ngCafXPR95sGSgwEtPHCXpebzeWFs7PeEGc",
     })
     const [portfolios, setPortfolios] = useState([
         "3KQNZ5E9Yvi25myqJf4n7tEQA8LY99pJWTSLb2jBM2uB"
@@ -239,8 +241,7 @@ function PortfolioSwap() {
 
             let TOKEN_PROGRAM_ID = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA';
             let TOKEN_SWAP_PROGRAM_ID = '5e2zZzHS8P1kkXQFVoBN6tVN15QBUHMDisy6mxVwVYSz';
-           // let userTransferAuthority = new Account([155,200,249,167,10,23,75,131,118,125,114,216,128,104,178,124,197,52,254,20,115,17,181,113,249,97,206,128,236,197,223,136,12,128,101,121,7,177,87,233,105,253,150,154,73,9,56,54,157,240,189,68,189,52,172,228,134,89,160,189,52,26,149,130]);
-            let createAccountProgramm = asset1.createAccountProgramm;
+           /* let createAccountProgramm = asset1.createAccountProgramm;
             let minta = asset1.minta;
             let mintb = asset1.mintb;
             let spluPRIMARY = asset1.userAccountA;
@@ -250,9 +251,11 @@ function PortfolioSwap() {
             let tokenAccountPool = asset1.accountpool;
             let autority = asset1.autority;
             let tokenSwap = asset1.tokenswap;
-
             let managerPRIMARY  = asset1.accounta;
             let splu_asset1 = asset1.userAccountB; 
+
+*/
+            
 
             let portfolioAddress = "4t54Gy7cgRkr36vQFumRFRgEF1SmwsWYntqVgYEUeR85";
       
@@ -260,10 +263,8 @@ function PortfolioSwap() {
             let UserPortfolioAccount=  "GgzBnJAVb4vLHrQUV1JAJjJz73ZM987JsPe7wCpSbu6T";
 
 
-            depositInPortfolio(selectedWallet, connection,   portfolioAddress,UserPortfolioAccount,tokenSwap,autority ,
-                /*userTransferAuthority,*/ spluPRIMARY , managerPRIMARY ,manager_asset1 , splu_asset1 , tokenPool , feeAccount , 
-              TOKEN_PROGRAM_ID,tokenAccountPool  , TOKEN_SWAP_PROGRAM_ID  ,
-              amount , minta , mintb).then(
+            depositInPortfolio(selectedWallet, connection,   portfolioAddress,UserPortfolioAccount,
+              TOKEN_PROGRAM_ID  , TOKEN_SWAP_PROGRAM_ID  ,amount ,asset1,asset2 ).then(
                 token => {
                     setIdTransaction(token)
                     addLog(JSON.stringify(token))
@@ -433,11 +434,11 @@ function PortfolioSwap() {
                 <br></br>
                 <br></br>
                 <span> Asset 1 token:  </span> <input  value={asset1.mintb}></input> 
-                <span> Asset 1 manager account:  </span> <input value={asset1.accountb}></input>
-                <span> Asset 1 user account:  </span> <input value={asset1.userAccountB}></input>
-                <span> Asset 1 pool token:  </span> <input value={asset1.pooltoken}></input>
-                <span> Asset 1 fee account:  </span> <input value={asset1.feeacoount}></input>
-                <span> Asset 1 pool account:  </span> <input value={asset1.accountpool}></input>
+                <span> Asset 1 manager account:  </span> <input value={asset1.managerAsset1}></input>
+                <span> Asset 1 user account:  </span> <input value={asset1.spluAsset1}></input>
+                <span> Asset 1 pool token:  </span> <input value={asset1.tokenPool}></input>
+                <span> Asset 1 fee account:  </span> <input value={asset1.feeAcoount}></input>
+                <span> Asset 1 pool account:  </span> <input value={asset1.tokenAccountPool}></input>
                 <br></br>
                 <br></br>
                 <br></br>
