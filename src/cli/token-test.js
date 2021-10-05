@@ -274,8 +274,9 @@ export async function swap(selectedWallet, connection,tokenSwapPubkey,minta,mint
     minta,
     new PublicKey(ORIGINE_PROGRAMM_ID),
     selectedWallet)
-    console.log("token1"+token1)
-  let userAccountA = await token1.createAccount(selectedWallet.publicKey)
+
+    let userAccountA = await token1.createAccount(selectedWallet.publicKey);
+
   await token1.mintTo(userAccountA, selectedWallet, [], 100000);
  
   const userTransferAuthority = new Account([155, 200, 249, 167, 10, 23, 75, 131, 118, 125, 114, 216, 128, 104, 178, 124, 197, 52, 254, 20, 115, 17, 181, 113, 249, 97, 206, 128, 236, 197, 223, 136, 12, 128, 101, 121, 7, 177, 87, 233, 105, 253, 150, 154, 73, 9, 56, 54, 157, 240, 189, 68, 189, 52, 172, 228, 134, 89, 160, 189, 52, 26, 149, 130]);
@@ -307,6 +308,9 @@ export async function swap(selectedWallet, connection,tokenSwapPubkey,minta,mint
     [userTransferAuthority.publicKey.toBuffer()],
     programIdHello,
   );
+
+  console.log("userAccountA" , userAccountA.toBase58());
+  console.log("userAccountB" , userAccountB.toBase58());
 
   // const keys = [{ pubkey:tokenSwapPubkey, isSigner: false, isWritable: true },
   // { pubkey: new PublicKey(autority), isSigner: false, isWritable: true },  //authority 

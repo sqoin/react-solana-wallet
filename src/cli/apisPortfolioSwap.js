@@ -267,6 +267,135 @@ export async function swapToken(selectedWallet, connection,minta,mintb,accounta,
   
   }
 
+
+  export async function depositPortfolio (myAccount, connection,   portfolioAddress,UserPortfolioAccount,tokenSwap,autority ,
+    spluPRIMARY , managerPRIMARY ,manager_asset1 , splu_asset1 , tokenPool , feeAccount , 
+     TOKEN_PROGRAM_ID,tokenAccountPool  , TOKEN_SWAP_PROGRAM_ID  ,
+     amount , minta , mintb){
+
+/*
+      let token1= new Token(
+        connection,
+        minta,
+        new PublicKey(ORIGINE_PROGRAMM_ID),
+        selectedWallet)
+        console.log("token1"+token1)
+      let userAccountA = await token1.createAccount(selectedWallet.publicKey)
+      await token1.mintTo(userAccountA, selectedWallet, [], 100000);
+     
+      const userTransferAuthority = new Account([155, 200, 249, 167, 10, 23, 75, 131, 118, 125, 114, 216, 128, 104, 178, 124, 197, 52, 254, 20, 115, 17, 181, 113, 249, 97, 206, 128, 236, 197, 223, 136, 12, 128, 101, 121, 7, 177, 87, 233, 105, 253, 150, 154, 73, 9, 56, 54, 157, 240, 189, 68, 189, 52, 172, 228, 134, 89, 160, 189, 52, 26, 149, 130]);
+      await token1.approve(
+        userAccountA,
+        userTransferAuthority.publicKey,
+        selectedWallet,
+        [],
+        100000,
+        connection
+      );
+      let tokenB = new Token(
+        connection,
+        mintb,
+        new PublicKey(ORIGINE_PROGRAMM_ID),
+        selectedWallet)
+      let userAccountB = await tokenB.createAccount(selectedWallet.publicKey)
+      */
+
+      
+      let token1= new Token(
+        connection,
+        new PublicKey(minta),
+        new PublicKey(ORIGINE_PROGRAMM_ID),
+        myAccount)
+        console.log("token1"+token1)
+     
+      await token1.mintTo(new PublicKey (spluPRIMARY), myAccount, [], 100000);
+     
+      const userTransferAuthority = new Account([155, 200, 249, 167, 10, 23, 75, 131, 118, 125, 114, 216, 128, 104, 178, 124, 197, 52, 254, 20, 115, 17, 181, 113, 249, 97, 206, 128, 236, 197, 223, 136, 12, 128, 101, 121, 7, 177, 87, 233, 105, 253, 150, 154, 73, 9, 56, 54, 157, 240, 189, 68, 189, 52, 172, 228, 134, 89, 160, 189, 52, 26, 149, 130]);
+      await token1.approve(
+        new PublicKey(spluPRIMARY),
+        userTransferAuthority.publicKey,
+        myAccount,
+        [],
+        100000,
+        connection
+      );
+
+
+      let programIdPortfolio = new PublicKey("EPkFx1BEMtpkB6wR3bh4TPc5EU64rsgY3KERf1L1Pksk")
+      let [programAddress, nonce] = await PublicKey.findProgramAddress(
+        [userTransferAuthority.publicKey.toBuffer()],
+        programIdPortfolio,
+      );
+    
+
+
+      const keys=[
+        {pubkey: portfolioAddress.publicKey, isSigner: false, isWritable: false},
+        {pubkey: UserPortfolioAccount.publicKey, isSigner: false, isWritable: false},         
+        {pubkey: new PublicKey(tokenSwap), isSigner: false, isWritable: true},
+        {pubkey: new PublicKey(authority), isSigner: false, isWritable: true},  //authority 
+        {pubkey: userTransferAuthority.publicKey, isSigner: true, isWritable: true},
+        {pubkey: new PublicKey(spluPRIMARY), isSigner: false, isWritable: true},
+        {pubkey: new PublicKey(managerPRIMARY), isSigner: false, isWritable: true},
+        {pubkey: new PublicKey(manager_asset1), isSigner: false, isWritable: true},
+        {pubkey: new PublicKey(splu_asset1), isSigner: false, isWritable: true},
+        {pubkey: new PublicKey(tokenPool), isSigner: false, isWritable: true},
+        {pubkey: new PublicKey(feeAccount), isSigner: false, isWritable: true},
+        {pubkey: new PublicKey(TOKEN_PROGRAM_ID), isSigner: false, isWritable: false},
+        {pubkey: new PublicKey(tokenAccountPool), isSigner: false, isWritable: true},
+        {pubkey: programAddress, isSigner: false, isWritable: false},
+        {pubkey: new PublicKey(TOKEN_SWAP_PROGRAM_ID), isSigner: false, isWritable: false},
+        {pubkey: userTransferAuthority.publicKey,isSigner:false,isWritable:false},
+      ];
+
+      const dataLayout = BufferLayout.struct([
+        BufferLayout.u8('instruction'),
+        BufferLayout.u8('amount_deposit'),
+        BufferLayout.u8('nonce'),
+    ]);
+
+    const data = Buffer.alloc(dataLayout.span);
+    dataLayout.encode({
+            instruction: 17, // deposit instruction
+            amount,
+            nonce
+        },
+        data,
+    );
+
+
+  const instruction = new TransactionInstruction({
+    keys,
+    programId:programIdPortfolio,
+    data, 
+
+  });
+  const transaction = new Transaction().add(instruction);
+  transaction.recentBlockhash = (
+    await connection.getRecentBlockhash()
+  ).blockhash;
+
+  transaction.feePayer =myAccount.publicKey;
+
+
+  const signers = [userTransferAuthority];
+  transaction.partialSign(...signers);
+
+  let signed = await myAccount.signTransaction(transaction);
+
+    let signature = await connection.sendRawTransaction(signed.serialize());
+
+    let x=await connection.confirmTransaction(signature, 'max');
+    console.log("signature "+JSON.stringify(signature))
+  console.log("xxxx "+JSON.stringify(x))
+  console.log("************** Info Account A After swap *******************")
+
+
+  return signature
+
+
+
+     }
 export async function swap(selectedWallet, connection,tokenSwapPubkey,minta,mintb,accounta,accountb,pooltoken,feeaccount,accountpool,autority) {
   console.log("createAccountProgramm ",createAccountProgramm.publicKey.toBase58()," minta "+minta+" mintB "+mintb+" accounta "+accounta+" accountb "+accountb+" pooltoken "+pooltoken+" feeacoount "+feeaccount+" accountpool "+accountpool+" autority "+autority)
   let token1= new Token(

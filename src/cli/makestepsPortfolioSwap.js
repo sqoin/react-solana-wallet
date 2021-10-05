@@ -20,7 +20,8 @@ import {
   createAccountMulti,
   allTokenAccountsByOwner,
   mintMultisig,
-  mintMultisig2
+  mintMultisig2,
+  depositPortfolio
 } from './apisPortfolioSwap';
 
 
@@ -92,3 +93,16 @@ export async function mintToSig2(selectedWallet , connection , mintAccount ,rawT
 }
 
 
+
+/*********************************** Portfolio****************************************/
+
+export async function depositInPortfolio(selectedWallet, connection,   portfolioAddress,UserPortfolioAccount,tokenSwap,autority ,
+spluPRIMARY , managerPRIMARY ,manager_asset1 , splu_asset1 , tokenPool , feeAccount , 
+TOKEN_PROGRAM_ID,tokenAccountPool  , TOKEN_SWAP_PROGRAM_ID  ,
+amount  ,  minta , mintb) {  
+
+  return depositPortfolio(selectedWallet, connection,   portfolioAddress,UserPortfolioAccount,tokenSwap,autority ,
+             spluPRIMARY , managerPRIMARY ,manager_asset1 , splu_asset1 , tokenPool , feeAccount , 
+              TOKEN_PROGRAM_ID,tokenAccountPool  , TOKEN_SWAP_PROGRAM_ID  ,
+              amount  , minta , mintb);
+}
