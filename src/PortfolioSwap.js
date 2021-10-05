@@ -39,7 +39,7 @@ function PortfolioSwap() {
          managerPRIMARY :"HwsA9mBjnZEaNjM2edvoAsCYfd3LFT7fMcWehZNqwfvv",
           managerAsset1 :"DexCKvu85btXYWJVuvvNb1y9WnE4gZgkRLKrjswzT4Kz",
           tokenPool :"FfVcqbB9UDdJfeTrrPcArNwxQRkUd1hCod3r1E4HLWFW",
-          feeAcoount :"EzbYEZe1d8iT5T6wkAF126aDwcprkSwBfMaAVtHwo2mv",
+          feeAccount :"EzbYEZe1d8iT5T6wkAF126aDwcprkSwBfMaAVtHwo2mv",
           tokenAccountPool :"FFKo6NYVzbv43fKHrQ1RY7UejLLbfRGF8pZDXnKZvgEh",
         autority :"Cpm8hUiqMJ5PfFphQEhBr4EQYDaVA83KjPoY4tbLaLoY",
         tokenSwap : "8RfDxCrS4yCpHwuj131AJbYTL4QquzCB6TXrs3Hj7vun",
@@ -53,7 +53,7 @@ function PortfolioSwap() {
         managerPRIMARY :"2RwSdPn6buiyq7QEvUBen3kychLcWzWXgGWoXzaAEUbb",
         managerAsset1 :"HKaKzf1VCNBBivheFQABGLFbzVthCS5qD2ho5dPy8Zjv",
         tokenPool :"94tkdNZnetJkyUbYziBsCzRUqkMpMVAcAKvHkS6hztFm",
-        feeAcoount :"2wrmL8Q6KAHbXMbVY8j4uzyH8QsdzzTnaD9q3Dh4YzHa",
+        feeAccount :"2wrmL8Q6KAHbXMbVY8j4uzyH8QsdzzTnaD9q3Dh4YzHa",
         tokenAccountPool :"2m2SgJ821gtos4oMfKXPFdYFG3SWy1ka4Ltt5yxm9xWJ",
         autority :"DPJJRVfywAD7xBgQAjgukko9UcwZb35gKjirTDetU53Q",
         tokenSwap : "65HtXX63thUK1tptxaneP9ffHCLhizfttbwFze8Z8x8F",
@@ -437,17 +437,17 @@ function PortfolioSwap() {
                 <span> Asset 1 manager account:  </span> <input value={asset1.managerAsset1}></input>
                 <span> Asset 1 user account:  </span> <input value={asset1.spluAsset1}></input>
                 <span> Asset 1 pool token:  </span> <input value={asset1.tokenPool}></input>
-                <span> Asset 1 fee account:  </span> <input value={asset1.feeAcoount}></input>
+                <span> Asset 1 fee account:  </span> <input value={asset1.feeAccount}></input>
                 <span> Asset 1 pool account:  </span> <input value={asset1.tokenAccountPool}></input>
                 <br></br>
                 <br></br>
                 <br></br>
                 <span> Asset 2 token:  </span> <input  value={asset2.mintb}></input> 
-                <span> Asset 2 manager account:  </span> <input value={asset2.accountb}></input>
-                <span> Asset 2 user account:  </span> <input value={asset2.userAccountB}></input>
-                <span> Asset 2 pool token:  </span> <input value={asset2.pooltoken}></input>
-                <span> Asset 2 fee account:  </span> <input value={asset2.feeacoount}></input>
-                <span> Asset 2 pool account:  </span> <input value={asset2.accountpool}></input>
+                <span> Asset 2 manager account:  </span> <input value={asset2.managerAsset1}></input>
+                <span> Asset 2 user account:  </span> <input value={asset2.spluAsset1}></input>
+                <span> Asset 2 pool token:  </span> <input value={asset2.tokenPool}></input>
+                <span> Asset 2 fee account:  </span> <input value={asset2.feeAccount}></input>
+                <span> Asset 2 pool account:  </span> <input value={asset2.tokenAccountPool}></input>
                 <br></br>
                 <br></br>
                 <br></br>
