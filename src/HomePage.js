@@ -95,7 +95,7 @@ function HomePage() {
 
     async function goSwapPortfolio() {
   
-        window.location.assign("/SwapPortfolio");
+        window.location.assign("/PortfolioSwap");
     
       }
 
