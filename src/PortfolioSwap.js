@@ -15,9 +15,9 @@ function PortfolioSwap() {
     const network = "https://psytrbhymqlkfrhudd.dev.genesysgo.net:8899"
     const [providerUrl, setProviderUrl] = useState('https://www.sollet.io');
     const connection = useMemo(() => new Connection(network), [network]);
-    const [mintA, setMintA] = useState("8TjfZNAg3KBpW8eAbD9kBkwa4QyYS1LNARLWYrmHn2AY")
+    const [mintA, setMintA] = useState("5BGi9aydFLs335WuaYJTABqLbXCKdxVdpfrB2R1QtFFc")
     const [mintB, setMintB] = useState("HsfuMAHUBkij97qv7VxjmfJJBVEaSSy8mHm3YBtcrh2P");
-    const [accountA, setAccountA] = useState("HhHmLqT63mt5KNr2qpZytmmDn4Q9TqyrXdcSZijVZVVz")
+    const [accountA, setAccountA] = useState("Dkqz2HsXovLDuPrbz1wffNLJnnemEnq3c8adTEniCnPT")
     const [accountB, setAccountB] = useState("87cTTQ3bsiFqrHwwuxK2kUh8iZjQ14T9KV1c4YQ24JcL")
     const [poolToken, setPoolToken] = useState("7Wdmn7qAiq6XKQWcwVAg62qKyuRrQposgfesJgV2Yngi")
     const [accountPool, setAccountPool] = useState("HhCHdqp7xagbSm3S36Fzip9hNmfg3ikJjpgzQDML1CLs")
@@ -29,51 +29,8 @@ function PortfolioSwap() {
     const [selectedPortfolio, setSelectedPortfolio] = useState("3KQNZ5E9Yvi25myqJf4n7tEQA8LY99pJWTSLb2jBM2uB")
     const [amount, setAmount] = useState()
     const [primqrySpl, setPrimqrySPL] = useState("DJmqhE59DfjcaQQZDnXfwMgr5tFuhr9kLZ6DrDVMkhCK")
+
     const [asset1, setAsset1] = useState({
-        mint: "BwqSJyayGjy8QX1KJmkHudbmL6oTwHxe35Qn2U4bkMva",
-        authority: "5tPusF93mBW51Pk74QKVPuJPDGXWvBseZhMSwNYNmGba",
-        nonce: 255,
-        accountA: "CmBfHFd9aJWZLq3LsMZpwRAdu4trArL53im6KMyWdZfn",
-        accountB: "EoHG4u9MefpAWqCyFxmX7yqJZ9C3W2d5XJicsHq9TUHZ",
-        tokenPool: "DGrTtggnU63nPqtu19oagEfv2dD8vYAz7ZC4pyrRSqGQ",
-        feeAccount: "3k93BqooCRJ8qTV5k2KfA3d58sb1CMsdmGVxBYQdSuet",
-        poolAccount: "9cTrH5H4NVG1RnmVepARZtoecCve6qBdWxAKVMQEXoqi",
-        swapAccount: "G4tUewgmvD3pFngBvDz1Syqv53VZL41NKiMgqgxFW9nw"
-    })
-    const [asset2, setAsset2] = useState({
-        mint: "HSLeSKe94bFqcd9jjfGimH88StXEbjCaMFvPf9PDY1h9",
-        authority: "ERt88q6H27MPrVFGdCq7wuWgB9QTL7Z8WYVt8YPA6jMm",
-        nonce: 254,
-        accountA: "EZBT3v8YFe3Hrrekqy8hkCeEagAr9RqnC3YjrsYMyTPv",
-        accountB: "HMG9JH92vzTLng3ngC8WCgU2vmg3YLToXg6Qqt5PWBgk",
-        tokenPool: "6kbt7eGBLQCqotKnoGZ8rmasTxgDKJ3ywhsYFh3NAhTb",
-        feeAccount: "6dtPRTBGTk9ZnK7mRVbqd5jWttfHLHQAXH5FY6ZHKBG8",
-        poolAccount: "DHg5Vj3GQAh4R9fwz55jdArqkcCrmDhjQVhNwtiaf89Q",
-        swapAccount: "31SonfVzUX49y2fzBe7inkQwHQAsBEfDTgY8cLbLYVgy"
-    })
-    const [asset3, setAsset3] = useState({
-        mint: "BCdSHa5xKfsDigfppk7NpGsiXQGv8N2CAK1HV4v9YrGC",
-        authority: "4WeZy11TDm9Z158hRvewmk7abE9gtjyW4rkrBaQZHxGq",
-        nonce: 254,
-        accountA: "4WeZy11TDm9Z158hRvewmk7abE9gtjyW4rkrBaQZHxGq",
-        accountB: "1y1SiJoLWJN7TaXTDdhPVEWSgVGsee5XhRzX6YnZqTN",
-        tokenPool: "ErwuH4eScqtH8omCBHdA7sRAMmBU7hJFe36C8DkVjLch",
-        feeAccount: "83HzR78WEp8eoajZeQ2eQd9PgzKszcgyZXpmyfXfUJCo",
-        poolAccount: "8ZC97ukfhwrYsLN3jiJvyo61877AdgVfdSC1Hw5EwWsM",
-        swapAccount: "Fxkt1SnqCok8LgcuGXB79ALSu3svXRBiio49ddDL4AJN"
-    })
-    const [asset4, setAsset4] = useState({
-        mint: "CjUNx6dXmEaTSLeVpDuMkTzRR4snrBQCF6tW2vZfzv8r",
-        authority: "ExSCkS99FkifZkwxoP97tWBiJruM2XNzR7NqSh8si3dR",
-        nonce: 255,
-        accountA: "3orhqB1zN6RCpDs1JBVbd8o4bjPiPRnBB6iqhXMBDbeE",
-        accountB: "Hd22r9oRunVxb9DWMA1XXW2dCGki2HWahwvG3x2V3Ygp",
-        tokenPool: "2hzvhiFFc2WpnXuMUKyZhfs6WQDF5bHawKXtG56142Ld",
-        feeAccount: "DiRtTs5ArmZt7xgtrMQtRzbRBx6iizkQ9eF5SwxELxdb",
-        poolAccount: "C6j3Sxr5yFL1yWzeYaFTYyu6GKeS5nSQRRCi52BqLdr6",
-        swapAccount: "FP56YxndBU8kgDgZSmudxwu4bS9WyV1WBEb8budujAYJ"
-    })
-    const [asset5, setAsset5] = useState({
         createAccountProgramm : "8RfDxCrS4yCpHwuj131AJbYTL4QquzCB6TXrs3Hj7vun",
          minta :"5BGi9aydFLs335WuaYJTABqLbXCKdxVdpfrB2R1QtFFc",
          mintb :"D1FAA8qeo17WYgze53U3VEAVknVASCbVGBMszQ76fdK8",
@@ -87,9 +44,22 @@ function PortfolioSwap() {
         userAccountA  : "Dkqz2HsXovLDuPrbz1wffNLJnnemEnq3c8adTEniCnPT",
         userAccountB : "CEnv2giFo1B9mDzWLsByvLujVWKXZox4dfdtBvjSqAJf",
     })
+    const [asset2, setAsset6] = useState({
+        createAccountProgramm : "65HtXX63thUK1tptxaneP9ffHCLhizfttbwFze8Z8x8F",
+        minta :"5BGi9aydFLs335WuaYJTABqLbXCKdxVdpfrB2R1QtFFc",
+        mintb :"HFdGgdFaRJEj8BLpyjZmzDexkaQhFqrLt2bFyMxvMDw9",
+        accounta :"2RwSdPn6buiyq7QEvUBen3kychLcWzWXgGWoXzaAEUbb",
+        accountb :"HKaKzf1VCNBBivheFQABGLFbzVthCS5qD2ho5dPy8Zjv",
+        pooltoken :"94tkdNZnetJkyUbYziBsCzRUqkMpMVAcAKvHkS6hztFm",
+        feeacoount :"2wrmL8Q6KAHbXMbVY8j4uzyH8QsdzzTnaD9q3Dh4YzHa",
+        accountpool :"2m2SgJ821gtos4oMfKXPFdYFG3SWy1ka4Ltt5yxm9xWJ",
+        autority :"DPJJRVfywAD7xBgQAjgukko9UcwZb35gKjirTDetU53Q",
+        tokenswap : "65HtXX63thUK1tptxaneP9ffHCLhizfttbwFze8Z8x8F",
+        userAccountA  : "J6qsWE5a67QY2332Xv5WtCqiy1Hqfe7EPAzjQmVWFrKY",
+        userAccountB : "Gf4Johh55ngCafXPR95sGSgwEtPHCXpebzeWFs7PeEGc",
+    })
     const [portfolios, setPortfolios] = useState([
-        "3KQNZ5E9Yvi25myqJf4n7tEQA8LY99pJWTSLb2jBM2uB",
-        "87cTTQ3bsiFqrHwwuxK2kUh8iZjQ14T9KV1c4YQ24JcL"
+        "3KQNZ5E9Yvi25myqJf4n7tEQA8LY99pJWTSLb2jBM2uB"
     ]);
 
 
@@ -270,19 +240,19 @@ function PortfolioSwap() {
             let TOKEN_PROGRAM_ID = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA';
             let TOKEN_SWAP_PROGRAM_ID = '5e2zZzHS8P1kkXQFVoBN6tVN15QBUHMDisy6mxVwVYSz';
            // let userTransferAuthority = new Account([155,200,249,167,10,23,75,131,118,125,114,216,128,104,178,124,197,52,254,20,115,17,181,113,249,97,206,128,236,197,223,136,12,128,101,121,7,177,87,233,105,253,150,154,73,9,56,54,157,240,189,68,189,52,172,228,134,89,160,189,52,26,149,130]);
-            let createAccountProgramm = asset5.createAccountProgramm;
-            let minta = asset5.minta;
-            let mintb = asset5.mintb;
-            let spluPRIMARY = asset5.userAccountA;
-            let manager_asset1 = asset5.accountb;
-            let tokenPool = asset5.pooltoken;
-            let feeAccount = asset5.feeacoount;
-            let tokenAccountPool = asset5.accountpool;
-            let autority = asset5.autority;
-            let tokenSwap = asset5.tokenswap;
+            let createAccountProgramm = asset1.createAccountProgramm;
+            let minta = asset1.minta;
+            let mintb = asset1.mintb;
+            let spluPRIMARY = asset1.userAccountA;
+            let manager_asset1 = asset1.accountb;
+            let tokenPool = asset1.pooltoken;
+            let feeAccount = asset1.feeacoount;
+            let tokenAccountPool = asset1.accountpool;
+            let autority = asset1.autority;
+            let tokenSwap = asset1.tokenswap;
 
-            let managerPRIMARY  = asset5.accounta;
-            let splu_asset1 = asset5.userAccountB; 
+            let managerPRIMARY  = asset1.accounta;
+            let splu_asset1 = asset1.userAccountB; 
 
             let portfolioAddress = "4t54Gy7cgRkr36vQFumRFRgEF1SmwsWYntqVgYEUeR85";
       
@@ -451,37 +421,33 @@ function PortfolioSwap() {
 
                 <h1>Primary SPL</h1>
 
-                <button onClick={() => createTokenASwap()} className="btn btn-primary">
-
-                    Create primary spl token
-                </button>
-                <br></br>
-
                 <br></br>
                 <div className=" col-12">
-                    <span>   Mint A:   </span>   <input type="text" onChange={(e) => setMintA(e.target.value)} value={mintA} />  <span> Authority: </span><input type="text" onChange={(e) => setAuthority(e.target.value)} value={autorithy} /> <button onClick={() => createAccountA()} className="btn btn-primary">
-
-                        Create primary spl vault
-                    </button>
+                    <span>   Mint A:   </span>   <input type="text" onChange={(e) => setMintA(e.target.value)} value={mintA} /> 
                 </div>
-                <br></br>
 
-                <br></br>
-                <div className=" col-12">
-                    <span>    Mint A:  </span><input type="text" onChange={(e) => setMintA(e.target.value)} value={mintA} />  <span>Account A: </span><input type="text" onChange={(e) => setAccountA(e.target.value)} value={accountA} />  <button onClick={() => mintTokenSwapA()} className="btn btn-primary">
-                        Mint primary spl token
-                    </button>
-                </div>
-                <br></br> <br></br>*********************************************************************************************<br></br>
+                <br></br> *********************************************************************************************<br></br>
+                <h1>Portfolio</h1>
                 <label>Select a portfolio  :  </label>
                 <select onChange={(e) => setSelectedPortfolio(e.target.value)}>{portfolios.map(MakeItem)}</select>
                 <br></br>
                 <br></br>
-                <span> Asset 1 :  </span> <input onChange={(e) => setAsset1(e.target.value)} value={asset1.mint}></input>
+                <span> Asset 1 token:  </span> <input  value={asset1.mintb}></input> 
+                <span> Asset 1 manager account:  </span> <input value={asset1.accountb}></input>
+                <span> Asset 1 user account:  </span> <input value={asset1.userAccountB}></input>
+                <span> Asset 1 pool token:  </span> <input value={asset1.pooltoken}></input>
+                <span> Asset 1 fee account:  </span> <input value={asset1.feeacoount}></input>
+                <span> Asset 1 pool account:  </span> <input value={asset1.accountpool}></input>
                 <br></br>
-                <span> Asset 2 :  </span> <input onChange={(e) => setAsset2(e.target.value)} value={asset2.mint}></input>
                 <br></br>
-                <span> Asset 3 :  </span> <input onChange={(e) => setAsset3(e.target.value)} value={asset3.mint}></input>
+                <br></br>
+                <span> Asset 2 token:  </span> <input  value={asset2.mintb}></input> 
+                <span> Asset 2 manager account:  </span> <input value={asset2.accountb}></input>
+                <span> Asset 2 user account:  </span> <input value={asset2.userAccountB}></input>
+                <span> Asset 2 pool token:  </span> <input value={asset2.pooltoken}></input>
+                <span> Asset 2 fee account:  </span> <input value={asset2.feeacoount}></input>
+                <span> Asset 2 pool account:  </span> <input value={asset2.accountpool}></input>
+                <br></br>
                 <br></br>
                 <br></br>
                 <span> Amount:  </span> <input onChange={(e) => setAmount(e.target.value)} value={amount}></input>  <button onClick={() => depositPortfolio()} className="btn btn-primary">
