@@ -198,7 +198,7 @@ export async function stakeApi(selectedWallet, connection, rewarderKey, stakeTok
   let quarry = await rewarder.getQuarry(stakeToken);//get 
   console.log("quarry => "+quarry)
 
-  const amount = 1_000_000000;
+  const amount = 1_000;
   console.log("wallet => "+JSON.stringify(provider.wallet.publicKey))
 
       const minerActions = await quarry.getMinerActions(
@@ -430,7 +430,7 @@ export async function withdrawApi(selectedWallet, connection, rewarderKey, stake
   let quarry = await rewarder.getQuarry(stakeToken);
   console.log("quarry => "+quarry)
 
-  const amount = 1_000_000000;
+  const amount = 1_00;
   console.log("wallet => "+JSON.stringify(provider.wallet.publicKey))
 
       const minerActions = await quarry.getMinerActions(
