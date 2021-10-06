@@ -92,6 +92,11 @@ function HomePage() {
       window.location.assign("/QuarryFarm");
   
     }
+    async function goToCPIQuarry() {
+  
+        window.location.assign("/CPIQuarryFarm");
+    
+      }
 
     async function goSwapPortfolio() {
   
@@ -145,9 +150,13 @@ function HomePage() {
         <br></br>
 
         <button onClick={() => goQuarry()} className="btn btn-info">Quarry Farm</button> 
-
+       
         <br></br>
         <br></br>
+        <button onClick={() => goToCPIQuarry()} className="btn btn-info">CPI Quarry Farm</button> 
+        <br></br>
+        <br></br>
+        
         <button onClick={() => goSwapPortfolio()} className="btn btn-info">Swap Portfolio</button> 
 
         <br></br>

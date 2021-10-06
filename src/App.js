@@ -16,7 +16,7 @@ import {
   Link
 } from "react-router-dom";
 import QuarryFarm from "./quarry-farm";
-
+import CPIQuarryFarm from "./cpi-quarry-farm";
 
 export default function App() {
   return (
@@ -44,6 +44,9 @@ export default function App() {
         </Route>
         <Route exact path="/QuarryFarm">
           <QuarryLink />
+        </Route>
+        <Route exact path="/CPIQuarryFarm">
+          <CpiQuarryLink />
         </Route>
         <Route exact path="/Nft">
           <NftLink />
@@ -101,6 +104,12 @@ function QuarryLink() {
    <QuarryFarm/>
   );
 }
+function CpiQuarryLink() {
+  return (
+   <CPIQuarryFarm/>
+  );
+}
+
 
 function NftLink() {
   return (
