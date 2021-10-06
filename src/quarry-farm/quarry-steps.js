@@ -1,5 +1,5 @@
 import { claimRewardApi, ComputeRewardApi, createMinerApi, createQuarryApi, createRewarderApi, createStakeTokenApi, createTokenWrapperApi, mintLpTokenAPI, setQuarryRewardShareApi, stakeApi, syncRewarderApi, whiteListRewarderApi, withdrawApi } from "./quarry-api";
-
+import {stakeCPI,withdrowCPI,claimRewardsCPI} from "./cpi-quarry-api.js";
 export async function createStakeTokenStep(selectedWallet, connection) {
     return createStakeTokenApi(selectedWallet, connection) 
 }
@@ -50,4 +50,20 @@ export async function withdrawStep(selectedWallet, connection, rewarderKey, stak
 
 export async function ComputeRewardStep(selectedWallet, connection, rewarderKey, stakeTokenMint){
     return ComputeRewardApi(selectedWallet, connection, rewarderKey, stakeTokenMint)
+}
+
+/*******************************  CPI *****************************************/
+
+export async function stake(userWallet, connection) {
+    return stakeCPI(userWallet, connection)
+}
+
+
+export async function withdrow(userWallet, connection) {
+    return withdrowCPI(userWallet, connection)
+}
+
+
+export async function claimRewards(userWallet, connection) {
+    return claimRewardsCPI(userWallet, connection)
 }

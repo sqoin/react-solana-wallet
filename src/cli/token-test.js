@@ -420,11 +420,11 @@ function decodeOringineReponse(accountsInfo) {
   return list;
 }
 export async function allTokenAccountsByOwner(
-  selectedWallet, connection
+  userWallet, connection
 ) {
   var result = {};
-  console.log("selectedWallet.publicKey"+selectedWallet.publicKey)
-  result = await connection.getTokenAccountsByOwner(new PublicKey(selectedWallet.publicKey),
+  console.log("userWallet.publicKey"+userWallet.publicKey)
+  result = await connection.getTokenAccountsByOwner(new PublicKey(userWallet.publicKey),
 
     { "programId": new PublicKey("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA") },
     {
@@ -437,6 +437,7 @@ export async function allTokenAccountsByOwner(
   return accounts;
 
 }
+
 
 
 

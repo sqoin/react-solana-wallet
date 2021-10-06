@@ -55,8 +55,8 @@ export async function createSwap(selectedWallet, connection,tokenSwapPubkey,mint
 
   return swap(selectedWallet, connection,tokenSwapPubkey,minta,mintb,accounta,accountb,pooltoken,feeaccount,accountpool,autority)
 }
-export async function getTokenAccountsByOwnerSolet (selectedWallet,connection){
-  return allTokenAccountsByOwner(selectedWallet,connection)
+export async function getTokenAccountsByOwnerSolet (userWallet,connection){
+  return allTokenAccountsByOwner(userWallet,connection)
 }
 
 

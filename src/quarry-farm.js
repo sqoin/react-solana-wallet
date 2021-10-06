@@ -18,8 +18,8 @@ function QuarryFarm() {
   function addLog(log) {
     setLogs((logs) => [...logs, log]);
   }
-  const network = "http://127.0.0.1:8899";
-  //const network = clusterApiUrl('devnet');
+ // const network = "http://127.0.0.1:8899";
+  const network = clusterApiUrl('devnet');
   const [providerUrl, setProviderUrl] = useState('https://www.sollet.io');
   const connection = useMemo(() => new Connection(network), [network]);
   const urlWallet = useMemo(() => new Wallet(providerUrl, network), [
