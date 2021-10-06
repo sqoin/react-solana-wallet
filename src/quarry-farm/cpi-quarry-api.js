@@ -25,8 +25,10 @@ export async function stakeCPI(userWallet, connection) {
     //let authorityAccount =userWallet; 
     //let authorityAccount = provider.wallet;
     //let authority = userWallet.publicKey;
-    let authorityAccount = new anchor.web3.Account([97, 235, 148, 58, 212, 114, 223, 11, 54, 74, 119, 187, 200, 29, 207, 43, 90, 241, 20, 122, 65, 142, 183, 77, 213, 219, 49, 4, 133, 168, 202, 148, 197, 48, 213, 179, 89, 143, 143, 96, 149, 188, 109, 170, 238, 110, 185, 150, 46, 58, 85, 4, 151, 22, 242, 152, 101, 254, 100, 193, 229, 78, 111, 158]);
-  let authority = authorityAccount.publicKey;
+    let authorityAccount1 = new anchor.web3.Account([97, 235, 148, 58, 212, 114, 223, 11, 54, 74, 119, 187, 200, 29, 207, 43, 90, 241, 20, 122, 65, 142, 183, 77, 213, 219, 49, 4, 133, 168, 202, 148, 197, 48, 213, 179, 89, 143, 143, 96, 149, 188, 109, 170, 238, 110, 185, 150, 46, 58, 85, 4, 151, 22, 242, 152, 101, 254, 100, 193, 229, 78, 111, 158]);
+   let authority1 = authorityAccount1.publicKey;
+   let authorityAccount=userWallet;
+   let authority=userWallet.publicKey;
   let miner = new anchor.web3.PublicKey("cnXngtLvS3itEAKG4znp1z9dLv1ZhpY3X5nUzprrHEE");
   let quarry = new anchor.web3.PublicKey("J367i5mH5Gqh83ffGuneHCc1AZarER45WEjHL97UFbQt");
   let minerVault = new anchor.web3.PublicKey("48tDPtWb6yhBN3rnTDUmNVnsXhyoEve1VA2wamoVX2td");
@@ -48,8 +50,7 @@ export async function stakeCPI(userWallet, connection) {
        quarryProgram: quarry_program_id,
      
      
-    },
-    signers: [authorityAccount],
+    }
   });  
   console.log('Success Stake');
 
@@ -102,7 +103,7 @@ let quarry_program_id = new anchor.web3.PublicKey("FkUEM3xqBMDbpHsa5k9iBufW3TceE
       unusedClock: SystemProgram.programId,
       quarryProgram: quarry_program_id 
      
-    }, signers: [authorityAccount],}); 
+    }}); 
     console.log('Success claim rewards');
     return tx;
 }
@@ -141,8 +142,7 @@ export async function withdrowCPI(userWallet, connection) {
       rewarder,
       unusedClock: SystemProgram.programId,
        quarryProgram: quarry_program_id,
-    },
-    signers: [authorityAccount],
+    }
   }); 
   console.log('Success withdrow');
   return tx;
