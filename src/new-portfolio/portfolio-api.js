@@ -19,7 +19,7 @@ import {
 import { Token } from './utils/token';
 
 // Loaded token program's program id
-let programId: PublicKey=new PublicKey("GzFZzA5Hq4S1RuTCqSUPTpu57nU9JmTfSjFNNmGr8N83");
+let programId: PublicKey=new PublicKey("Bc2EsggSWKXnkzaA1dznwriYB3dA6f2sXivFSw64BgE9");
 let associatedProgramId: PublicKey;
 let portfolio: Portfolio;
 let UserPortfolioAccount: Account;
@@ -68,14 +68,14 @@ export async function addAssetToPortfolioApi(myAccount, connection,splmAssetstr,
     //let periodAsset = 973;
     portfolio = new Portfolio(
         connection,
-        new PublicKey(portfolioAddressStr), // devnet
+        new PublicKey(portfolioAddressStr+""), // devnet
         programId,
         myAccount
     );
 
     let assetToSoldIntoAsset = new PublicKey(assetToSoldIntoAssetstr);
     let splmAsset = new PublicKey(splmAssetstr)
-    let portfolioAddress=new PublicKey(portfolioAddressStr)
+    let portfolioAddress=new PublicKey(portfolioAddressStr+"")
 
     await portfolio.addAssetToPortfolio(portfolioAddressStr, myAccount, amountAsset,
         splmAsset, periodAsset, assetToSoldIntoAsset);

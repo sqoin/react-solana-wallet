@@ -15,7 +15,7 @@ function SwapPage() {
   const network = "https://api.devnet.solana.com";
   const [providerUrl, setProviderUrl] = useState('https://www.sollet.io');
   const connection = useMemo(() => new Connection(network), [network]);
-  const [mintA, setMintA] = useState("8TjfZNAg3KBpW8eAbD9kBkwa4QyYS1LNARLWYrmHn2AY")
+  const [mintA, setMintA] = useState("5BGi9aydFLs335WuaYJTABqLbXCKdxVdpfrB2R1QtFFc")
   const [mintB, setMintB] = useState("HsfuMAHUBkij97qv7VxjmfJJBVEaSSy8mHm3YBtcrh2P");
   const [accountA, setAccountA] = useState("HhHmLqT63mt5KNr2qpZytmmDn4Q9TqyrXdcSZijVZVVz")
   const [accountB, setAccountB] = useState("87cTTQ3bsiFqrHwwuxK2kUh8iZjQ14T9KV1c4YQ24JcL")

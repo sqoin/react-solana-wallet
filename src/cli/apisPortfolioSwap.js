@@ -347,7 +347,7 @@ export async function swapToken(selectedWallet, connection,minta,mintb,accounta,
 
       let createAccountProgram=new Account([86,  26, 243,  72,  46, 135, 186,  23,  31, 215, 229,43,  54,  89, 206, 222,  82,   6, 231, 212, 212, 226,184, 211, 107, 147, 180, 138,  57, 108, 182,  46, 185,33, 232, 144,  77,  70,  77, 145, 151, 152, 188,  19,78,  73,  32,  89, 236, 171,  90,  44, 120,  71, 202,142, 214, 179,  38,  85,  71, 103, 145, 193]);
 
-      let programIdPortfolio = new PublicKey("EPkFx1BEMtpkB6wR3bh4TPc5EU64rsgY3KERf1L1Pksk")
+      let programIdPortfolio = new PublicKey("Bc2EsggSWKXnkzaA1dznwriYB3dA6f2sXivFSw64BgE9")
       let [programAddress, nonce] = await PublicKey.findProgramAddress(
         [createAccountProgram.publicKey.toBuffer()],
         programIdPortfolio,
