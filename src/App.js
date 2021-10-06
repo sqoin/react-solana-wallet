@@ -9,6 +9,7 @@ import HomePage from "./HomePage";
 import Saber from "./Saber";
 import NftPage from "./NftPage"
 import PortfolioBeta from "./PortfolioBeta";
+import Portfolio from "./Portfolio";
 import {
   BrowserRouter as Router,
   Switch,
@@ -34,7 +35,7 @@ export default function App() {
           <SwapOriginalLink />
         </Route>
         <Route exact path="/Portfolio">
-          <PortfolioLink />
+          <Portfolio />
         </Route>
         <Route exact path="/TransferMultisig">
           <TransferMultisigLink />
