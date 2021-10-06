@@ -310,7 +310,7 @@ export async function swapToken(selectedWallet, connection,minta,mintb,accounta,
         myAccount)
         console.log("splmPRIMARY"+splmPRIMARY)
      
-      await splmPRIMARY.mintTo(new PublicKey (asset1.spluPRIMARY), myAccount, [], 100000);
+      //await splmPRIMARY.mintTo(new PublicKey (asset1.spluPRIMARY), myAccount, [], 100000);
      
 
             

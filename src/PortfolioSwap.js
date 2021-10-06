@@ -57,7 +57,7 @@ function PortfolioSwap() {
         tokenAccountPool :"2m2SgJ821gtos4oMfKXPFdYFG3SWy1ka4Ltt5yxm9xWJ",
         autority :"DPJJRVfywAD7xBgQAjgukko9UcwZb35gKjirTDetU53Q",
         tokenSwap : "65HtXX63thUK1tptxaneP9ffHCLhizfttbwFze8Z8x8F",
-        spluPRIMARY  : "J6qsWE5a67QY2332Xv5WtCqiy1Hqfe7EPAzjQmVWFrKY",
+        spluPRIMARY  : "Dkqz2HsXovLDuPrbz1wffNLJnnemEnq3c8adTEniCnPT",
         spluAsset1 : "Gf4Johh55ngCafXPR95sGSgwEtPHCXpebzeWFs7PeEGc",
     })
     const [portfolios, setPortfolios] = useState([
@@ -424,7 +424,11 @@ function PortfolioSwap() {
 
                 <br></br>
                 <div className=" col-12">
-                    <span>   Mint A:   </span>   <input type="text" onChange={(e) => setMintA(e.target.value)} value={mintA} /> 
+                    <span>   Splm Primary:   </span>   <input type="text" onChange={(e) => setMintA(e.target.value)} value={mintA} /> 
+                    <br></br>
+                    <br></br>
+                    <span>   Splu primary:   </span>   <input type="text" onChange={(e) => setMintA(e.target.value)} value={asset1.spluPRIMARY} /> 
+                    
                 </div>
 
                 <br></br> *********************************************************************************************<br></br>
@@ -454,6 +458,10 @@ function PortfolioSwap() {
                 <span> Amount:  </span> <input onChange={(e) => setAmount(e.target.value)} value={amount}></input>  <button onClick={() => depositPortfolio()} className="btn btn-primary">
                     Deposit in portfolio
                 </button>
+                <br />
+                <br />
+                {
+                    idTransaction && <a onClick={createDynamicURL} >transaction swap explora </a>}
                 <br></br>
                 <br></br>
 
