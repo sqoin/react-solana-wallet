@@ -38,24 +38,24 @@ function CPIQuarryFarm() {
       return null;
     }
   }, [network]);
-  const [userWallet, setUserWallet] = useState(undefined);
+  const [selectedWallet, setUserWallet] = useState(undefined);
   const [, setConnected] = useState(false);
   useEffect(() => {
-    if (userWallet) {
-      userWallet.on('connect', () => {
+    if (selectedWallet) {
+      selectedWallet.on('connect', () => {
         setConnected(true);
-        addLog('Connected to wallet ' + userWallet.publicKey.toBase58());
+        addLog('Connected to wallet ' + selectedWallet.publicKey.toBase58());
       });
-      userWallet.on('disconnect', () => {
+      selectedWallet.on('disconnect', () => {
         setConnected(false);
         addLog('Disconnected from wallet');
       });
-      userWallet.connect();
+      selectedWallet.connect();
       return () => {
-        userWallet.disconnect();
+        selectedWallet.disconnect();
       };
     }
-  }, [userWallet]);
+  }, [selectedWallet]);
 
 
 
@@ -63,7 +63,7 @@ function CPIQuarryFarm() {
     addLog("stake into quarry ... ");
     try {
       //createTokenStep(selectedWallet, connection).then(result =>{
-      stake(userWallet, connection).then(result =>{
+      stake(selectedWallet, connection).then(result =>{
         setIdTransaction(result);
        addLog("staked token successfully")
       
@@ -82,7 +82,7 @@ function CPIQuarryFarm() {
     addLog("loading claim reward ... ");
     try {
       //createTokenStep(selectedWallet, connection).then(result =>{
-        claimRewards(userWallet, connection).then(result =>{
+        claimRewards(selectedWallet, connection).then(result =>{
        
        addLog("claim reward successfully")
        setIdTransactionClaim(result);
@@ -103,7 +103,7 @@ function CPIQuarryFarm() {
     addLog("loading withdraw from quarry ... ");
     try {
       //createTokenStep(selectedWallet, connection).then(result =>{
-        withdrow(userWallet, connection).then(result =>{
+        withdrow(selectedWallet, connection).then(result =>{
        
        addLog("wothdrow successfully");
       
@@ -131,7 +131,7 @@ function CPIQuarryFarm() {
   }
   return (
     <div className="App">
-      <div id="sidebar"><InfoAccount userWallet={userWallet} connection={connection}></InfoAccount> </div>
+      <div id="sidebar"><InfoAccount userWallet={selectedWallet} connection={connection}></InfoAccount> </div>
       <div id="content-wrap">
         <h1>cross program invocation : Quarry Farm Demo</h1>
         <div>Network: {network}</div>
@@ -143,9 +143,9 @@ function CPIQuarryFarm() {
             onChange={(e) => setProviderUrl(e.target.value.trim())}
           />
         </div>
-        {userWallet&& userWallet.connected ? (
+        {selectedWallet&& selectedWallet.connected ? (
           <div>
-            <div>Wallet address: {userWallet.publicKey.toBase58()}.</div>
+            <div>Wallet address: {selectedWallet.publicKey.toBase58()}.</div>
           </div>
         ) : (
           <div>

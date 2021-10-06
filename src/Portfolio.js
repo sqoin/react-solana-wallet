@@ -255,6 +255,7 @@ function Portfolio() {
   return (
     <div className="App" id="main-wrap" >
 
+<div id="sidebar"> <div id="sidebaraccount"><InfoAccount selectedWallet={selectedWallet} connection={connection}></InfoAccount> </div>  </div>
 
 
       <div id="content-wrap">
