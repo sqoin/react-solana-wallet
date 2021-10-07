@@ -5,10 +5,11 @@ import Wallet from '@project-serum/sol-wallet-adapter';
 import { Connection, SystemProgram, Transaction, clusterApiUrl, PublicKey } from '@solana/web3.js';
 import { createPortfolioApi, createUserPortfolioApi, depositInPortfolioApi } from './Portfolio/cli/makeStepsPortfolio';
 import PortfolioComponent from "./component/PortfolioComponent";
-import { addAssetToPortfolioStep, createPortfolioStep, createUserPortfolioStep } from './new-portfolio/portfolio-steps';
+import { addAssetToPortfolioStep, createPortfolioStep, createUserPortfolioStep, depositPortfolioStep, withdrawPortfolioStep } from './new-portfolio/portfolio-steps';
 import { depositInPortfolio } from "./cli/makestepsPortfolioSwap"
 
 import InfoAccount from './component/InfoAccount';
+import { avalanch, raydium, usdc, usdcRaydiumPortfolio, usdt } from './new-portfolio/utils/stableCoins';
 
 function toHex(buffer) {
   return Array.prototype.map
@@ -33,6 +34,7 @@ function Portfolio() {
   const [metaDataHash, setMetaDataHash] = useState("12345678");
   const [numberOfAsset, setNumberOfAsset] = useState(2);
   const [amount, setAmount] = useState(10)
+  const [amountWithdraw, setAmountWithdraw] = useState(100)
   const [amountAsset1, setAmountAsset1] = useState(2);
   const [periodAsset1, setPeriodAsset1] = useState(123);
   const [assetToSellInto1, setAssetToSellInto1] = useState("3hVBPDeLwJyEVY5swGKd1giWCgjKJtgoz35Ash9jKsoZ");
@@ -43,8 +45,8 @@ function Portfolio() {
   const [asset2, setAsset2] = useState("HFdGgdFaRJEj8BLpyjZmzDexkaQhFqrLt2bFyMxvMDw9")
   const [asset1Obj, setAsset1Obj] = useState({
     createAccountProgramm : "8RfDxCrS4yCpHwuj131AJbYTL4QquzCB6TXrs3Hj7vun",
-     minta :"5BGi9aydFLs335WuaYJTABqLbXCKdxVdpfrB2R1QtFFc",
-     mintb :"D1FAA8qeo17WYgze53U3VEAVknVASCbVGBMszQ76fdK8",
+     minta :avalanch,
+     mintb :usdc,
      managerPRIMARY :"HwsA9mBjnZEaNjM2edvoAsCYfd3LFT7fMcWehZNqwfvv",
       managerAsset1 :"DexCKvu85btXYWJVuvvNb1y9WnE4gZgkRLKrjswzT4Kz",
       tokenPool :"FfVcqbB9UDdJfeTrrPcArNwxQRkUd1hCod3r1E4HLWFW",
@@ -57,8 +59,8 @@ function Portfolio() {
 })
 const [asset2Obj, setAsset2Obj] = useState({
     createAccountProgramm : "65HtXX63thUK1tptxaneP9ffHCLhizfttbwFze8Z8x8F",
-    minta :"5BGi9aydFLs335WuaYJTABqLbXCKdxVdpfrB2R1QtFFc",
-    mintb :"HFdGgdFaRJEj8BLpyjZmzDexkaQhFqrLt2bFyMxvMDw9",
+    minta :avalanch,
+    mintb :raydium,
     managerPRIMARY :"2RwSdPn6buiyq7QEvUBen3kychLcWzWXgGWoXzaAEUbb",
     managerAsset1 :"HKaKzf1VCNBBivheFQABGLFbzVthCS5qD2ho5dPy8Zjv",
     tokenPool :"94tkdNZnetJkyUbYziBsCzRUqkMpMVAcAKvHkS6hztFm",
@@ -69,11 +71,27 @@ const [asset2Obj, setAsset2Obj] = useState({
     spluPRIMARY  : "Dkqz2HsXovLDuPrbz1wffNLJnnemEnq3c8adTEniCnPT",
     spluAsset1 : "Gf4Johh55ngCafXPR95sGSgwEtPHCXpebzeWFs7PeEGc",
 })
+const [asset3Obj, setAsset3Obj] = useState({
+  createAccountProgramm : "65HtXX63thUK1tptxaneP9ffHCLhizfttbwFze8Z8x8F",
+  minta :usdc,
+  mintb :usdt,
+  managerPRIMARY :"BZqsuZoavyG5D3S4i5695Yc8jHTFKEDNZUrPWbLLcd8K",
+  managerAsset1 :"GMFp4Uu6ZYfjdNRQhEJ65b3KZ1v7A5ehPtkBTeDaNz4v",
+  tokenPool :"GvJD8yVhyHRkYVFVdCqe3w57jb6AcJ2ps7iapx5sbWoz",
+  feeAccount :"GdkPaF5KGZujxR1NN6oVcV2GQap6pfYVbMretJhg6KEd",
+  tokenAccountPool :"82EqqKWoBzFeeZ6LtMNYp57wSBKikh4XeTmjsXBKDXf5",
+  autority :"2LusKX2UydWPfeaxPmjFwpuUYCwnd54L7zTCURLA7tU5",
+  tokenSwap : "D1yBQe3L16SRDVEFJX2pYdfMp4LKjtRMsFCbCQVbqote",
+  spluPRIMARY  : "CEnv2giFo1B9mDzWLsByvLujVWKXZox4dfdtBvjSqAJf",
+  spluAsset1 : "8fosPW2dgZBUGoLH8KpYZupd6L13BnZcLX73RB5zp4Mq",
+})
+
+
 const [spluPrimary, setSpluPrimary] = useState("Dkqz2HsXovLDuPrbz1wffNLJnnemEnq3c8adTEniCnPT");
-const [splmPrimary, setSplmPrimary] = useState("5BGi9aydFLs335WuaYJTABqLbXCKdxVdpfrB2R1QtFFc");
-  const [portfolioAddress, setPortfolioAddress] = useState("6Uh23UynK2KTqVPSpChHhebr4WtjzoM5hmDTrcrnuyU5")
+const [splmPrimary, setSplmPrimary] = useState(avalanch);
+  const [portfolioAddress, setPortfolioAddress] = useState(usdcRaydiumPortfolio)
   const [amountPortfolio, setAmountPortfolio] = useState(5)
-  const [userPortfolioAccount, setUserPortfolioAccount] = useState("BqZom3cQevaDpBxmBQKeE9d5ny5v27qnUtUv67roKAgh")
+  const [userPortfolioAccount, setUserPortfolioAccount] = useState("w6pkG4GVvZFqZ2wWZNiF2zQ8CDFoDrmjrYLjyNbs8LQ")
   const [amountDeposit, setAmountDeposit] = useState(10)
   const [infoUserPortfolioAccount, setInfoUserPortfolioAccount] = useState("")
   const [infoPortfolio, setInfoPortfolio] = useState("")
@@ -273,11 +291,40 @@ async function depositPortfolio() {
       //let portfolioAddress = "4t54Gy7cgRkr36vQFumRFRgEF1SmwsWYntqVgYEUeR85";
 
 
-      let UserPortfolioAccount=  "GgzBnJAVb4vLHrQUV1JAJjJz73ZM987JsPe7wCpSbu6T";
+      //let UserPortfolioAccount=  "GgzBnJAVb4vLHrQUV1JAJjJz73ZM987JsPe7wCpSbu6T";
 
 
-      depositInPortfolio(selectedWallet, connection,   portfolioAddress,userPortfolioAccount,
-        TOKEN_PROGRAM_ID  , TOKEN_SWAP_PROGRAM_ID  ,amount ,asset1Obj,asset2Obj ).then(
+      depositPortfolioStep(selectedWallet, connection,   portfolioAddress,userPortfolioAccount,
+        TOKEN_PROGRAM_ID  , TOKEN_SWAP_PROGRAM_ID  ,amount ,asset1Obj,asset2Obj,asset3Obj ).then(
+          token => {
+              setIdTransaction(token)
+              addLog(JSON.stringify(token))
+
+          })
+          .catch(
+              
+              err => {addLog("" + err);
+              throw(err);
+          }
+          )
+  }
+  catch (err) {
+      addLog("error : " + err);
+      throw(err);
+  }
+
+}
+
+async function withdrawPortfolio() {
+  addLog("loading deposit... ");
+  try {
+
+      let TOKEN_PROGRAM_ID = 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA';
+      let TOKEN_SWAP_PROGRAM_ID = '5e2zZzHS8P1kkXQFVoBN6tVN15QBUHMDisy6mxVwVYSz';
+
+
+      withdrawPortfolioStep(selectedWallet, connection,   portfolioAddress,userPortfolioAccount,
+        TOKEN_PROGRAM_ID  , TOKEN_SWAP_PROGRAM_ID  ,amountWithdraw ,asset1Obj,asset2Obj,asset3Obj ).then(
           token => {
               setIdTransaction(token)
               addLog(JSON.stringify(token))
@@ -456,8 +503,12 @@ async function depositPortfolio() {
                     idTransaction && <a onClick={createDynamicURL} >transaction swap explora </a>}
                 <br></br>
                 <br></br>
-
-
+                <br></br> *********************************************************************************************<br></br>
+                <span> Amount:  </span> <input onChange={(e) => setAmountWithdraw(e.target.value)} value={amountWithdraw}></input> <button onClick={() => withdrawPortfolio()} className="btn btn-primary">
+                    withdraw from portfolio
+                </button>
+                <br></br>
+                <br></br>
       </div>
     </div>
   );

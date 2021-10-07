@@ -24,7 +24,7 @@
      TransactionSignature,
  } from '@solana/web3.js';
  import { newAccountWithLamports } from '../../client/util/new-account-with-lamports';
- import {Token , AccountLayout} from './token';
+ import {Token , AccountLayout} from '../../client/token';
  import * as Layout from './layout';
  import { sendAndConfirmTransaction } from '../../client/util//send-and-confirm-transaction';
  
@@ -758,7 +758,7 @@
         
  
      //Send the two instructions
-     await sendAndConfirmTransaction(
+     /*await sendAndConfirmTransaction(
          'add asset to existing portfolio',
          this.connection,
          transaction,
@@ -766,7 +766,15 @@
          userPortfolioAccountExist
          
  
-     )
+     )*/
+
+     transaction.recentBlockhash = (
+        await this.connection.getRecentBlockhash()
+    ).blockhash;
+    transaction.feePayer = ownerPortfolio.publicKey;
+    let signed = await ownerPortfolio.signTransaction(transaction);
+    let signature = await this.connection.sendRawTransaction(signed.serialize());
+    await this.connection.confirmTransaction(signature, 'max');
  
      return userPortfolioAccountExist;
  }
