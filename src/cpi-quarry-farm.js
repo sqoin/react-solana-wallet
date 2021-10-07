@@ -131,7 +131,7 @@ function CPIQuarryFarm() {
   }
   return (
     <div className="App">
-      <div id="sidebar"><InfoAccount userWallet={selectedWallet} connection={connection}></InfoAccount> </div>
+      <div id="sidebar"><InfoAccount selectedWallet={selectedWallet} connection={connection}></InfoAccount> </div>
       <div id="content-wrap">
         <h1>cross program invocation : Quarry Farm Demo</h1>
         <div>Network: {network}</div>
@@ -154,8 +154,8 @@ function CPIQuarryFarm() {
         )}
         <hr />
        
-        <p>Token Account : 6ZBkvWG1tYxYgwrHhHag6BCNqrwWQUtvR5FUF3LPmfp5</p>
-        <p>Lp Token : 7zzc2CYmqmvhWHfr4xgA24wvWxyoRowqh8SQBwWkieHr</p> 
+        <p>Token Account : DxkwfGuRuSchGLPoEcrmfQr9WL39ub8LK2TytumPetUR</p>
+        <p>Lp Token : HDzFXAYueYb5XL8y84kTMAuSGwnKzjMSobP9d1jAMqvJ</p> 
         <br></br>
         <div className="logs">
           {logs.map((log, i) => (
