@@ -137,7 +137,7 @@ const [splmPrimary, setSplmPrimary] = useState("5BGi9aydFLs335WuaYJTABqLbXCKdxVd
     createPortfolioStep(selectedWallet, connection,asset1,amountAsset1,1,metaDataUrl,metaDataHash,periodAsset1)
       .then(portfolio => {
         addLog("address of new portfolio :  "+portfolio.publicKey);
-        setPortfolioAddress(portfolio.publicKey)
+        setPortfolioAddress(portfolio.publicKey+"");
       })
   }
 
@@ -157,7 +157,7 @@ const [splmPrimary, setSplmPrimary] = useState("5BGi9aydFLs335WuaYJTABqLbXCKdxVd
       createUserPortfolioStep(selectedWallet, connection, token, portfolioAddress, amountPortfolio)
       .then(userPortfolio => {
         addLog("success ");
-        setUserPortfolioAccount(userPortfolio.publicKey);
+        setUserPortfolioAccount(userPortfolio.publicKey+"");
         addLog("address of new user portfolio :  " + userPortfolio.publicKey);
       })
       .catch(

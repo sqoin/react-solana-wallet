@@ -10,7 +10,7 @@ function InfoAccount(props) {
     async function getTokenAccountsByOwner() {
         addLog("loading  token   account by owner");
         try {
-          getTokenAccountsByOwnerSolet(props.selectedWallet, props.connection).then(
+          getTokenAccountsByOwnerSolet((props.selectedWallet)+"", props.connection).then(
             accountsInfo => {
               setAccountInfo(accountsInfo)
               
