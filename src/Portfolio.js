@@ -45,15 +45,15 @@ function Portfolio() {
     createAccountProgramm : "8RfDxCrS4yCpHwuj131AJbYTL4QquzCB6TXrs3Hj7vun",
      minta :"5BGi9aydFLs335WuaYJTABqLbXCKdxVdpfrB2R1QtFFc",
      mintb :"D1FAA8qeo17WYgze53U3VEAVknVASCbVGBMszQ76fdK8",
-     managerPRIMARY :"HwsA9mBjnZEaNjM2edvoAsCYfd3LFT7fMcWehZNqwfvv",
-      managerAsset1 :"DexCKvu85btXYWJVuvvNb1y9WnE4gZgkRLKrjswzT4Kz",
+     managerPRIMARY :"HwsA9mBjnZEaNjM2edvoAsCYfd3LFT7fMcWehZNqwfvv",//tokenAccountA
+      managerAsset1 :"DexCKvu85btXYWJVuvvNb1y9WnE4gZgkRLKrjswzT4Kz",//tokenAccountB
       tokenPool :"FfVcqbB9UDdJfeTrrPcArNwxQRkUd1hCod3r1E4HLWFW",
       feeAccount :"EzbYEZe1d8iT5T6wkAF126aDwcprkSwBfMaAVtHwo2mv",
       tokenAccountPool :"FFKo6NYVzbv43fKHrQ1RY7UejLLbfRGF8pZDXnKZvgEh",
     autority :"Cpm8hUiqMJ5PfFphQEhBr4EQYDaVA83KjPoY4tbLaLoY",
     tokenSwap : "8RfDxCrS4yCpHwuj131AJbYTL4QquzCB6TXrs3Hj7vun",
-    spluPRIMARY  : "Dkqz2HsXovLDuPrbz1wffNLJnnemEnq3c8adTEniCnPT",
-    spluAsset1 : "CEnv2giFo1B9mDzWLsByvLujVWKXZox4dfdtBvjSqAJf",
+    spluPRIMARY  : "Dkqz2HsXovLDuPrbz1wffNLJnnemEnq3c8adTEniCnPT",//userAccountA
+    spluAsset1 : "CEnv2giFo1B9mDzWLsByvLujVWKXZox4dfdtBvjSqAJf",//userAccountB
 })
 const [asset2Obj, setAsset2Obj] = useState({
     createAccountProgramm : "65HtXX63thUK1tptxaneP9ffHCLhizfttbwFze8Z8x8F",
@@ -297,6 +297,11 @@ async function depositPortfolio() {
 
 }
 
+async function saber() {
+  addLog("... loading saber ... ");
+ 
+
+}
   return (
     <div className="App" id="main-wrap" >
 
@@ -447,7 +452,9 @@ async function depositPortfolio() {
                 <br></br>
                 <br></br>
                 <br></br>
-                <span> Amount:  </span> <input onChange={(e) => setAmount(e.target.value)} value={amount}></input>  <button onClick={() => depositPortfolio()} className="btn btn-primary">
+                <span> Amount:  </span> 
+                <input onChange={(e) => setAmount(e.target.value)} value={amount}></input> 
+                 <button onClick={() => depositPortfolio()} className="btn btn-primary">
                     Deposit in portfolio
                 </button>
                 <br />
@@ -456,7 +463,9 @@ async function depositPortfolio() {
                     idTransaction && <a onClick={createDynamicURL} >transaction swap explora </a>}
                 <br></br>
                 <br></br>
-
+                <button onClick={() => saber()} className="btn btn-primary">
+                    saber
+                </button>
 
       </div>
     </div>

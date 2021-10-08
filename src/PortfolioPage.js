@@ -174,7 +174,6 @@ const[infoPortfolio,setInfoPortfolio]=useState("")
 
   async function deposit () {
     addLog("loading deposit ... ");
-
     try {depositInPortfolioApi(selectedWallet, connection,portfolioAccount,userPAccount,amountDeposit)
       .then(accounts =>{
           setDepositAccounts(accounts);
@@ -217,13 +216,10 @@ const[infoPortfolio,setInfoPortfolio]=useState("")
         addLog("*********************************************end info Portfolio Account **************************")
         addLog ("********************************************************************************************************");
  */
-    
-     
         })
       .catch(
         err => addLog("" + err)
-      )
-           
+      )     
     }
     catch (err) {
       addLog("" + err);

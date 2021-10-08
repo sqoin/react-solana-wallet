@@ -21,7 +21,8 @@ import {
   allTokenAccountsByOwner,
   mintMultisig,
   mintMultisig2,
-  depositPortfolio
+  depositPortfolio,
+  saber
 } from './apisPortfolioSwap';
 
 
@@ -101,4 +102,10 @@ export async function depositInPortfolio(selectedWallet, connection,   portfolio
 
   return depositPortfolio(selectedWallet, connection,   portfolioAddress,UserPortfolioAccount,
     TOKEN_PROGRAM_ID  , TOKEN_SWAP_PROGRAM_ID  ,amount ,asset1,asset2 );
+}
+
+/*********************************** saber****************************************/
+export async function saberAPI(selectedWallet, connection, asset1,asset2 ) {  
+
+  return saber(selectedWallet, connection, asset1,asset2 );
 }
