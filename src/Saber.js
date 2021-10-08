@@ -122,10 +122,10 @@ function Saber() {
         addLog("Info TokenAccountB after deposit = mint: "+res[4].infoAfterB.mint.toString()+" address Account : "+res[4].infoAfterB.address.toString()+" amount : "+res[4].infoAfterB.amount.toNumber());
         addLog("Info TokenAccountPool after deposit = mint: "+res[5].infoPoolAfter.mint.toString()+" address Account : "+res[5].infoPoolAfter.address.toString()+" amount : "+res[5].infoPoolAfter.amount.toNumber());
        } )
-      .catch(
+     /*  .catch(
         err => addLog("" + err)
       
-      )
+      ) */
   }
 
 
