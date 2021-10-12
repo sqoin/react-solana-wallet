@@ -124,6 +124,13 @@ export async function depositPortfolioApi (myAccount, connection,   portfolioAdd
         myAccount)
         //await splmAsset1.mintTo(new PublicKey (asset1.managerAsset1), myAccount, [], 100000);
 
+        let splmPRIMARY3= new Token(
+          connection,
+          new PublicKey(asset3.minta),
+          new PublicKey(TOKEN_PROGRAM_ID),
+          myAccount)
+
+
        /* let splmAsset2= new Token(
           connection,
           new PublicKey(asset2.mintb),
@@ -141,6 +148,14 @@ export async function depositPortfolioApi (myAccount, connection,   portfolioAdd
       
       await splmPRIMARY.approve(
         new PublicKey(asset1.spluPRIMARY),
+        userTransferAuthority.publicKey,
+        myAccount,
+        [],
+        100000,
+        connection
+      );
+      await splmPRIMARY3.approve(
+        new PublicKey(asset3.spluPRIMARY),
         userTransferAuthority.publicKey,
         myAccount,
         [],
@@ -250,18 +265,19 @@ export async function depositPortfolioApi (myAccount, connection,   portfolioAdd
     data, 
   });
 
-  /*const instruction3 = new TransactionInstruction({
+  const instruction3 = new TransactionInstruction({
     keys:keys3,
     programId:programId,
     data, 
-  });*/
+  });
 
-  /*const instruction4= Portfolio.addSpluToUserPortfolioInstruction(
+  const instruction4= Portfolio.addSpluToUserPortfolioInstruction(
     programId,
     myAccount.publicKey,
     new PublicKey(UserPortfolioAccount),
     new PublicKey(asset1.spluAsset1),
     new PublicKey(asset2.spluAsset1),
+    new PublicKey(asset3.spluAsset1),
     new PublicKey("11111111111111111111111111111111"),
     new PublicKey("11111111111111111111111111111111"),
     new PublicKey("11111111111111111111111111111111"),
@@ -269,27 +285,46 @@ export async function depositPortfolioApi (myAccount, connection,   portfolioAdd
     new PublicKey("11111111111111111111111111111111"),
     new PublicKey("11111111111111111111111111111111"),
     new PublicKey("11111111111111111111111111111111"),
-    new PublicKey("11111111111111111111111111111111"),
-)*/
+)
 
-  const transaction = new Transaction().add(instruction,instruction2);
+  const transaction = new Transaction().add(instruction,instruction2 );
+  const transaction1 = new Transaction().add(instruction3 , instruction4);
   transaction.recentBlockhash = (
     await connection.getRecentBlockhash()
   ).blockhash;
 
+  transaction1.recentBlockhash = (
+    await connection.getRecentBlockhash()
+  ).blockhash;
+
   transaction.feePayer =myAccount.publicKey;
+  transaction1.feePayer =myAccount.publicKey;
 
 
   const signers = [userTransferAuthority];
   transaction.partialSign(...signers);
+  transaction1.partialSign(...signers);
 
   let signed = await myAccount.signTransaction(transaction);
+  let signed1 = await myAccount.signTransaction(transaction1);
 
-    let signature = await connection.sendRawTransaction(signed.serialize());
+  let signature  = "";
+  let signature1  = "";
+      signature = await connection.sendRawTransaction(signed.serialize());
+      signature1 = await connection.sendRawTransaction(signed1.serialize());
 
+    if(signature!=""&&signature1!="")
+    {
     let x=await connection.confirmTransaction(signature, 'max');
+    let x1=await connection.confirmTransaction(signature1, 'max');
     console.log("signature "+JSON.stringify(signature))
-  console.log("xxxx "+JSON.stringify(x))
+    console.log("signature "+JSON.stringify(signature1))
+  console.log("resultConfirmTrx "+JSON.stringify(x))
+  console.log("resultConfirmTrx1 "+JSON.stringify(x1))
+}
+else {
+  console.log("there is some thing wrong !!")
+}
   console.log("************** Info Account A After swap *******************")
 
 
