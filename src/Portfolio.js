@@ -5,7 +5,7 @@ import Wallet from '@project-serum/sol-wallet-adapter';
 import { Connection, SystemProgram, Transaction, clusterApiUrl, PublicKey } from '@solana/web3.js';
 import { createPortfolioApi, createUserPortfolioApi, depositInPortfolioApi } from './Portfolio/cli/makeStepsPortfolio';
 import PortfolioComponent from "./component/PortfolioComponent";
-import { addAssetToPortfolioStep, createPortfolioStep, createUserPortfolioStep, depositPortfolioStep, withdrawPortfolioStep } from './new-portfolio/portfolio-steps';
+import { addAssetToPortfolioStep, createPortfolioStep, createUserPortfolioStep, depositPortfolioStep, saberAPI, withdrawPortfolioStep ,createStableSwapAPI} from './new-portfolio/portfolio-steps';
 import { depositInPortfolio } from "./cli/makestepsPortfolioSwap"
 
 import InfoAccount from './component/InfoAccount';
@@ -47,8 +47,8 @@ function Portfolio() {
     createAccountProgramm : "8RfDxCrS4yCpHwuj131AJbYTL4QquzCB6TXrs3Hj7vun",
      minta :avalanch,
      mintb :usdc,
-     managerPRIMARY :"HwsA9mBjnZEaNjM2edvoAsCYfd3LFT7fMcWehZNqwfvv",
-      managerAsset1 :"DexCKvu85btXYWJVuvvNb1y9WnE4gZgkRLKrjswzT4Kz",
+     managerPRIMARY :"HwsA9mBjnZEaNjM2edvoAsCYfd3LFT7fMcWehZNqwfvv",//tokenAccountA
+      managerAsset1 :"DexCKvu85btXYWJVuvvNb1y9WnE4gZgkRLKrjswzT4Kz",//tokenAccountB
       tokenPool :"FfVcqbB9UDdJfeTrrPcArNwxQRkUd1hCod3r1E4HLWFW",
       feeAccount :"EzbYEZe1d8iT5T6wkAF126aDwcprkSwBfMaAVtHwo2mv",
       tokenAccountPool :"FFKo6NYVzbv43fKHrQ1RY7UejLLbfRGF8pZDXnKZvgEh",
@@ -85,6 +85,21 @@ const [asset3Obj, setAsset3Obj] = useState({
   spluPRIMARY  : "CEnv2giFo1B9mDzWLsByvLujVWKXZox4dfdtBvjSqAJf",
   spluAsset1 : "8fosPW2dgZBUGoLH8KpYZupd6L13BnZcLX73RB5zp4Mq",
 })
+const [assetSaber, setAsset4Obj] = useState({
+  //createAccountProgramm : "8RfDxCrS4yCpHwuj131AJbYTL4QquzCB6TXrs3Hj7vun",
+   minta :"8pCUffRGL85UVwgeCDxRxNEcmrYxk5NNU6YC2q7N5gUf",
+   mintb :"8FReymwGe4TDD6dtFXQaLS91jzu7r7NppRSQRquNyG1k",
+   managerPRIMARY :"5iBVsTVQPJddN1buoe1H9a8FrjjhT4xr9tGmhj3nc2kH",//tokenAccountA
+    managerAsset1 :"CjeKi3dMU3bSQmXyiLRx2ZHGfvCUKLpe9ov1eYGwpC8m",//tokenAccountB
+    tokenPool :"FVoFxQgGohwpUawFfdEUkUqeLkHUQbantMZuhBVDCTcs",
+    //feeAccount :"EzbYEZe1d8iT5T6wkAF126aDwcprkSwBfMaAVtHwo2mv",
+    tokenAccountPool :"8bt21zybbFFBgwwapyY8uREtquHvAVt8ZuDyEiNwUdfS",
+  autority :"AVzeFZfHvNEECBkC2yYx2MF1ygPqZLuA8Ah4rjiuQjqK",
+  tokenSwap : "68zM78i1wcLwuLHhrbohhCTrKHQoNutXA2GE6zgB9Awp",
+  spluPRIMARY  : "FbTKne3ckqiyWyVPuCPjGnDJ4RGQLhvXrxZrh8NmbcUg",//userAccountA
+  spluAsset1 : "CJ2CZ1ofTYLX19gzzPkq42vw1z8HBNwqB6pbyWTme3Rz",//userAccountB
+})
+
 
 
 const [spluPrimary, setSpluPrimary] = useState("Dkqz2HsXovLDuPrbz1wffNLJnnemEnq3c8adTEniCnPT");
@@ -343,11 +358,46 @@ async function withdrawPortfolio() {
   }
 
 }
+async function  createStableSwap() {
+  addLog("... loading create saberSwap ... ");
+  
+  try {
+    createStableSwapAPI(selectedWallet, connection,amount ,asset1Obj,asset3Obj).then(
+        res => {
+            addLog("res ",res);
 
+        })
+        .catch(
+            
+            err => {addLog("" + err);
+            throw(err);
+        }
+        )
+}
+catch (err) {
+    addLog("error : " + err);
+    throw(err);
+}
+}
 async function saber() {
   addLog("... loading saber ... ");
- 
+  try {
+    saberAPI(selectedWallet, connection,amount ,asset1Obj,assetSaber).then(
+        res => {
+            addLog("res ",res);
 
+        })
+        .catch(
+            
+            err => {addLog("" + err);
+            throw(err);
+        }
+        )
+}
+catch (err) {
+    addLog("error : " + err);
+    throw(err);
+}
 }
   return (
     <div className="App" id="main-wrap" >
@@ -510,8 +560,12 @@ async function saber() {
                     idTransaction && <a onClick={createDynamicURL} >transaction swap explora </a>}
                 <br></br>
                 <br></br> *********************************************************************************************<br></br><br></br>
-                <button onClick={() => saber()} className="btn btn-primary">
-                    saber
+               
+               {/*  <button onClick={() => createStableSwap()} className="btn btn-primary">
+                create Stable Swap
+                </button>   */} <br></br>
+                 <button onClick={() => createStableSwap()} className="btn btn-primary">
+                 create Stable Swap
                 </button>
                 <br></br>
                 <br></br> *********************************************************************************************<br></br>

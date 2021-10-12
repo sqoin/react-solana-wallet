@@ -54,7 +54,7 @@ let authority: PublicKey;
 
 let nonce: Number;
 
-let testTokenDecimals: number = 2;
+let testTokenDecimals: number = 6;
 let createAccountProgramm :Account= new Account();
 let tokenMint : Token;
 
@@ -269,6 +269,8 @@ export async function swapToken(selectedWallet, connection,minta,mintb,accounta,
   
   }
 
+
+  
 export async function swap(selectedWallet, connection,tokenSwapPubkey,minta,mintb,accounta,accountb,pooltoken,feeaccount,accountpool,autority) {
   console.log("createAccountProgramm ",createAccountProgramm.publicKey.toBase58()," minta "+minta+" mintB "+mintb+" accounta "+accounta+" accountb "+accountb+" pooltoken "+pooltoken+" feeacoount "+feeaccount+" accountpool "+accountpool+" autority "+autority)
   let token1= new Token(
