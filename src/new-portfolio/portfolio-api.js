@@ -379,11 +379,11 @@ export async function withdrawPortfolioApi (myAccount, connection,   portfolioAd
         myAccount)
         //await splmAsset1.mintTo(new PublicKey (asset1.managerAsset1), myAccount, [], 100000);
 
-       /* let splmAsset2= new Token(
+        let splmAsset2= new Token(
           connection,
           new PublicKey(asset2.mintb),
-          new PublicKey(ORIGINE_PROGRAMM_ID),
-          myAccount)*/
+          new PublicKey(TOKEN_PROGRAM_ID),
+          myAccount)
          // await splmAsset2.mintTo(new PublicKey (asset2.managerAsset1), myAccount, [], 100000);
 
          /*  let managerPrimary2= new Token(
@@ -405,6 +405,14 @@ export async function withdrawPortfolioApi (myAccount, connection,   portfolioAd
 
       await splmAsset1.approve(
         new PublicKey(asset1.spluAsset1),
+        userTransferAuthority.publicKey,
+        myAccount,
+        [],
+        100000,
+        connection
+      );
+      await splmAsset2.approve(
+        new PublicKey(asset2.spluAsset1),
         userTransferAuthority.publicKey,
         myAccount,
         [],
@@ -481,13 +489,13 @@ export async function withdrawPortfolioApi (myAccount, connection,   portfolioAd
     data, 
 
   });
-  /*const instruction2 = new TransactionInstruction({
+  const instruction2 = new TransactionInstruction({
     keys:keys2,
     programId:programId,
     data, 
-  });*/
+  });
 
-  const transaction = new Transaction().add(instruction);
+  const transaction = new Transaction().add(instruction,instruction2);
   transaction.recentBlockhash = (
     await connection.getRecentBlockhash()
   ).blockhash;
