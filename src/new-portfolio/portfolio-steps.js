@@ -1,4 +1,4 @@
-import { addAssetToPortfolioApi, createPortfolioApi, createUserPortfolioApi, depositPortfolioApi, withdrawPortfolioApi } from "./portfolio-api";
+import { addAssetToPortfolioApi, createPortfolioApi, createUserPortfolioApi, depositPortfolioApi, withdrawPortfolioApi,saber,createStableSwap } from "./portfolio-api";
 
 export async function createPortfolioStep(myAccount, connection, splmAsset1,amountAsset1,numberOfAsset,metaDataUrl,metaDataHash,periodAsset1){
     return createPortfolioApi(myAccount, connection, splmAsset1,amountAsset1,numberOfAsset,metaDataUrl,metaDataHash,periodAsset1)
@@ -19,3 +19,14 @@ export async function withdrawPortfolioStep (myAccount, connection,   portfolioA
         return withdrawPortfolioApi (myAccount, connection,   portfolioAddress,UserPortfolioAccount,  TOKEN_PROGRAM_ID  , TOKEN_SWAP_PROGRAM_ID  ,amount ,asset1,asset2,asset3 )
     }
     
+
+    /*********************************** saber****************************************/
+    export async function createStableSwapAPI(selectedWallet, connection,amount, asset1,asset2 ) {  
+
+        return createStableSwap(selectedWallet, connection, amount,asset1,asset2 );
+      }
+
+    export async function saberAPI(selectedWallet, connection,amount, asset1,asset2 ) {  
+
+    return saber(selectedWallet, connection, amount,asset1,asset2 );
+  }

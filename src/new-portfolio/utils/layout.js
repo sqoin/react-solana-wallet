@@ -15,3 +15,10 @@ export const publicKey = (property: string = 'publicKey'): Object => {
 export const uint64 = (property: string = 'uint64'): Object => {
     return BufferLayout.blob(8, property);
 };
+/**
+ * Layout for a 64bit unsigned value
+ */
+ export const Uint64Layout = (property: string = "uint64"): object => {
+    return BufferLayout.blob(8, property);
+  };
+  

@@ -463,10 +463,82 @@ export class Token {
     let result= await connection.confirmTransaction(signature, 'max');
     console.log("mintAccount: "+mintAccount.publicKey)
  
-
+let ret=[];
     return token;
   }
+/**
+   * Create and initialize a Token return instruction 
+   *
+   * @param connection The connection to use
+   * @param payer Fee payer for transaction
+   * @param mintAuthority Account or multisig that will control minting
+   * @param freezeAuthority Optional account or multisig that can freeze token accounts
+   * @param decimals Location of the decimal place
+   * @param programId Optional token programId, uses the system programId by default
+   * @return Token object for the newly minted token
+   */
+ static async createMintReturnInstruction(
+  connection: Connection,
+  //@ts-ignore
+  payer,
+  mintAuthority: PublicKey,
+  freezeAuthority: PublicKey | null,
+  decimals: number,
+  programId: PublicKey,
+  programIdAsset: PublicKey | null,
+  programIdSwap: PublicKey | null
+): Promise<any> {
+  const mintAccount = new Account();
+  const token = new Token(
+    connection,
+    mintAccount.publicKey,
+    programId,
+    payer,
+  );
+  // Allocate memory for the account
+  const balanceNeeded = await Token.getMinBalanceRentForExemptMint(
+    connection,
+  );
 
+  const transaction = new Transaction();
+  let instruction1=SystemProgram.createAccount({
+    fromPubkey: payer.publicKey,
+    newAccountPubkey: mintAccount.publicKey,
+    lamports: balanceNeeded,
+    space: MintLayout.span,
+    programId,
+  });
+  let instruction2=Token.createInitMintInstruction(
+    programId,
+    mintAccount.publicKey,
+    decimals,
+    mintAuthority,
+    freezeAuthority,
+    programIdAsset,
+    programIdSwap
+  );
+ 
+  /* transaction.add(
+    instruction1,instruction2
+  );
+
+  transaction.recentBlockhash = (
+    await connection.getRecentBlockhash()
+  ).blockhash;
+  transaction.feePayer = payer.publicKey;
+  transaction.partialSign(mintAccount);
+
+  let signed = await payer.signTransaction(transaction);
+
+  let signature = await connection.sendRawTransaction(signed.serialize());
+
+  let result= await connection.confirmTransaction(signature, 'max'); */
+  console.log("mintAccount: "+mintAccount.publicKey)
+
+let ret=[mintAccount,token,instruction1,instruction2];
+console.log(ret);
+  return ret;
+}
 
 
 
@@ -522,6 +594,7 @@ export class Token {
     console.log("max: "+newAccount.publicKey)
     return newAccount.publicKey;
   }
+
 
   /**
    * Create and initialize the associated account.
@@ -1145,6 +1218,58 @@ export class Token {
     await this.connection.confirmTransaction(signature, 'max');
   }
 
+   /**
+   * Mint new tokens return instruction
+   *
+   * @param dest Public key of the account to mint to
+   * @param authority Minting authority
+   * @param multiSigners Signing accounts if `authority` is a multiSig
+   * @param amount Amount to mint
+   */
+    async mintToReturnInstruction(
+      dest: any,
+      authority: any,
+      multiSigners: Array<Account>,
+      amount: number | u64,
+    ){
+      let ownerPublicKey;
+      let signers;
+      if (isAccount(authority)) {
+        ownerPublicKey = authority.publicKey;
+        signers = [authority];
+      } else {
+        ownerPublicKey = authority;
+        signers = multiSigners;
+      }
+      const transaction = new Transaction();
+      
+      let instruction= Token.createMintToInstruction(
+        this.programId,
+        this.publicKey,
+        dest,
+        ownerPublicKey,
+        multiSigners,
+        amount,
+      );
+     /*  transaction.add(
+       instruction
+      );
+  
+      transaction.recentBlockhash = (
+        await this.connection.getRecentBlockhash()
+      ).blockhash;
+      transaction.feePayer = authority.publicKey;
+      //transaction.setSigners(payer.publicKey, mintAccount.publicKey );
+  
+      let signed = await authority.signTransaction(transaction);
+  
+      //   addLog('Got signature, submitting transaction');
+      let signature = await this.connection.sendRawTransaction(signed.serialize());
+  
+      await this.connection.confirmTransaction(signature, 'max'); */
+      return instruction;
+    }
+  
   /**
    * Burn tokens
    *
