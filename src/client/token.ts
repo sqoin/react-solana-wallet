@@ -540,10 +540,6 @@ console.log(ret);
   return ret;
 }
 
-
-
-
-
   /**
    * Create and initialize a new account.
    *
@@ -595,6 +591,59 @@ console.log(ret);
     return newAccount.publicKey;
   }
 
+
+
+  /**
+   * Create and initialize a new account.
+   *
+   * This account may then be used as a `transfer()` or `approve()` destination
+   *
+   * @param owner User account that will own the new account
+   * @return Public key of the new empty account
+   */
+   async createAccountOfInsctruction(owner: PublicKey): Promise<any> {
+
+    const balanceNeeded = await Token.getMinBalanceRentForExemptAccount(
+      this.connection,
+    );
+    const newAccount = new Account();
+    const transaction = new Transaction();
+    console.log("newAccount.publicKey "+newAccount.publicKey)
+    let instruction1= SystemProgram.createAccount({
+      fromPubkey: this.payer.publicKey,
+      newAccountPubkey: newAccount.publicKey,
+      lamports: balanceNeeded,
+      space: AccountLayout.span,
+      programId: this.programId,
+    });
+    const mintPublicKey = this.publicKey;
+    let instruction2=Token.createInitAccountInstruction(
+      this.programId,
+      mintPublicKey,
+      newAccount.publicKey,
+      owner,
+    );
+   /*  transaction.add(
+     instruction1,instruction2
+    );
+
+  
+    
+    transaction.recentBlockhash = (
+      await this.connection.getRecentBlockhash()
+    ).blockhash;
+    transaction.feePayer = this.payer.publicKey;
+    transaction.partialSign(newAccount);
+    let signed = await this.payer.signTransaction(transaction);
+    console.log("transaction signed: "+JSON.stringify(signed))
+    console.log(signed.serialize())
+    let signature = await this.connection.sendRawTransaction(signed.serialize());
+    console.log("signature: "+JSON.stringify(signature))
+    await this.connection.confirmTransaction(signature, 'max');
+    console.log("max: "+newAccount.publicKey) */
+    let ret=[newAccount,instruction1,instruction2];
+    return ret;
+  }
 
   /**
    * Create and initialize the associated account.
@@ -1089,6 +1138,74 @@ console.log(ret);
     );*/
   }
 
+
+  
+  /** 
+   * return instruction 
+   * Grant a third-party permission to transfer up the specified number of tokens from an account
+   *
+   * @param account Public key of the account
+   * @param delegate Account authorized to perform a transfer tokens from the source account
+   * @param owner Owner of the source account
+   * @param multiSigners Signing accounts if `owner` is a multiSig
+   * @param amount Maximum number of tokens the delegate may transfer
+   */
+   async approveInstruction(
+    account: PublicKey,
+    delegate: PublicKey,
+    owner: any,
+    multiSigners: Array<Account>,
+    amount: number | u64,
+    connection:any
+  ): Promise<any> {
+    let ownerPublicKey;
+    let signers;
+    if (isAccount(owner)) {
+      ownerPublicKey = owner.publicKey;
+      signers = [owner];
+    } else {
+      ownerPublicKey = owner;
+      signers = multiSigners;
+    }
+    let instruction=Token.createApproveInstruction(
+      this.programId,
+      account,
+      delegate,
+      ownerPublicKey,
+      multiSigners,
+      amount,
+    );
+   /*  let transaction = new Transaction().add(
+      instruction
+    );
+
+    transaction.recentBlockhash = (
+      await connection.getRecentBlockhash()
+    ).blockhash;
+    transaction.feePayer = owner.publicKey;
+    let signed=await owner.signTransaction(transaction);
+    console.log("*******signed: "+JSON.stringify(signed))
+    let signature = await connection.sendRawTransaction(signed.serialize());
+
+    await connection.confirmTransaction(signature, 'max'); */
+    return instruction;
+  /*  await sendAndConfirmTransaction(
+      'Approve',
+      this.connection,
+      new Transaction().add(
+        Token.createApproveInstruction(
+          this.programId,
+          account,
+          delegate,
+          ownerPublicKey,
+          multiSigners,
+          amount,
+        ),
+      ),
+      this.payer,
+      ...signers,
+    );*/
+  }
   /**
    * Remove approval for the transfer of any remaining tokens
    *
@@ -1216,6 +1333,57 @@ console.log(ret);
     let signature = await this.connection.sendRawTransaction(signed.serialize());
 
     await this.connection.confirmTransaction(signature, 'max');
+  }
+
+  /**
+   * Mint new tokens return instraction
+   *
+   * @param dest Public key of the account to mint to
+   * @param authority Minting authority
+   * @param multiSigners Signing accounts if `authority` is a multiSig
+   * @param amount Amount to mint
+   */
+   async mintToInstruction(
+    dest: any,
+    authority: any,
+    multiSigners: Array<Account>,
+    amount: number | u64,
+  ): Promise<any> {
+    let ownerPublicKey;
+    let signers;
+    if (isAccount(authority)) {
+      ownerPublicKey = authority.publicKey;
+      signers = [authority];
+    } else {
+      ownerPublicKey = authority;
+      signers = multiSigners;
+    }
+    const transaction = new Transaction();
+    let instruction= Token.createMintToInstruction(
+      this.programId,
+      this.publicKey,
+      dest,
+      ownerPublicKey,
+      multiSigners,
+      amount,
+    );
+    transaction.add(
+     instruction
+    );
+
+    /* transaction.recentBlockhash = (
+      await this.connection.getRecentBlockhash()
+    ).blockhash;
+    transaction.feePayer = authority.publicKey;
+    //transaction.setSigners(payer.publicKey, mintAccount.publicKey );
+
+    let signed = await authority.signTransaction(transaction);
+
+    //   addLog('Got signature, submitting transaction');
+    let signature = await this.connection.sendRawTransaction(signed.serialize());
+
+    await this.connection.confirmTransaction(signature, 'max'); */
+    return instruction;
   }
 
    /**

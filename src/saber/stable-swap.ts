@@ -350,6 +350,7 @@ export class StableSwap {
     let result= await connection.confirmTransaction(signature, 'max');
     console.log("transaction signed: "+JSON.stringify(signed))
     console.log("signature: "+JSON.stringify(signature))
+    
     return new StableSwap(
       connection,
       stableSwapAccount.publicKey,
