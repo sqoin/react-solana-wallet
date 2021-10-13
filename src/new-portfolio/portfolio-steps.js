@@ -21,12 +21,12 @@ export async function withdrawPortfolioStep (myAccount, connection,   portfolioA
     
 
     /*********************************** saber****************************************/
-    export async function createLpTokenAPI(selectedWallet, connection,asset1 ) {  
+    export async function createLpTokenAPI(selectedWallet, connection,asset1,asset2 ) {  
 
-        return createLpToken(selectedWallet, connection, asset1 );
+        return createLpToken(selectedWallet, connection, asset1,asset2 );
       }
 
-    export async function depositIntoLPAPI(selectedWallet, connection, asset1,stableSwap,lpToken,userPoolToken,tokenAccountA,tokenAccountB,authority ) {  
+    export async function depositIntoLPAPI(selectedWallet, connection, asset1,stableSwap1,lpToken1,userPoolToken1,tokenAccountA1,tokenAccountB1,authority1,asset2,stableSwap2,lpToken2,userPoolToken2,tokenAccountA2,tokenAccountB2,authority2 ) {  
 
-    return depositIntoLPToken(selectedWallet, connection,asset1,stableSwap,lpToken,userPoolToken,tokenAccountA,tokenAccountB,authority );
+    return depositIntoLPToken(selectedWallet, connection,asset1,stableSwap1,lpToken1,userPoolToken1,tokenAccountA1,tokenAccountB1,authority1,asset2,stableSwap2,lpToken2,userPoolToken2,tokenAccountA2,tokenAccountB2,authority2);
   }
