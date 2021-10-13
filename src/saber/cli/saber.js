@@ -181,18 +181,18 @@ export async function createPoolMint(wallet, connection) {
 
   let mintA = new SToken(
     connection,
-    new PublicKey("AyPBEFkW4v6NRrefxuf1qq7TVfQDEXuYaT4TaKy269Z2"),
+    new PublicKey("5BGi9aydFLs335WuaYJTABqLbXCKdxVdpfrB2R1QtFFc"),
     TOKEN_PROGRAM_ID,
     wallet
   );
   let mintB = new SToken(
     connection,
-    new PublicKey("GpowYpE5M89JhykzKvfBYto4DJBAQJPZu8oLcu5zphtK"),
+    new PublicKey("D1FAA8qeo17WYgze53U3VEAVknVASCbVGBMszQ76fdK8"),
     TOKEN_PROGRAM_ID,
     wallet
   )
-  let userAccountA = new PublicKey("3Z8Nk1JDghDe547KCAGqyrkG5zp1niJsg4n4YJs7HWT5");
-  let userAccountB = new PublicKey("AZTPakCXcHPJhCGAP3CZNoL8Qm5G5AreL2RZUVBaH3zn");
+  let userAccountA = new PublicKey("Dkqz2HsXovLDuPrbz1wffNLJnnemEnq3c8adTEniCnPT");
+  let userAccountB = new PublicKey("CEnv2giFo1B9mDzWLsByvLujVWKXZox4dfdtBvjSqAJf");
 
   let retInstructioCreateAccountA = await mintA.createAccountOfInsctruction(authority);
   let retInstructioCreateAccountB = await mintB.createAccountOfInsctruction(authority);

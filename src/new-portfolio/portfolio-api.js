@@ -27,6 +27,7 @@ import {
   Fees,
 } from "./utils/fees";
 import { Token } from '../client/token';
+import { StableSwap } from "../saber/stable-swap";
 
 // Loaded token program's program id
 let programId: PublicKey=new PublicKey("Bc2EsggSWKXnkzaA1dznwriYB3dA6f2sXivFSw64BgE9");
@@ -531,48 +532,64 @@ export async function withdrawPortfolioApi (myAccount, connection,   portfolioAd
 
 /************************************** saber ************************************************************ */
 
-export async function saber(myAccount, connection, amount,asset1, asset2) {
-  const programId = new PublicKey("6HDDmMvR4LGyXke43as8FiPJW1hnWi4cCw98ShJWeuop");
+export async function depositIntoLPToken(wallet,connection,asset1,PstableSwap,PlpToken,PuserPoolToken,PtokenAccountA,PtokenAccountB,Pauthority ) {
+  const programId = new PublicKey("6HDDmMvR4LGyXke43as8FiPJW1hnWi4cCw98ShJWeuop")
+
   let createAccountProgramm = new Account([86, 26, 243, 72, 46, 135, 186, 23, 31, 215, 229, 43, 54, 89, 206, 222, 82, 6, 231, 212, 212, 226, 184, 211, 107, 147, 180, 138, 57, 108, 182, 46, 185, 33, 232, 144, 77, 70, 77, 145, 151, 152, 188, 19, 78, 73, 32, 89, 236, 171, 90, 44, 120, 71, 202, 142, 214, 179, 38, 85, 71, 103, 145, 193]);
   let [programAddress, nonce] = await PublicKey.findProgramAddress(
     [createAccountProgramm.publicKey.toBuffer()],
     programId,
   );
 
-  let owner = new Account([97, 30, 31, 33, 13, 91, 4, 73, 57, 214, 172, 115, 44, 20, 255, 207, 156, 101, 25, 224, 7, 2, 170, 146, 20, 213, 165, 241, 211, 14, 76, 95, 123, 128, 140, 138, 192, 242, 113, 62, 119, 27, 79, 105, 116, 153, 140, 191, 215, 220, 88, 150, 210, 137, 231, 88, 23, 142, 210, 51, 240, 144, 106, 241]);
-  let pkStableSwap =new PublicKey(asset2.tokenSwap);
-  let authority = new PublicKey(asset2.autority);
+  let PubstableSwap = new PublicKey(PstableSwap);
+  let authority = new PublicKey(Pauthority);
+  console.log("authority =", Pauthority);
   let mintA = new Token(
     connection,
-    new PublicKey(asset2.minta),
+    new PublicKey(asset1.minta),
     TOKEN_PROGRAM_ID,
-    myAccount
+    wallet
   );
   let mintB = new Token(
     connection,
-    new PublicKey(asset2.mintb),
+    new PublicKey(asset1.mintb),
     TOKEN_PROGRAM_ID,
-    myAccount
+    wallet
   );
-  let tokenAccountA = new PublicKey(asset2.managerPRIMARY);
-  let userAccountA = new PublicKey(asset2.spluPRIMARY);
-
-  let tokenAccountB = new PublicKey(asset2.managerAsset1);
-  let userAccountB = new PublicKey(asset2.spluAsset1);
+  let tokenAccountA = new PublicKey(PtokenAccountA);
+  let userAccountA = new PublicKey(asset1.spluPRIMARY);
+  let tokenAccountB = new PublicKey(PtokenAccountB);
+  let userAccountB = new PublicKey(asset1.spluAsset1);
   let tokenPool = new Token(
     connection,
-    new PublicKey(asset2.tokenPool),
+    new PublicKey(PlpToken),
     TOKEN_PROGRAM_ID,
-    myAccount);
-
-  let userPoolAccount = new PublicKey(asset2.tokenAccountPool);
+    wallet);
+  let userPoolAccount = new PublicKey(PuserPoolToken)
   let stableSwapProgramId = new PublicKey("2J67FeJ4CGjtunyvh3BtBsgEbQwkdpYhSD3ALZPK8fUY");
-  let tokenAmountA = 100;
-  let tokenAmountB = 100;
+  let tokenAmountA = 1000;
+  let tokenAmountB = 1000;
   let minimumPoolTokenAmount = 0;
 
+  let infoBefore;
+  let ret = [];
+  let instruction1=await mintA.mintToInstruction(userAccountA, wallet, [], 7000000000);
+  let instruction2=await mintB.mintToInstruction(userAccountB, wallet, [], 7000000000);
+  let instruction3= await mintA.approveInstruction(userAccountA, authority, wallet, [], 1000, connection);
+  let instruction4=await mintB.approveInstruction(userAccountB, authority, wallet, [], 1000, connection);
+ const transaction0=new Transaction();
+ transaction0.add(instruction1,instruction2,instruction3,instruction4);
+ transaction0.recentBlockhash = (await connection.getRecentBlockhash()).blockhash;
+transaction0.feePayer = wallet.publicKey;
+let signed0=await wallet.signTransaction(transaction0);
+console.log("*******signed: "+JSON.stringify(signed0))
+let signature0 = await connection.sendRawTransaction(signed0.serialize());
+await connection.confirmTransaction(signature0, 'max'); 
+  infoBefore = await mintA.getAccountInfo(tokenAccountA);
+  console.log("amount tokenAccountA : " + infoBefore.amount.toNumber());
+  console.log("****************************************");
   const keys = [
-    { pubkey: pkStableSwap, isSigner: false, isWritable: true },
+    { pubkey: PubstableSwap, isSigner: false, isWritable: true },
     { pubkey: authority, isSigner: false, isWritable: true },
     { pubkey: userAccountA, isSigner: false, isWritable: true },
     { pubkey: userAccountB, isSigner: false, isWritable: true },
@@ -585,6 +602,7 @@ export async function saber(myAccount, connection, amount,asset1, asset2) {
     { pubkey: programAddress, isSigner: false, isWritable: false },
     { pubkey: createAccountProgramm.publicKey, isSigner: false, isWritable: false },
     { pubkey: stableSwapProgramId, isSigner: false, isWritable: false },
+
   ];
   let data = Buffer.from([nonce, tokenAmountA, tokenAmountB, minimumPoolTokenAmount]);
   const instruction = new TransactionInstruction({
@@ -592,169 +610,142 @@ export async function saber(myAccount, connection, amount,asset1, asset2) {
     programId,
     data, // All instructions are hellos
   });
-  const transaction=new Transaction();
+  const transaction = new Transaction();
   transaction.add(instruction);
   transaction.recentBlockhash = (
     await connection.getRecentBlockhash()
   ).blockhash;
-  transaction.feePayer =myAccount.publicKey;
-  let signed = await myAccount.signTransaction(transaction);
 
-    let signature = await connection.sendRawTransaction(signed.serialize());
-
-    let x=await connection.confirmTransaction(signature, 'max');
-    console.log("signature "+JSON.stringify(signature)) ;
+  transaction.feePayer = wallet.publicKey;
 
 
-return signature;
-    
-}
 
-
-/************************************** end saber ************************************************************ */
-
-export async function createStableSwap(myAccount, connection, amount,asset1, asset2) {
-  let stableSwapProgramId = new PublicKey("2J67FeJ4CGjtunyvh3BtBsgEbQwkdpYhSD3ALZPK8fUY");
-
-  let stableSwapAccount = new Account([86, 26, 243, 72, 46, 135, 186, 23, 31, 215, 229, 43, 54, 89, 206, 222, 82, 6, 231, 212, 212, 226, 184, 211, 107, 147, 180, 138, 57, 108, 182, 46, 185, 33, 232, 144, 77, 70, 77, 145, 151, 152, 188, 19, 78, 73, 32, 89, 236, 171, 90, 44, 120, 71, 202, 142, 214, 179, 38, 85, 71, 103, 145, 193]);
-  let [authority, nonce] = await PublicKey.findProgramAddress(
-    [stableSwapAccount.publicKey.toBuffer()],
-    stableSwapProgramId
-  );
-
-  let [authority1, nonce1] = await PublicKey.findProgramAddress(
-    [stableSwapAccount.publicKey.toBuffer()],
-    TOKEN_SWAP_PROGRAM_ID,
-  )
-
-  let owner = new Account([97, 30, 31, 33, 13, 91, 4, 73, 57, 214, 172, 115, 44, 20, 255, 207, 156, 101, 25, 224, 7, 2, 170, 146, 20, 213, 165, 241, 211, 14, 76, 95, 123, 128, 140, 138, 192, 242, 113, 62, 119, 27, 79, 105, 116, 153, 140, 191, 215, 220, 88, 150, 210, 137, 231, 88, 23, 142, 210, 51, 240, 144, 106, 241]);
-  let adminFeeAccountA=new PublicKey(asset2.spluPRIMARY);
-  let adminFeeAccountB=new PublicKey(asset2.spluAsset1);
-  let mintA = new Token(
-    connection,
-    new PublicKey(asset2.minta),
-    TOKEN_PROGRAM_ID,
-    myAccount
-  );
-  //let tokenAccountA = new PublicKey(asset2.managerPRIMARY);
-  let mintB = new Token(
-    connection,
-    new PublicKey(asset2.mintb),
-    TOKEN_PROGRAM_ID,
-    myAccount
-  );
- // let tokenAccountB = new PublicKey(asset2.managerAsset1);
-
-  /* let tokenPool = new Token(
-    connection,
-    new PublicKey(asset2.tokenPool),
-    TOKEN_PROGRAM_ID,
-    myAccount); 
-    
-    let userPoolAccount = new PublicKey(asset2.tokenAccountPool);
-    */
-    let tokenPool = await Token.createMint(
-      connection,
-      myAccount,
-      authority,
-      null,
-      6,
-      TOKEN_PROGRAM_ID,
-      TOKEN_PROGRAM_ID,
-      TOKEN_PROGRAM_ID
-    );
-    
-    let userPoolAccount =await tokenPool.createAccount(myAccount.publicKey);
-   let  tokenAccountA = await mintA.createAccount(authority);
-    await mintA.mintTo(tokenAccountA, myAccount, [], 10000000);
-   let  tokenAccountB = await mintB.createAccount(authority);
-    await mintB.mintTo(tokenAccountB, myAccount, [], 10000000);
-//let stableSwapProgramId = new PublicKey("2J67FeJ4CGjtunyvh3BtBsgEbQwkdpYhSD3ALZPK8fUY");
-const AMP_FACTOR = 100;
-const fees: Fees = {
-  adminTradeFeeNumerator: DEFAULT_FEE_NUMERATOR,
-  adminTradeFeeDenominator: DEFAULT_FEE_DENOMINATOR,
-  adminWithdrawFeeNumerator: DEFAULT_FEE_NUMERATOR,
-  adminWithdrawFeeDenominator: DEFAULT_FEE_DENOMINATOR,
-  tradeFeeNumerator: 1,
-  tradeFeeDenominator: 4,
-  withdrawFeeNumerator: DEFAULT_FEE_NUMERATOR,
-  withdrawFeeDenominator: DEFAULT_FEE_DENOMINATOR,
-};
-const keys = [
-  { pubkey: stableSwapAccount.publicKey, isSigner: false, isWritable: true },
-  { pubkey: authority, isSigner: false, isWritable: false },
-  { pubkey: owner.publicKey, isSigner: false, isWritable: false },
-  { pubkey: adminFeeAccountA, isSigner: false, isWritable: false },
-  { pubkey: adminFeeAccountB, isSigner: false, isWritable: false },
-  { pubkey: mintA.publicKey, isSigner: false, isWritable: false },
-  { pubkey: tokenAccountA, isSigner: false, isWritable: false },
-  { pubkey: mintB.publicKey, isSigner: false, isWritable: false },
-  { pubkey: tokenAccountB, isSigner: false, isWritable: false },
-  { pubkey: tokenPool.publicKey, isSigner: false, isWritable: true },
-  { pubkey: userPoolAccount, isSigner: false, isWritable: true },
-  { pubkey: TOKEN_PROGRAM_ID, isSigner: false, isWritable: false },
-];
-const dataLayout = BufferLayout.struct([
-  BufferLayout.u8("instruction"),
-  BufferLayout.u8("nonce"),
-  Uint64Layout("ampFactor"),
-  Uint64Layout("adminTradeFeeNumerator"),
-  Uint64Layout("adminTradeFeeDenominator"),
-  Uint64Layout("adminWithdrawFeeNumerator"),
-  Uint64Layout("adminWithdrawFeeDenominator"),
-  Uint64Layout("tradeFeeNumerator"),
-  Uint64Layout("tradeFeeDenominator"),
-  Uint64Layout("withdrawFeeNumerator"),
-  Uint64Layout("withdrawFeeDenominator"),
-]);
-let data = Buffer.alloc(dataLayout.span);
-{
-  const encodeLength = dataLayout.encode(
-    {
-      instruction: 0, // InitializeSwap instruction
-      nonce,
-      ampFactor: new NumberU64(AMP_FACTOR).toBuffer(),
-      adminTradeFeeNumerator: new NumberU64(
-        fees.adminTradeFeeNumerator
-      ).toBuffer(),
-      adminTradeFeeDenominator: new NumberU64(
-        fees.adminTradeFeeDenominator
-      ).toBuffer(),
-      adminWithdrawFeeNumerator: new NumberU64(
-        fees.adminWithdrawFeeNumerator
-      ).toBuffer(),
-      adminWithdrawFeeDenominator: new NumberU64(
-        fees.adminWithdrawFeeDenominator
-      ).toBuffer(),
-      tradeFeeNumerator: new NumberU64(fees.tradeFeeNumerator).toBuffer(),
-      tradeFeeDenominator: new NumberU64(fees.tradeFeeDenominator).toBuffer(),
-      withdrawFeeNumerator: new NumberU64(
-        fees.withdrawFeeNumerator
-      ).toBuffer(),
-      withdrawFeeDenominator: new NumberU64(
-        fees.withdrawFeeDenominator
-      ).toBuffer(),
-    },
-    data
-  );
-  data = data.slice(0, encodeLength);
-}
-const instruction= new TransactionInstruction({
-  keys,
-  programId: stableSwapProgramId,
-  data,
-});
-const transaction=new Transaction();
-transaction.add(instruction);
-transaction.recentBlockhash = (
-  await connection.getRecentBlockhash()
-).blockhash;
-transaction.feePayer =myAccount.publicKey;
-let signed = await myAccount.signTransaction(transaction);
+  let signed = await wallet.signTransaction(transaction);
 
   let signature = await connection.sendRawTransaction(signed.serialize());
 
-  let x=await connection.confirmTransaction(signature, 'max');
-  return signature;
+  let x = await connection.confirmTransaction(signature, 'max');
+  console.log(signature);
+  
+return signature;
+
 }
+
+export async function createLpToken(wallet, connection,asset1) {
+  let stableSwapProgramId = new PublicKey("2J67FeJ4CGjtunyvh3BtBsgEbQwkdpYhSD3ALZPK8fUY");
+  let createAccountProgramm = new Account();
+  let [authority, nonce] = await PublicKey.findProgramAddress(
+    [createAccountProgramm.publicKey.toBuffer()],
+    stableSwapProgramId
+  );
+  let retInstruction = await Token.createMintReturnInstruction(
+    connection,
+    wallet,
+    authority,
+    null,
+    2,
+    TOKEN_PROGRAM_ID,
+    TOKEN_PROGRAM_ID,
+    TOKEN_PROGRAM_ID
+  );
+
+  
+  let mintA = new Token(
+    connection,
+    new PublicKey(asset1.minta),
+    TOKEN_PROGRAM_ID,
+    wallet
+  );
+  let mintB = new Token(
+    connection,
+    new PublicKey(asset1.mintb),
+    TOKEN_PROGRAM_ID,
+    wallet
+  );
+  let adminFeeAccountA=new PublicKey(asset1.spluPRIMARY);//userToken
+  let adminFeeAccountB=new PublicKey(asset1.spluAsset1);
+  let retInstructioCreateAccountA = await mintA.createAccountOfInsctruction(authority);
+  let retInstructioCreateAccountB = await mintB.createAccountOfInsctruction(authority);
+  const transaction1 = new Transaction();
+
+  transaction1.add(retInstructioCreateAccountA[1], retInstructioCreateAccountA[2],retInstructioCreateAccountB[1], retInstructioCreateAccountB[2]);
+
+  //transaction1.add(retInstructionpoolTokenAccount[1],retInstructionpoolTokenAccount[2]);
+  transaction1.recentBlockhash = (await connection.getRecentBlockhash()).blockhash;
+  transaction1.feePayer = wallet.publicKey;
+
+  transaction1.partialSign(retInstructioCreateAccountA[0]);
+  transaction1.partialSign(retInstructioCreateAccountB[0]);
+  //transaction1.partialSign(retInstructionpoolTokenAccount[0]);
+  const signed1 = await wallet.signTransaction(transaction1);
+  const signature1 = await connection.sendRawTransaction(signed1.serialize());
+  await connection.confirmTransaction(signature1, 'max');
+  let x=retInstructioCreateAccountA[0].publicKey;
+  console.log(x)
+let instruction1 =await mintA.mintToReturnInstruction(retInstructioCreateAccountA[0].publicKey, wallet, [], 10000000000);
+  let instruction2 = await mintB.mintToReturnInstruction(retInstructioCreateAccountB[0].publicKey, wallet, [], 10000000000);
+  const transaction = new Transaction();
+  let poolMint = retInstruction[1];
+
+  transaction.add(retInstruction[2], retInstruction[3], instruction1,instruction2);
+  
+  transaction.recentBlockhash = (await connection.getRecentBlockhash()).blockhash;
+  transaction.feePayer = wallet.publicKey;
+
+  transaction.partialSign(retInstruction[0]);
+  let signed = await wallet.signTransaction(transaction);
+  console.log(signed);;
+  let signature = await connection.sendRawTransaction(signed.serialize());
+
+  await connection.confirmTransaction(signature, 'max');
+  console.log(poolMint.publicKey.toBase58());
+  let poolTokenAccount = await poolMint.createAccount(wallet.publicKey);
+  
+  
+
+ 
+  let adminAccount = new Account();
+  // Pool configs
+  const AMP_FACTOR = 100;
+  const FEES: Fees = {
+    adminTradeFeeNumerator: DEFAULT_FEE_NUMERATOR,
+    adminTradeFeeDenominator: DEFAULT_FEE_DENOMINATOR,
+    adminWithdrawFeeNumerator: DEFAULT_FEE_NUMERATOR,
+    adminWithdrawFeeDenominator: DEFAULT_FEE_DENOMINATOR,
+    tradeFeeNumerator: 1,
+    tradeFeeDenominator: 4,
+    withdrawFeeNumerator: DEFAULT_FEE_NUMERATOR,
+    withdrawFeeDenominator: DEFAULT_FEE_DENOMINATOR,
+  };
+  let tokenAccountA=retInstructioCreateAccountA[0].publicKey;
+  let tokenAccountB=retInstructioCreateAccountB[0].publicKey
+  let stableSwap = await StableSwap.createStableSwap(
+    connection,
+    wallet,
+    createAccountProgramm,
+    authority,
+    adminAccount.publicKey,
+    adminFeeAccountA,
+    adminFeeAccountB,
+    mintA.publicKey,
+    tokenAccountA,
+    mintB.publicKey,
+    tokenAccountB,
+    poolMint.publicKey,
+    poolTokenAccount,
+    mintA.publicKey,
+    mintB.publicKey,
+    stableSwapProgramId,
+    TOKEN_PROGRAM_ID,
+    nonce,
+    AMP_FACTOR,
+    FEES
+  );
+ 
+  let ret = { "authority": authority.toBase58(), "nonce": nonce, "poolMint": poolMint.publicKey.toBase58(), "poolTokenAccount": poolTokenAccount.toBase58(), "tokenAccountA": tokenAccountA.toBase58(), "tokenAccountB": tokenAccountB.toBase58(), "stableSwap": stableSwap.stableSwap.toBase58() }
+ 
+  console.log(ret);
+  return ret;
+}
+/************************************** end saber ************************************************************ */
+

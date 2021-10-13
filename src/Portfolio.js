@@ -5,7 +5,7 @@ import Wallet from '@project-serum/sol-wallet-adapter';
 import { Connection, SystemProgram, Transaction, clusterApiUrl, PublicKey } from '@solana/web3.js';
 import { createPortfolioApi, createUserPortfolioApi, depositInPortfolioApi } from './Portfolio/cli/makeStepsPortfolio';
 import PortfolioComponent from "./component/PortfolioComponent";
-import { addAssetToPortfolioStep, createPortfolioStep, createUserPortfolioStep, depositPortfolioStep, saberAPI, withdrawPortfolioStep ,createStableSwapAPI} from './new-portfolio/portfolio-steps';
+import { addAssetToPortfolioStep, createPortfolioStep, createUserPortfolioStep, depositPortfolioStep, depositIntoLPAPI, withdrawPortfolioStep ,createLpTokenAPI} from './new-portfolio/portfolio-steps';
 import { depositInPortfolio } from "./cli/makestepsPortfolioSwap"
 
 import InfoAccount from './component/InfoAccount';
@@ -23,9 +23,6 @@ function Portfolio() {
   function addLog(log) {
     setLogs((logs) => [...logs, log]);
   }
-
-
-
   ////// input
 
   const [token, setToken] = useState("6ykyxd7bZFnvEHq61vnd69BkU3gabiDmKGEQb4sGiPQG");
@@ -109,7 +106,13 @@ const [splmPrimary, setSplmPrimary] = useState(avalanch);
   const [userPortfolioAccount, setUserPortfolioAccount] = useState("w6pkG4GVvZFqZ2wWZNiF2zQ8CDFoDrmjrYLjyNbs8LQ")
   const [amountDeposit, setAmountDeposit] = useState(10)
   const [infoUserPortfolioAccount, setInfoUserPortfolioAccount] = useState("")
-  const [infoPortfolio, setInfoPortfolio] = useState("")
+  const [lpToken, setLpToken] = useState("");
+  const [tokenAccountA, setTokenAccountA] = useState(""); 
+  const [tokenAccountB, setTokenAccountB] = useState(""); 
+  const [infoPortfolio, setInfoPortfolio] = useState("");
+  const [stableSwap, setStableSwap] = useState("");
+  const [authority, setAuthority] = useState(""); 
+  const [userPoolToken, setUserPoolToken] = useState(""); 
   const network = "https://psytrbhymqlkfrhudd.dev.genesysgo.net:8899"
   const [providerUrl, setProviderUrl] = useState('https://www.sollet.io');
   const connection = useMemo(() => new Connection(network), [network]);
@@ -358,13 +361,19 @@ async function withdrawPortfolio() {
   }
 
 }
-async function  createStableSwap() {
+async function  createLpToken() {
   addLog("... loading create saberSwap ... ");
   
   try {
-    createStableSwapAPI(selectedWallet, connection,amount ,asset1Obj,asset3Obj).then(
+    createLpTokenAPI(selectedWallet, connection,asset1Obj).then(
         res => {
             addLog("res ",res);
+            setLpToken(res.poolMint);
+            setUserPoolToken(res.poolTokenAccount)
+        setAuthority(res.authority);
+        setTokenAccountA(res.tokenAccountA);
+        setTokenAccountB(res.tokenAccountB);
+        setStableSwap(res.stableSwap)
 
         })
         .catch(
@@ -379,10 +388,10 @@ catch (err) {
     throw(err);
 }
 }
-async function saber() {
+async function depositIntoLP() {
   addLog("... loading saber ... ");
   try {
-    saberAPI(selectedWallet, connection,amount ,asset1Obj,assetSaber).then(
+    depositIntoLPAPI(selectedWallet,connection,asset1Obj,stableSwap,lpToken,userPoolToken,tokenAccountA,tokenAccountB,authority).then(
         res => {
             addLog("res ",res);
 
@@ -564,11 +573,17 @@ catch (err) {
                {/*  <button onClick={() => createStableSwap()} className="btn btn-primary">
                 create Stable Swap
                 </button>   */} <br></br>
-                 <button onClick={() => createStableSwap()} className="btn btn-primary">
-                 create Stable Swap
+                <span>LP Token :</span><p>{lpToken}</p><br/>
+                 <button onClick={() => createLpToken()} className="btn btn-primary">
+                 create Lp Token
                 </button>
                 <br></br>
-                <br></br> *********************************************************************************************<br></br>
+                <button onClick={() => depositIntoLP()} className="btn btn-primary">
+                 Deposit into Lp Pool
+                </button>
+                <br></br>
+                <br></br>
+                 *********************************************************************************************<br></br>
                 <span> Amount:  </span> <input onChange={(e) => setAmountWithdraw(e.target.value)} value={amountWithdraw}></input> <button onClick={() => withdrawPortfolio()} className="btn btn-primary">
                     withdraw from portfolio
                 </button>

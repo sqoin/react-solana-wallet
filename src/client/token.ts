@@ -1175,36 +1175,9 @@ console.log(ret);
       multiSigners,
       amount,
     );
-   /*  let transaction = new Transaction().add(
-      instruction
-    );
-
-    transaction.recentBlockhash = (
-      await connection.getRecentBlockhash()
-    ).blockhash;
-    transaction.feePayer = owner.publicKey;
-    let signed=await owner.signTransaction(transaction);
-    console.log("*******signed: "+JSON.stringify(signed))
-    let signature = await connection.sendRawTransaction(signed.serialize());
-
-    await connection.confirmTransaction(signature, 'max'); */
+  
     return instruction;
-  /*  await sendAndConfirmTransaction(
-      'Approve',
-      this.connection,
-      new Transaction().add(
-        Token.createApproveInstruction(
-          this.programId,
-          account,
-          delegate,
-          ownerPublicKey,
-          multiSigners,
-          amount,
-        ),
-      ),
-      this.payer,
-      ...signers,
-    );*/
+ 
   }
   /**
    * Remove approval for the transfer of any remaining tokens
