@@ -1,0 +1,267 @@
+{
+  "version": "0.0.0",
+  "name": "test1",
+  "instructions": [
+    {
+      "name": "initialize",
+      "accounts": [],
+      "args": []
+    },
+    {
+      "name": "seyHello",
+      "accounts": [
+        {
+          "name": "owner",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "programAddress",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram1",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "accountProgramAddress",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram2",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "programPrincipal",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram3",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "programId",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "nonce",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "stake",
+      "accounts": [
+        {
+          "name": "authority",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "miner",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "quarry",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "minerVault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rewarder",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "unusedClock",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "quarryProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        },
+        {
+          "name": "nonce",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "withdrow",
+      "accounts": [
+        {
+          "name": "authority",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "miner",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "quarry",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "minerVault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rewarder",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "unusedClock",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "quarryProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "claim",
+      "accounts": [
+        {
+          "name": "mintWrapper",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "mintWrapperProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "minter",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "rewardsTokenMint",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "rewardsTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "claimFeeTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "authority",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "miner",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "quarry",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "unusedMinerVault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "unusedTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rewarder",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "unusedClock",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "quarryProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    }
+  ],
+  "metadata": {
+    "address": "CDVL2p7dSY5svymGPudk1rphSB2VFyQAQymWQZmW9XPm"
+  }
+}

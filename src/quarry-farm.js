@@ -27,7 +27,8 @@ function QuarryFarm() {
     network,
   ]);
   const [tokenInfo, setTokenInfo] = useState("no Info");
-const [stakeToken,setStakeToken]=useState("DEjsoW2aNiSqdw57828BukUkQemwsx483SX95xNX9hzW")
+//const [stakeToken,setStakeToken]=useState("DEjsoW2aNiSqdw57828BukUkQemwsx483SX95xNX9hzW")
+const [stakeToken,setStakeToken]=useState("5Ko5xmm9SZ44ogvdFKY5chweLJuPXer3DAbCfivihxJF")
 const [rewardToken,setRewardToken]=useState("FnHA1GbWfBHqZPPUSwhXuYwoL8h5Uks6vD6FmQdFehP3")
 const [rewardWrapper,setRewardWrapper]=useState("CcykWMF8fyN555TBvoUKbmVXBudWbvE2Hst41Ff7aozV")
 const [rewarder,setRewarder]=useState("AEfTEEGiAqEUTWCacTnw8dU9iYdz98hCrdPJJwX3xKfa")

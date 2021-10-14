@@ -5,7 +5,7 @@ import Wallet from '@project-serum/sol-wallet-adapter';
 import { Connection, SystemProgram, Transaction, clusterApiUrl, PublicKey } from '@solana/web3.js';
 import { createPortfolioApi, createUserPortfolioApi, depositInPortfolioApi } from './Portfolio/cli/makeStepsPortfolio';
 import PortfolioComponent from "./component/PortfolioComponent";
-import { addAssetToPortfolioStep, createPortfolioStep, createUserPortfolioStep, depositPortfolioStep, depositIntoLPAPI, withdrawPortfolioStep ,createLpTokenAPI} from './new-portfolio/portfolio-steps';
+import { addAssetToPortfolioStep, createPortfolioStep, createUserPortfolioStep, depositPortfolioStep, depositIntoLPAPI, withdrawPortfolioStep ,createLpTokenAPI, stakeTokensAPI} from './new-portfolio/portfolio-steps';
 import { depositInPortfolio } from "./cli/makestepsPortfolioSwap"
 
 import InfoAccount from './component/InfoAccount';
@@ -436,6 +436,25 @@ catch (err) {
 }
 async function stakeTokens(){
   addLog("... loading stake token ... ");
+   
+  try {
+    stakeTokensAPI(selectedWallet, connection).then(
+        res => {
+            addLog("res ",res);
+            console.log(res);
+        }
+    )
+    .catch(
+            
+      err => {addLog("" + err);
+      throw(err);
+  }
+  )
+}
+catch (err) {
+    addLog("error : " + err);
+    throw(err);
+}
 }
   return (
     <div className="App" id="main-wrap" >

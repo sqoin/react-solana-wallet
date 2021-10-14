@@ -3,7 +3,13 @@ import {
   TOKEN_PROGRAM_ID,
   ASSOCIATED_TOKEN_PROGRAM_ID,
 } from "@solana/spl-token";
-
+import { expectTX } from "@saberhq/chai-solana";
+import {
+  createInitMintInstructions,
+ TokenAmount,
+  Token as sToken
+} from "@saberhq/token-utils";
+import { makeSDK } from "../quarry-farm/worspace"
 import {
   Account,
   Connection,
@@ -13,6 +19,7 @@ import {
   TransactionInstruction,
   Transaction,
   SYSVAR_CLOCK_PUBKEY,
+  SystemProgram,
 } from '@solana/web3.js';
 
 import {
@@ -28,7 +35,11 @@ import {
 } from "./utils/fees";
 import { Token } from '../client/token';
 import { StableSwap } from "../saber/stable-swap";
-
+import * as anchor from "@project-serum/anchor";
+const { web3, BN } = anchor;
+const DAILY_REWARDS_RATE = new BN(1_000000 * web3.LAMPORTS_PER_SOL);
+const ANNUAL_REWARDS_RATE = DAILY_REWARDS_RATE.mul(new BN(365));
+const rewardsShare = DAILY_REWARDS_RATE.div(new BN(10));
 // Loaded token program's program id
 let programId: PublicKey = new PublicKey("Bc2EsggSWKXnkzaA1dznwriYB3dA6f2sXivFSw64BgE9");
 let associatedProgramId: PublicKey;
@@ -37,6 +48,8 @@ let UserPortfolioAccount: Account;
 let portfolioAddress: Account;
 let ownerPortfolio: Account;
 let splm1: Token;
+const Provider = anchor.Provider;
+const options = Provider.defaultOptions();
 const userTransferAuthority = new Account([155, 200, 249, 167, 10, 23, 75, 131, 118, 125, 114, 216, 128, 104, 178, 124, 197, 52, 254, 20, 115, 17, 181, 113, 249, 97, 206, 128, 236, 197, 223, 136, 12, 128, 101, 121, 7, 177, 87, 233, 105, 253, 150, 154, 73, 9, 56, 54, 157, 240, 189, 68, 189, 52, 172, 228, 134, 89, 160, 189, 52, 26, 149, 130]);
 const createAccountProgram = new Account([86, 26, 243, 72, 46, 135, 186, 23, 31, 215, 229, 43, 54, 89, 206, 222, 82, 6, 231, 212, 212, 226, 184, 211, 107, 147, 180, 138, 57, 108, 182, 46, 185, 33, 232, 144, 77, 70, 77, 145, 151, 152, 188, 19, 78, 73, 32, 89, 236, 171, 90, 44, 120, 71, 202, 142, 214, 179, 38, 85, 71, 103, 145, 193]);
 //let programIdPortfolio = new PublicKey("Bc2EsggSWKXnkzaA1dznwriYB3dA6f2sXivFSw64BgE9")
@@ -927,3 +940,10 @@ export async function createLpToken(wallet, connection, asset1, asset2) {
 }
 /************************************** end saber ************************************************************ */
 
+/************************************** farm ************************************************************ */
+
+export async function stakeTokens(wallet, connection,lpToken){
+  
+  }
+
+/************************************** end farm ************************************************************ */
