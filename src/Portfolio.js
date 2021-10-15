@@ -438,7 +438,7 @@ async function stakeTokens(){
   addLog("... loading stake token ... ");
    
   try {
-    stakeTokensAPI(selectedWallet, connection).then(
+    stakeTokensAPI(selectedWallet, connection,lpTokenAsset1).then(
         res => {
             addLog("res ",res);
             console.log(res);

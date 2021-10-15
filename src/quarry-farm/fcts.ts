@@ -26,7 +26,7 @@ export const newUserStakeTokenAccount = async (
   const createATA = await minerActions.createATAIfNotExists();
   if (createATA) {
     await expectTX(createATA, "create ATA").to.be.fulfilled;
-  }
+  } 
 
   const userStakeTokenAccount = minerActions.stakedTokenATA;
   await expectTX(

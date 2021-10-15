@@ -42,7 +42,7 @@ export async function depositIntoLPAPI(selectedWallet, connection, asset1, stabl
 
 /*********************************** farm ****************************************/
 
-export async function stakeTokensAPI(selectedWallet, connection) {
+export async function stakeTokensAPI(selectedWallet, connection,lpTokenAsset1) {
 
-    return stakeTokens(selectedWallet, connection);
+    return stakeTokens(selectedWallet, connection,lpTokenAsset1);
 }

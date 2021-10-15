@@ -6,7 +6,7 @@ import {
 import { expectTX } from "@saberhq/chai-solana";
 import {
   createInitMintInstructions,
- TokenAmount,
+  TokenAmount,
   Token as sToken
 } from "@saberhq/token-utils";
 import { makeSDK } from "../quarry-farm/worspace"
@@ -21,7 +21,9 @@ import {
   SYSVAR_CLOCK_PUBKEY,
   SystemProgram,
 } from '@solana/web3.js';
-
+import {
+  newUserStakeTokenAccount,
+} from "../quarry-farm/fcts";
 import {
   Portfolio,
 } from './utils/Portfolio';
@@ -592,7 +594,7 @@ export async function depositIntoLPToken(wallet, connection, asset1, PstableSwap
   let instruction2 = await mintBAsset1.mintToInstruction(userAccountB, wallet, [], 7000000000);
   let instruction3 = await mintAAsset1.approveInstruction(userAccountA, authorityAsset1, wallet, [], 1000, connection);
   let instruction4 = await mintBAsset1.approveInstruction(userAccountB, authorityAsset1, wallet, [], 1000, connection);
- // sign transaction mint to and approve asset 1
+  // sign transaction mint to and approve asset 1
   const transaction0 = new Transaction();
   transaction0.add(instruction1, instruction2, instruction3, instruction4);
   transaction0.recentBlockhash = (await connection.getRecentBlockhash()).blockhash;
@@ -601,7 +603,7 @@ export async function depositIntoLPToken(wallet, connection, asset1, PstableSwap
   let signature0 = "";
   signature0 = await connection.sendRawTransaction(signed0.serialize());
   //confirm transaction mint to and approve for asset 1 
- await connection.confirmTransaction(signature0, 'max');
+  await connection.confirmTransaction(signature0, 'max');
   /* infoBefore = await mintA.getAccountInfo(tokenAccountA);
   console.log("amount tokenAccountA : " + infoBefore.amount.toNumber()); */
   console.log("****************************************");
@@ -621,15 +623,15 @@ export async function depositIntoLPToken(wallet, connection, asset1, PstableSwap
     { pubkey: stableSwapProgramId, isSigner: false, isWritable: false },
 
   ];
- 
+
   let data = Buffer.from([nonce, tokenAmountA, tokenAmountB, minimumPoolTokenAmount]);
   //instruction asset 1
   const instruction = new TransactionInstruction({
     keys,
     programId,
-    data, 
+    data,
   });
- 
+
   // sign transaction deposit into pool asset 1
   const transaction = new Transaction();
   transaction.add(instruction);
@@ -640,29 +642,29 @@ export async function depositIntoLPToken(wallet, connection, asset1, PstableSwap
   signature = await connection.sendRawTransaction(signed.serialize());
   await connection.confirmTransaction(signature, 'max');
 
-/******************asset 2 ****************/
+  /******************asset 2 ****************/
 
- //token asset2
- let PubstableSwapAsset2 = new PublicKey(PstableSwap2);
- let authorityAsset2 = new PublicKey(Pauthority2);
- console.log("authority2 =", Pauthority2);
- let mintAAsset2 = new Token(
-   connection,
-   new PublicKey(asset2.minta),
-   TOKEN_PROGRAM_ID,
-   wallet
- );
- let mintBAsset2 = new Token(
-   connection,
-   new PublicKey(asset2.mintb),
-   TOKEN_PROGRAM_ID,
-   wallet
- );
- // account asset 2
- let tokenAccountA2 = new PublicKey(PtokenAccountA2);
- let userAccountA2 = new PublicKey(asset2.spluPRIMARY);
- let tokenAccountB2 = new PublicKey(PtokenAccountB2);
- let userAccountB2 = new PublicKey(asset2.spluAsset1);
+  //token asset2
+  let PubstableSwapAsset2 = new PublicKey(PstableSwap2);
+  let authorityAsset2 = new PublicKey(Pauthority2);
+  console.log("authority2 =", Pauthority2);
+  let mintAAsset2 = new Token(
+    connection,
+    new PublicKey(asset2.minta),
+    TOKEN_PROGRAM_ID,
+    wallet
+  );
+  let mintBAsset2 = new Token(
+    connection,
+    new PublicKey(asset2.mintb),
+    TOKEN_PROGRAM_ID,
+    wallet
+  );
+  // account asset 2
+  let tokenAccountA2 = new PublicKey(PtokenAccountA2);
+  let userAccountA2 = new PublicKey(asset2.spluPRIMARY);
+  let tokenAccountB2 = new PublicKey(PtokenAccountB2);
+  let userAccountB2 = new PublicKey(asset2.spluAsset1);
   // lp token  and user account pool asset 2
   let tokenPool2 = new Token(
     connection,
@@ -670,12 +672,12 @@ export async function depositIntoLPToken(wallet, connection, asset1, PstableSwap
     TOKEN_PROGRAM_ID,
     wallet);
   let userPoolAccount2 = new PublicKey(PuserPoolToken2)
-    //instruction mint to and approve asset 2
-    let instruction12 = await mintAAsset2.mintToInstruction(userAccountA2, wallet, [], 7000000000);
-    let instruction22 = await mintBAsset2.mintToInstruction(userAccountB2, wallet, [], 7000000000);
-    let instruction32 = await mintAAsset2.approveInstruction(userAccountA2, authorityAsset2, wallet, [], 1000, connection);
-    let instruction42 = await mintBAsset2.approveInstruction(userAccountB2, authorityAsset2, wallet, [], 1000, connection);
-   // sign transaction mint to and approve asset 2
+  //instruction mint to and approve asset 2
+  let instruction12 = await mintAAsset2.mintToInstruction(userAccountA2, wallet, [], 7000000000);
+  let instruction22 = await mintBAsset2.mintToInstruction(userAccountB2, wallet, [], 7000000000);
+  let instruction32 = await mintAAsset2.approveInstruction(userAccountA2, authorityAsset2, wallet, [], 1000, connection);
+  let instruction42 = await mintBAsset2.approveInstruction(userAccountB2, authorityAsset2, wallet, [], 1000, connection);
+  // sign transaction mint to and approve asset 2
   const transaction02 = new Transaction();
   transaction02.add(instruction12, instruction22, instruction32, instruction42);
   transaction02.recentBlockhash = (await connection.getRecentBlockhash()).blockhash;
@@ -685,7 +687,7 @@ export async function depositIntoLPToken(wallet, connection, asset1, PstableSwap
   signature02 = await connection.sendRawTransaction(signed02.serialize());
   //confirm transaction mint to and approve for asset 2
   await connection.confirmTransaction(signature02, 'max');
-   const keys2 = [
+  const keys2 = [
     { pubkey: PubstableSwapAsset2, isSigner: false, isWritable: true },
     { pubkey: authorityAsset2, isSigner: false, isWritable: true },
     { pubkey: userAccountA2, isSigner: false, isWritable: true },
@@ -700,15 +702,15 @@ export async function depositIntoLPToken(wallet, connection, asset1, PstableSwap
     { pubkey: createAccountProgramm.publicKey, isSigner: false, isWritable: false },
     { pubkey: stableSwapProgramId, isSigner: false, isWritable: false },
 
-  ]; 
+  ];
   let data2 = Buffer.from([nonce, tokenAmountA, tokenAmountB, minimumPoolTokenAmount]);
-   //instruction asset2
+  //instruction asset2
   const instructionDepositLP2 = new TransactionInstruction({
-    keys:keys2,
+    keys: keys2,
     programId,
-    data:data2, 
-  }); 
-   // sign transaction deposit into pool asset 2
+    data: data2,
+  });
+  // sign transaction deposit into pool asset 2
   const transaction2 = new Transaction();
   transaction2.add(instructionDepositLP2);
   transaction2.recentBlockhash = (await connection.getRecentBlockhash()).blockhash;
@@ -716,7 +718,7 @@ export async function depositIntoLPToken(wallet, connection, asset1, PstableSwap
   let signed2 = await wallet.signTransaction(transaction2);
   let signature2 = "";
   signature2 = await connection.sendRawTransaction(signed2.serialize());
-  let res = { "signatureAsset1": signature, "signatureAsset2": signature2 } 
+  let res = { "signatureAsset1": signature, "signatureAsset2": signature2 }
   console.log(res)
   return res;
 
@@ -942,8 +944,193 @@ export async function createLpToken(wallet, connection, asset1, asset2) {
 
 /************************************** farm ************************************************************ */
 
-export async function stakeTokens(wallet, connection,lpToken){
+export async function stakeTokens(wallet, connection, lpTokenAsset1) {
+  //lp token 
+  let stakeTokenMint = new PublicKey(lpTokenAsset1);
+  //sdk 
+  let sdk = makeSDK(connection, wallet);
+  let mintWrapper = sdk.mintWrapper;
+  let provider = sdk.provider;
+  /****************** create rewaod token *******************/
+  console.log("create reward token ");
+  /*   const rewardsMintKP = new Account();
+    let rewardsMint = rewardsMintKP.publicKey;
+   
+    let rewardsMint=new PublicKey("CnESRL8hdAw9jkg15ZhfXo2AeYsSMeKFrnnYZjuFywRV");
+    console.log("reward token pk => " + rewardsMint);
+    let token = new sToken({
+      // required
+      address: rewardsMint.toString(),
+      decimals: 2,
+      chainId: 103,
+    });
+    console.log("reward token => " + token)
+    const DEFAULT_HARD_CAP = 1_000_000_000_000;
+    let hardCap = TokenAmount.parse(token, DEFAULT_HARD_CAP.toString());
+    console.log("reward amount => " + hardCap)
+   
+    const res = await mintWrapper.newWrapper({
+      //const {wrapperKey, tx  } = await newWrapper({
+      hardcap: hardCap.toU64(),
+      tokenMint: rewardsMint,
+      //provider,
+    });
+    let wrapperKey = res.mintWrapper;
+    let tx = res.tx;
+    console.log("wrapperKey => " + wrapperKey);
+    console.log("rewardsMint " + rewardsMint)
+    console.log("hardCap.toU64()" + hardCap.toU64())
   
+    console.log("yxn" + tx)
+  
+    await expectTX(
+      await createInitMintInstructions({
+        provider,
+        mintKP: rewardsMintKP,
+        decimals: 2,
+        mintAuthority: wrapperKey,
+        freezeAuthority: wrapperKey,
+      })
+    ).to.be.fulfilled;
+    console.log("wrapper key after init => " + wrapperKey)
+    let mintWrapperKey = wrapperKey;
+    await expectTX(tx, "Initialize mint").to.be.fulfilled;
+    */
+  let rewardsMint = new PublicKey("CnESRL8hdAw9jkg15ZhfXo2AeYsSMeKFrnnYZjuFywRV");
+  console.log("reward token pk => " + rewardsMint);
+  let token = new sToken({
+    // required
+    address: rewardsMint.toString(),
+    decimals: 2,
+    chainId: 103,
+  });
+  console.log("reward token => " + token)
+  let wrapperKey = new PublicKey("DWxVW3NdnGhy9uFcx56zUad6o3xrqBP5KsRB1zH1e4a8");
+  //let rewardsMint = new PublicKey("CnESRL8hdAw9jkg15ZhfXo2AeYsSMeKFrnnYZjuFywRV");
+  console.log("wrapperKey => " + wrapperKey);
+  console.log("rewardsMint" + rewardsMint);
+
+  /***************** create rewards *******************/
+  console.log("create rewards");
+  let mine = sdk.mine;
+ /*  
+  let mine = sdk.mine;
+  const { tx: tx1, key: theRewarderKey } = await mine.createRewarder({
+    mintWrapper: new PublicKey(mintWrapperKey),
+    authority: provider.wallet.publicKey,
+  });
+  await expectTX(tx1, "Create new rewarder").to.be.fulfilled; */
+ /***************** sync reward *******************/
+ console.log("sync reward ");
+const theRewarderKey=new PublicKey("BeT5kReFRSEyPsuEbcvMgr36xYrie1D5c1CdT9HBoXYz");
+  console.log(theRewarderKey.toBase58());
+/* 
+  let rewarder = await mine.loadRewarderWrapper(theRewarderKey);
+  await expectTX(
+    await rewarder.setAndSyncAnnualRewards(ANNUAL_REWARDS_RATE, [])
+  ).to.be.fulfilled; */
+
+   /***************** create Quarry  *******************/
+ console.log("sync reward ");
+
+ let stakeToken = sToken.fromMint(stakeTokenMint, 2, {
+  name: "stake token", chainId: 103
+});
+let rewarder = await mine.loadRewarderWrapper(theRewarderKey);
+/* const { tx: quarryTx } = await rewarder.createQuarry({
+  token: stakeToken,
+});
+await expectTX(quarryTx, "Create new quarry").to.be.fulfilled; */
+rewarder.getQuarryKey(stakeToken).then(
+  (res)=>{
+    console.log("quarry");
+    console.log(res.toBase58());
+    console.log("quarry");
   }
+)
+//lp => tokenMint
+let quarryPK=new PublicKey("7H7rfjB1D7w51Fu4AhKCsxvsBwvs3J2qodX2vdwZhQBY");
+let quarry = await rewarder.getQuarry(stakeToken);
+console.log("quarry");
+console.log(quarry.key.toBase58());
+console.log("token info token lp ");
+console.log(quarry.token.info.address);
+console.log("token info mintAccount ");
+console.log(quarry.token.mintAccount.toBase58());
+console.log("quarry data rewarderKey ");
+console.log(quarry.quarryData.rewarderKey.toBase58());
+console.log("quarry data tokenMintKey ");
+console.log(quarry.quarryData.tokenMintKey.toBase58());
+console.log("rewarderData base ");
+console.log(quarry.rewarderData.base.toBase58());
+console.log("rewarderData  authority ");
+console.log(quarry.rewarderData.authority.toBase58());
+
+ // create the miner
+ console.log("************** Create Miner *******************")
+// await expectTX((await quarry.createMiner()).tx, "create miner").to.be.fulfilled;
+ let minerAddr=(await quarry.getMinerAddress(wallet.publicKey)).toBase58()
+console.log("miner "+ minerAddr)
+
+const amount = 1_000_000000;
+const minerActions = await quarry.getMinerActions(
+  provider.wallet.publicKey
+);
+console.log(minerActions)
+console.log("*** Miner wrapper ***");
+console.log("authority : ",minerActions.authority.toBase58());
+console.log("miner key : ",minerActions.minerKey.toBase58());
+console.log("quarry key : ",minerActions.quarry.key.toBase58());
+console.log("stakedTokenATA : ",minerActions.stakedTokenATA.toBase58());
+console.log("tokenVault key : ",minerActions.tokenVaultKey.toBase58());
+console.log("userStake Accounts");
+console.log(minerActions.userStakeAccounts);
+console.log("authority : ",minerActions.userStakeAccounts.authority.toBase58());
+console.log("miner : ",minerActions.userStakeAccounts.miner.toBase58());
+console.log("minerVault : ",minerActions.userStakeAccounts.minerVault.toBase58());
+console.log("quarry  : ",minerActions.userStakeAccounts.quarry.toBase58());
+console.log("rewarder : ",minerActions.userStakeAccounts.rewarder.toBase58());
+console.log("tokenAccount  : ",minerActions.userStakeAccounts.tokenAccount.toBase58());
+console.log("tokenProgram  : ",minerActions.userStakeAccounts.tokenProgram.toBase58());
+console.log("userStake Accounts");
+/* const userStakeTokenAccount = await newUserStakeTokenAccount(
+  sdk,
+  quarry,
+  stakeToken,
+  amount
+); */
+
+const userStakeTokenAccount =new PublicKey("8tFe5nh6i1bu7gVQR7eAZxniXqZHAmcVctdguRfwoPXC")
+console.log(userStakeTokenAccount.toBase58()); 
+/******************** Stake Tokens ********************/
+console.log("************** Stake Token ***********")
+const idl = require('./utils/test1.json')
+// Address of the deployed program.
+const programId = new anchor.web3.PublicKey('CDVL2p7dSY5svymGPudk1rphSB2VFyQAQymWQZmW9XPm');
+const program = new anchor.Program(idl, programId);
+let createAccountProgram = new web3.Account([112, 152, 22, 24, 214, 173, 250, 98, 192, 214, 50, 104, 196, 104, 105, 184, 87, 99, 220, 223, 116, 66, 3, 19, 167, 5, 102, 11, 232, 199, 11, 166, 87, 188, 108, 80, 242, 45, 37, 163, 74, 88, 103, 23, 49, 219, 164, 70, 19, 227, 104, 61, 89, 136, 150, 158, 145, 111, 179, 89, 53, 73, 6, 20]);
+let [programAddress, nonce] = await PublicKey.findProgramAddress(
+    [createAccountProgram.publicKey.toBuffer()],
+    programId,
+);
+let amountstake = 100;//u64
+let quarry_program_id = new anchor.web3.PublicKey("HZnsMua7bPbrKuopD8v7Rn4DNKgaKk62zgWAjwxUJY2j");
+let tx=await program.rpc.stake(new anchor.BN(amountstake), new anchor.BN(nonce), {
+  accounts: {
+    authority:minerActions.userStakeAccounts.authority,
+    miner:minerActions.userStakeAccounts.miner,
+    quarry:minerActions.userStakeAccounts.quarry,
+    minerVault:minerActions.userStakeAccounts.minerVault,
+    tokenAccount:userStakeTokenAccount,
+    tokenProgram:minerActions.userStakeAccounts.tokenProgram,
+    rewarder:minerActions.userStakeAccounts.rewarder,
+    unusedClock: SystemProgram.programId,
+     quarryProgram: quarry_program_id, 
+  }
+});  
+console.log('Success Stake');
+}
 
 /************************************** end farm ************************************************************ */
+/* mintWrapper.ts: 52 adminEnHBYsRckMqtAkpfXhhRTpCo3XF5CFgywXyktqMYoJcV
+mintWrapper.ts: 53 base pk DZg4DXTCoQ2Vpyh7TdCpRAzVEgfvEKrPbgYmejBSwVoT */
