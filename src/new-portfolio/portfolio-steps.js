@@ -6,7 +6,9 @@ import {
     withdrawPortfolioApi,
     depositIntoLPToken,
     createLpToken,
-    stakeTokens
+    stakeTokens,
+    withdrawFormQuarry,
+    claimRewards
 } from "./portfolio-api";
 
 export async function createPortfolioStep(myAccount, connection, splmAsset1, amountAsset1, numberOfAsset, metaDataUrl, metaDataHash, periodAsset1) {
@@ -45,4 +47,15 @@ export async function depositIntoLPAPI(selectedWallet, connection, asset1, stabl
 export async function stakeTokensAPI(selectedWallet, connection,lpTokenAsset1) {
 
     return stakeTokens(selectedWallet, connection,lpTokenAsset1);
+}
+
+
+export async function withdrawFormQuarryAPI(selectedWallet, connection,lpTokenAsset1,userPoolTokenAsset1,rewarderKeyAsset1) {
+
+    return withdrawFormQuarry(selectedWallet, connection,lpTokenAsset1,userPoolTokenAsset1,rewarderKeyAsset1);
+}
+
+export async function claimRewardsAPI(selectedWallet, connection,lpTokenAsset1,userPoolTokenAsset1,rewarderKeyAsset1) {
+
+    return claimRewards(selectedWallet, connection,lpTokenAsset1,userPoolTokenAsset1,rewarderKeyAsset1);
 }

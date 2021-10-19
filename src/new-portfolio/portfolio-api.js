@@ -7,7 +7,8 @@ import { expectTX } from "@saberhq/chai-solana";
 import {
   createInitMintInstructions,
   TokenAmount,
-  Token as sToken
+  Token as sToken,
+  getOrCreateATA
 } from "@saberhq/token-utils";
 import { makeSDK } from "../quarry-farm/worspace"
 import {
@@ -38,6 +39,7 @@ import {
 import { Token } from '../client/token';
 import { StableSwap } from "../saber/stable-swap";
 import * as anchor from "@project-serum/anchor";
+import { findMinterAddress } from "../quarry-farm/utils";
 const { web3, BN } = anchor;
 const DAILY_REWARDS_RATE = new BN(1_000000 * web3.LAMPORTS_PER_SOL);
 const ANNUAL_REWARDS_RATE = DAILY_REWARDS_RATE.mul(new BN(365));
@@ -951,12 +953,12 @@ export async function stakeTokens(wallet, connection, lpTokenAsset1) {
   let sdk = makeSDK(connection, wallet);
   let mintWrapper = sdk.mintWrapper;
   let provider = sdk.provider;
-  /****************** create rewaod token *******************/
+  //****************** create rewaod token *******************
   console.log("create reward token ");
-  /*   const rewardsMintKP = new Account();
-    let rewardsMint = rewardsMintKP.publicKey;
+     //const rewardsMintKP = new Account();
+    //let rewardsMint = rewardsMintKP.publicKey;
    
-    let rewardsMint=new PublicKey("CnESRL8hdAw9jkg15ZhfXo2AeYsSMeKFrnnYZjuFywRV");
+    let rewardsMint=new PublicKey("4FkPSyJLWdngzeyiMPTJh77BXbYPocf1bU6u8yoCDy33");
     console.log("reward token pk => " + rewardsMint);
     let token = new sToken({
       // required
@@ -965,7 +967,7 @@ export async function stakeTokens(wallet, connection, lpTokenAsset1) {
       chainId: 103,
     });
     console.log("reward token => " + token)
-    const DEFAULT_HARD_CAP = 1_000_000_000_000;
+   /*  const DEFAULT_HARD_CAP = 1_000_000_000_000;
     let hardCap = TokenAmount.parse(token, DEFAULT_HARD_CAP.toString());
     console.log("reward amount => " + hardCap)
    
@@ -974,7 +976,7 @@ export async function stakeTokens(wallet, connection, lpTokenAsset1) {
       hardcap: hardCap.toU64(),
       tokenMint: rewardsMint,
       //provider,
-    });
+    }); 
     let wrapperKey = res.mintWrapper;
     let tx = res.tx;
     console.log("wrapperKey => " + wrapperKey);
@@ -992,145 +994,345 @@ export async function stakeTokens(wallet, connection, lpTokenAsset1) {
         freezeAuthority: wrapperKey,
       })
     ).to.be.fulfilled;
+    
     console.log("wrapper key after init => " + wrapperKey)
     let mintWrapperKey = wrapperKey;
-    await expectTX(tx, "Initialize mint").to.be.fulfilled;
-    */
-  let rewardsMint = new PublicKey("CnESRL8hdAw9jkg15ZhfXo2AeYsSMeKFrnnYZjuFywRV");
-  console.log("reward token pk => " + rewardsMint);
-  let token = new sToken({
-    // required
-    address: rewardsMint.toString(),
-    decimals: 2,
-    chainId: 103,
-  });
-  console.log("reward token => " + token)
-  let wrapperKey = new PublicKey("DWxVW3NdnGhy9uFcx56zUad6o3xrqBP5KsRB1zH1e4a8");
-  //let rewardsMint = new PublicKey("CnESRL8hdAw9jkg15ZhfXo2AeYsSMeKFrnnYZjuFywRV");
+    await expectTX(tx, "Initialize mint").to.be.fulfilled;*/
+    
+ 
+  let wrapperKey = new PublicKey("8acHVXo4vVYZrbHf3Eo7LTUPf1HvD1Vf7PscP4mhzLh5");
+  
   console.log("wrapperKey => " + wrapperKey);
   console.log("rewardsMint" + rewardsMint);
 
-  /***************** create rewards *******************/
+  //***************** create rewards *******************
   console.log("create rewards");
   let mine = sdk.mine;
- /*  
-  let mine = sdk.mine;
-  const { tx: tx1, key: theRewarderKey } = await mine.createRewarder({
-    mintWrapper: new PublicKey(mintWrapperKey),
-    authority: provider.wallet.publicKey,
-  });
-  await expectTX(tx1, "Create new rewarder").to.be.fulfilled; */
- /***************** sync reward *******************/
- console.log("sync reward ");
-const theRewarderKey=new PublicKey("BeT5kReFRSEyPsuEbcvMgr36xYrie1D5c1CdT9HBoXYz");
+   
+/*   // let mine = sdk.mine;
+   const { tx: tx1, key: theRewarderKey } = await mine.createRewarder({
+     mintWrapper:wrapperKey,
+     authority: provider.wallet.publicKey,
+   });
+   await expectTX(tx1, "Create new rewarder").to.be.fulfilled;   */
+  
+  /***************** sync reward *******************/
+ 
+  console.log("sync reward ");
+  const theRewarderKey = new PublicKey("4cVS9W7ABJGN1ZaZAhqmCvuQCkEXxQqbmt7HpTzH9csU");
   console.log(theRewarderKey.toBase58());
-/* 
+  
+   /*  let rewarder = await mine.loadRewarderWrapper(theRewarderKey);
+   await expectTX(
+      await rewarder.setAndSyncAnnualRewards(ANNUAL_REWARDS_RATE, [])
+    ).to.be.fulfilled;  */
+
+  /***************** create Quarry  *******************/
+  console.log("create Quarry ");
+
+  let stakeToken = sToken.fromMint(stakeTokenMint, 2, {
+    name: "stake token", chainId: 103
+  });
   let rewarder = await mine.loadRewarderWrapper(theRewarderKey);
-  await expectTX(
-    await rewarder.setAndSyncAnnualRewards(ANNUAL_REWARDS_RATE, [])
-  ).to.be.fulfilled; */
+  /*  const { tx: quarryTx } = await rewarder.createQuarry({
+   token: stakeToken,
+  });
+  await expectTX(quarryTx, "Create new quarry").to.be.fulfilled;  */
+   rewarder.getQuarryKey(stakeToken).then(
+    (res) => {
+      console.log("quarry");
+      console.log(res.toBase58());
+      console.log("quarry");
+    }
+  ) 
+  //lp => tokenMint
+  let quarryPK = new PublicKey("Ew5ADLFA8ehm2Y6tHZDN3KSf2sCGcCMmg6ZWHwprUnLB");
+  let quarry = await rewarder.getQuarry(stakeToken);
+  console.log("quarry");
+  console.log(quarry.key.toBase58());
+  console.log("token info token lp ");
+  console.log(quarry.token.info.address);
+  console.log("token info mintAccount ");
+  console.log(quarry.token.mintAccount.toBase58());
+  console.log("quarry data rewarderKey ");
+  console.log(quarry.quarryData.rewarderKey.toBase58());
+  console.log("quarry data tokenMintKey ");
+  console.log(quarry.quarryData.tokenMintKey.toBase58());
+  console.log("rewarderData base ");
+  console.log(quarry.rewarderData.base.toBase58());
+  console.log("rewarderData  authority ");
+  console.log(quarry.rewarderData.authority.toBase58());
 
-   /***************** create Quarry  *******************/
- console.log("sync reward ");
+  // create the miner
+  console.log("************** Create Miner *******************")
+  // await expectTX((await quarry.createMiner()).tx, "create miner").to.be.fulfilled;
+  let minerAddr = (await quarry.getMinerAddress(wallet.publicKey)).toBase58()
+  console.log("miner " + minerAddr)
 
- let stakeToken = sToken.fromMint(stakeTokenMint, 2, {
-  name: "stake token", chainId: 103
-});
-let rewarder = await mine.loadRewarderWrapper(theRewarderKey);
-/* const { tx: quarryTx } = await rewarder.createQuarry({
-  token: stakeToken,
-});
-await expectTX(quarryTx, "Create new quarry").to.be.fulfilled; */
-rewarder.getQuarryKey(stakeToken).then(
-  (res)=>{
-    console.log("quarry");
-    console.log(res.toBase58());
-    console.log("quarry");
-  }
-)
-//lp => tokenMint
-let quarryPK=new PublicKey("7H7rfjB1D7w51Fu4AhKCsxvsBwvs3J2qodX2vdwZhQBY");
-let quarry = await rewarder.getQuarry(stakeToken);
-console.log("quarry");
-console.log(quarry.key.toBase58());
-console.log("token info token lp ");
-console.log(quarry.token.info.address);
-console.log("token info mintAccount ");
-console.log(quarry.token.mintAccount.toBase58());
-console.log("quarry data rewarderKey ");
-console.log(quarry.quarryData.rewarderKey.toBase58());
-console.log("quarry data tokenMintKey ");
-console.log(quarry.quarryData.tokenMintKey.toBase58());
-console.log("rewarderData base ");
-console.log(quarry.rewarderData.base.toBase58());
-console.log("rewarderData  authority ");
-console.log(quarry.rewarderData.authority.toBase58());
 
- // create the miner
- console.log("************** Create Miner *******************")
-// await expectTX((await quarry.createMiner()).tx, "create miner").to.be.fulfilled;
- let minerAddr=(await quarry.getMinerAddress(wallet.publicKey)).toBase58()
-console.log("miner "+ minerAddr)
+  const minerActions = await quarry.getMinerActions(
+    provider.wallet.publicKey
+  );
+  console.log(minerActions)
+  console.log("*** Miner wrapper ***");
+  console.log("authority : ", minerActions.authority.toBase58());
+  console.log("miner key : ", minerActions.minerKey.toBase58());
+  console.log("quarry key : ", minerActions.quarry.key.toBase58());
+  console.log("stakedTokenATA : ", minerActions.stakedTokenATA.toBase58());
+  console.log("tokenVault key : ", minerActions.tokenVaultKey.toBase58());
+  console.log("userStake Accounts");
+  console.log(minerActions.userStakeAccounts);
+  console.log("authority : ", minerActions.userStakeAccounts.authority.toBase58());
+  console.log("miner : ", minerActions.userStakeAccounts.miner.toBase58());
+  console.log("minerVault : ", minerActions.userStakeAccounts.minerVault.toBase58());
+  console.log("quarry  : ", minerActions.userStakeAccounts.quarry.toBase58());
+  console.log("rewarder : ", minerActions.userStakeAccounts.rewarder.toBase58());
+  console.log("tokenAccount  : ", minerActions.userStakeAccounts.tokenAccount.toBase58());
+  console.log("tokenProgram  : ", minerActions.userStakeAccounts.tokenProgram.toBase58());
+  console.log("userStake Accounts");
 
-const amount = 1_000_000000;
-const minerActions = await quarry.getMinerActions(
-  provider.wallet.publicKey
-);
-console.log(minerActions)
-console.log("*** Miner wrapper ***");
-console.log("authority : ",minerActions.authority.toBase58());
-console.log("miner key : ",minerActions.minerKey.toBase58());
-console.log("quarry key : ",minerActions.quarry.key.toBase58());
-console.log("stakedTokenATA : ",minerActions.stakedTokenATA.toBase58());
-console.log("tokenVault key : ",minerActions.tokenVaultKey.toBase58());
-console.log("userStake Accounts");
-console.log(minerActions.userStakeAccounts);
-console.log("authority : ",minerActions.userStakeAccounts.authority.toBase58());
-console.log("miner : ",minerActions.userStakeAccounts.miner.toBase58());
-console.log("minerVault : ",minerActions.userStakeAccounts.minerVault.toBase58());
-console.log("quarry  : ",minerActions.userStakeAccounts.quarry.toBase58());
-console.log("rewarder : ",minerActions.userStakeAccounts.rewarder.toBase58());
-console.log("tokenAccount  : ",minerActions.userStakeAccounts.tokenAccount.toBase58());
-console.log("tokenProgram  : ",minerActions.userStakeAccounts.tokenProgram.toBase58());
-console.log("userStake Accounts");
-/* const userStakeTokenAccount = await newUserStakeTokenAccount(
-  sdk,
-  quarry,
-  stakeToken,
-  amount
-); */
 
-const userStakeTokenAccount =new PublicKey("8tFe5nh6i1bu7gVQR7eAZxniXqZHAmcVctdguRfwoPXC")
-console.log(userStakeTokenAccount.toBase58()); 
-/******************** Stake Tokens ********************/
-console.log("************** Stake Token ***********")
-const idl = require('./utils/test1.json')
-// Address of the deployed program.
-const programId = new anchor.web3.PublicKey('CDVL2p7dSY5svymGPudk1rphSB2VFyQAQymWQZmW9XPm');
-const program = new anchor.Program(idl, programId);
-let createAccountProgram = new web3.Account([112, 152, 22, 24, 214, 173, 250, 98, 192, 214, 50, 104, 196, 104, 105, 184, 87, 99, 220, 223, 116, 66, 3, 19, 167, 5, 102, 11, 232, 199, 11, 166, 87, 188, 108, 80, 242, 45, 37, 163, 74, 88, 103, 23, 49, 219, 164, 70, 19, 227, 104, 61, 89, 136, 150, 158, 145, 111, 179, 89, 53, 73, 6, 20]);
-let [programAddress, nonce] = await PublicKey.findProgramAddress(
+  const userStakeTokenAccount = new PublicKey("8tFe5nh6i1bu7gVQR7eAZxniXqZHAmcVctdguRfwoPXC")
+  console.log(userStakeTokenAccount.toBase58()); 
+  /******************** Stake Tokens ********************/
+  console.log("************** Stake Token ***********")
+  const idl = require('./utils/test1.json')
+  // Address of the deployed program.
+  const programId = new anchor.web3.PublicKey('CDVL2p7dSY5svymGPudk1rphSB2VFyQAQymWQZmW9XPm');
+  const program = new anchor.Program(idl, programId);
+  let createAccountProgram = new web3.Account([112, 152, 22, 24, 214, 173, 250, 98, 192, 214, 50, 104, 196, 104, 105, 184, 87, 99, 220, 223, 116, 66, 3, 19, 167, 5, 102, 11, 232, 199, 11, 166, 87, 188, 108, 80, 242, 45, 37, 163, 74, 88, 103, 23, 49, 219, 164, 70, 19, 227, 104, 61, 89, 136, 150, 158, 145, 111, 179, 89, 53, 73, 6, 20]);
+  let [programAddress, nonce] = await PublicKey.findProgramAddress(
     [createAccountProgram.publicKey.toBuffer()],
     programId,
-);
-let amountstake = 100;//u64
-let quarry_program_id = new anchor.web3.PublicKey("HZnsMua7bPbrKuopD8v7Rn4DNKgaKk62zgWAjwxUJY2j");
-let tx=await program.rpc.stake(new anchor.BN(amountstake), new anchor.BN(nonce), {
-  accounts: {
-    authority:minerActions.userStakeAccounts.authority,
-    miner:minerActions.userStakeAccounts.miner,
-    quarry:minerActions.userStakeAccounts.quarry,
-    minerVault:minerActions.userStakeAccounts.minerVault,
-    tokenAccount:userStakeTokenAccount,
-    tokenProgram:minerActions.userStakeAccounts.tokenProgram,
-    rewarder:minerActions.userStakeAccounts.rewarder,
-    unusedClock: SystemProgram.programId,
-     quarryProgram: quarry_program_id, 
-  }
-});  
-console.log('Success Stake');
+  );
+  let amountstake = 100;//u64
+  let quarry_program_id = new anchor.web3.PublicKey("HZnsMua7bPbrKuopD8v7Rn4DNKgaKk62zgWAjwxUJY2j");
+  let tx = await program.rpc.stake(new anchor.BN(amountstake), new anchor.BN(nonce), {
+    accounts: {
+      authority: minerActions.userStakeAccounts.authority,
+      miner: minerActions.userStakeAccounts.miner,
+      quarry: minerActions.userStakeAccounts.quarry,
+      minerVault: minerActions.userStakeAccounts.minerVault,
+      tokenAccount: userStakeTokenAccount,
+      tokenProgram: minerActions.userStakeAccounts.tokenProgram,
+      rewarder: minerActions.userStakeAccounts.rewarder,
+      unusedClock: SystemProgram.programId,
+      quarryProgram: quarry_program_id,
+    }
+  });
+  console.log('Success Stake');
+  let ret = [];
+  ret.push({ "signature": tx, "rewarderKey": theRewarderKey.toBase58() })
+  return ret; 
 }
 
+
+export async function withdrawFormQuarry(wallet, connection, lpTokenAsset1, userLpTokenAsset1, rewarderKeyAsset1) {
+  let sdk = makeSDK(connection, wallet);
+  let provider = sdk.provider;
+  let mine = sdk.mine;
+
+  //lp token 
+  const stakeTokenMint = new PublicKey(lpTokenAsset1);
+  const userStakeTokenAccount = new PublicKey(userLpTokenAsset1)
+  const theRewarderKey = new PublicKey(rewarderKeyAsset1);
+
+  console.log("************** withdraw Form Quarry ***********")
+  const idl = require('./utils/test1.json')
+  // Address of the deployed program.
+  const programId = new anchor.web3.PublicKey('CDVL2p7dSY5svymGPudk1rphSB2VFyQAQymWQZmW9XPm');
+  const program = new anchor.Program(idl, programId);
+  let quarry_program_id = new anchor.web3.PublicKey("HZnsMua7bPbrKuopD8v7Rn4DNKgaKk62zgWAjwxUJY2j");
+
+  let stakeToken = sToken.fromMint(stakeTokenMint, 2, {
+    name: "stake token", chainId: 103
+  });
+
+  let rewarder = await mine.loadRewarderWrapper(theRewarderKey);
+  let quarry = await rewarder.getQuarry(stakeToken);
+  const minerActions = await quarry.getMinerActions(
+    provider.wallet.publicKey
+  );
+  let authority = wallet.publicKey;
+  let miner = minerActions.userStakeAccounts.miner;
+  let Pquarry = minerActions.userStakeAccounts.quarry;
+  let minerVault = minerActions.userStakeAccounts.minerVault;
+  let tokenAccount = userStakeTokenAccount;
+  let tokenProgram = minerActions.userStakeAccounts.tokenProgram;
+  let Prewarder = minerActions.userStakeAccounts.rewarder;
+
+  let amount = 100;//u64
+
+  let tx = await program.rpc.withdrow(new anchor.BN(amount), {
+    accounts: {
+      authority,
+      miner,
+      quarry: Pquarry,
+      minerVault,
+      tokenAccount,
+      tokenProgram,
+      rewarder: Prewarder,
+      unusedClock: SystemProgram.programId,
+      quarryProgram: quarry_program_id,
+    }
+  });
+  console.log('Success withdrow');
+
+  return tx;
+
+}
+
+
+export async function claimRewards(wallet, connection, lpTokenAsset1, userLpTokenAsset1, rewarderKeyAsset1) {
+  let sdk = makeSDK(connection, wallet);
+  let provider = sdk.provider;
+  let mine = sdk.mine;
+
+  //lp token 
+  const stakeTokenMint = new PublicKey(lpTokenAsset1);
+  const userStakeTokenAccount = new PublicKey(userLpTokenAsset1)
+  const theRewarderKey = new PublicKey(rewarderKeyAsset1);
+
+  console.log("**************claimRewards ***********")
+  const idl = require('./utils/test1.json')
+  // Address of the deployed program.
+  const programId = new anchor.web3.PublicKey('CDVL2p7dSY5svymGPudk1rphSB2VFyQAQymWQZmW9XPm');
+  const program = new anchor.Program(idl, programId);
+  //let quarry_program_id = new anchor.web3.PublicKey("HZnsMua7bPbrKuopD8v7Rn4DNKgaKk62zgWAjwxUJY2j");
+  
+  let stakeToken = sToken.fromMint(stakeTokenMint, 2, {
+    name: "stake token", chainId: 103
+  });
+
+  let rewarder = await mine.loadRewarderWrapper(theRewarderKey);
+  let quarry = await rewarder.getQuarry(stakeToken);
+  const minerActions = await quarry.getMinerActions(
+    provider.wallet.publicKey
+  );
+  console.log(rewarder);
+ console.log(quarry);
+ console.log(minerActions);
+ console.log("mintWrapper",quarry.rewarderData.mintWrapper.toBase58());
+  //let mintWrapper=new anchor.web3.PublicKey("LtF91ftr9HAMnb9UbAHBpR9LTeGBWykcmpHkXWj32cG");
+ // let mintWrapperProgram=new anchor.web3.PublicKey("CsJYUa6sucvv5eEfN21TxgLpxm8DuFPDMcHoUFhgChtt")
+  //let minter=new anchor.web3.PublicKey("4EqNJZuG9mGy9LzL1JW9J1wmrXw6L7fA6azYfKqHND2n")
+ // let rewardsTokenMint=new anchor.web3.PublicKey("6Lpcjq4QhwVcZaZq6FMaPdDo8zJJ3QbdNmz5RVqaXvLE");
+ //let rewardsTokenAccount=new anchor.web3.PublicKey("E78PSR2ujyFuV158ZKcjD525CkxreMA9MoLdWRtGGvq6");
+//let claimFeeTokenAccount=new anchor.web3.PublicKey("3LstAULH57C7ofez2Ax18pCdnehRmos45XDSfCGtTbDo");
+
+let authority=wallet.publicKey;
+let miner = new anchor.web3.PublicKey("2exaUE85QnPzAj9sy3L3kjqxbXCbUpVWqTUB5gwXksJy");
+let quarryP = new anchor.web3.PublicKey("Ew5ADLFA8ehm2Y6tHZDN3KSf2sCGcCMmg6ZWHwprUnLB");
+let minerVault = new anchor.web3.PublicKey("BG3okY9dnNC5B3f49VeqXcjaWDAeZuHKqT7AvPPta4JT");
+let tokenAccount = new anchor.web3.PublicKey("E2m2AyB1W24s24gvmRrMXVz2godf5PJLr7k7cTjCJ5X3");
+let rewarderP = new anchor.web3.PublicKey("GYP8ee914pmPsFJFeD1uQVrfdZs5dQNRsSuf1hhPrq4R");
+let quarry_program_id = new anchor.web3.PublicKey("HZnsMua7bPbrKuopD8v7Rn4DNKgaKk62zgWAjwxUJY2j");
+
+ console.log('Success claim rewards');
+ let mintWrapper=new PublicKey("8acHVXo4vVYZrbHf3Eo7LTUPf1HvD1Vf7PscP4mhzLh5");//sa7i7a let wrapperKey = new PublicKey("DWxVW3NdnGhy9uFcx56zUad6o3xrqBP5KsRB1zH1e4a8");
+ let mintWrapperProgram = new anchor.web3.PublicKey("EydLzhz3f1FcFLceETt2SZSCqK7dUVn6ZZB6ynZDwk67");//sa7i7a
+ const [minter] = await findMinterAddress(
+  quarry.rewarderData.mintWrapper,
+  quarry.quarryData.rewarderKey,
+  sdk.mintWrapper.program.programId
+);
+let rewardTokenMint = new PublicKey("CnESRL8hdAw9jkg15ZhfXo2AeYsSMeKFrnnYZjuFywRV");
+ 
+console.log("minter",minter.toBase58());
+
+ const { address: rewardsTokenAccount, instruction: ataInstruction } =
+    await getOrCreateATA({
+      provider: provider,
+      mint: rewardTokenMint,
+      owner: wallet.publicKey,
+    });
+    console.log("rewardsTokenAccount ",rewardsTokenAccount.toBase58());
+    let claimFeeTokenAccount=quarry.rewarderData.claimFeeTokenAccount;
+    console.log("claimFeeTokenAccount ", claimFeeTokenAccount.toBase58());
+
+    let tx= await program.rpc.claim({
+      accounts: {
+        mintWrapper,
+       mintWrapperProgram,
+       minter,
+       rewardsTokenMint:rewardTokenMint, 
+        rewardsTokenAccount,
+       claimFeeTokenAccount,
+       authority,
+       miner,
+       quarry:quarryP,
+       unusedMinerVault :minerVault,
+       unusedTokenAccount:tokenAccount,
+       tokenProgram:TOKEN_PROGRAM_ID,
+       rewarder:rewarderP,
+       unusedClock: SystemProgram.programId,
+       quarryProgram: quarry_program_id 
+      
+     }}); 
+     console.log('Success claim rewards');
+  /* 
+    let authority=wallet.publicKey;
+    let miner= minerActions.userStakeAccounts.miner;
+    let Pquarry=minerActions.userStakeAccounts.quarry;
+    let minerVault=minerActions.userStakeAccounts.minerVault;
+    let tokenAccount=userStakeTokenAccount;
+    let tokenProgram= minerActions.userStakeAccounts.tokenProgram;
+    let Prewarder= minerActions.userStakeAccounts.rewarder;
+    let rewardWrapper = new PublicKey("DWxVW3NdnGhy9uFcx56zUad6o3xrqBP5KsRB1zH1e4a8");//wrapperkey
+    
+    let mintWrapper=quarry.rewarderData.mintWrapper;
+    // let minter=new anchor.web3.PublicKey("4EqNJZuG9mGy9LzL1JW9J1wmrXw6L7fA6azYfKqHND2n")
+    let rewardsTokenMint=quarry.rewarderData.rewardsTokenMint;//rewardToken
+   //let rewardsTokenAccount=new anchor.web3.PublicKey("E78PSR2ujyFuV158ZKcjD525CkxreMA9MoLdWRtGGvq6");
+  let claimFeeTokenAccount=quarry.rewarderData.claimFeeTokenAccount;
+  
+  let rewardToken = new PublicKey("CnESRL8hdAw9jkg15ZhfXo2AeYsSMeKFrnnYZjuFywRV");
+   
+    let token = new sToken({
+      // required
+      address: rewardToken.toString(),
+      decimals: 2,
+      chainId: 103,
+    });
+    const [minter] = await findMinterAddress(
+      quarry.rewarderData.mintWrapper,
+      quarry.quarryData.rewarderKey,
+      sdk.mintWrapper.program.programId
+    );
+    console.log("minter",minter.toBase58());
+    const { address: rewardsTokenAccount, instruction: ataInstruction } =
+    await getOrCreateATA({
+      provider: provider,
+      mint: rewardToken,
+      owner: authority,
+    });
+    console.log("rewardsTokenAccount ",rewardsTokenAccount.toBase58());
+    console.log(rewarder);
+    console.log(quarry);
+    console.log(minerActions);
+    let tx= await program.rpc.claim({
+      accounts: {
+        mintWrapper,
+       mintWrapperProgram,
+       minter,
+       rewardsTokenMint, 
+        rewardsTokenAccount,
+       claimFeeTokenAccount,
+       authority,
+       miner,
+       quarry:Pquarry,
+       unusedMinerVault :minerVault,
+       unusedTokenAccount:tokenAccount,
+       tokenProgram,
+       rewarder:Prewarder,
+       unusedClock: SystemProgram.programId,
+       quarryProgram: quarry_program_id 
+      
+     }}); 
+     console.log('Success claim rewards');
+     return tx; */
+
+}
 /************************************** end farm ************************************************************ */
 /* mintWrapper.ts: 52 adminEnHBYsRckMqtAkpfXhhRTpCo3XF5CFgywXyktqMYoJcV
 mintWrapper.ts: 53 base pk DZg4DXTCoQ2Vpyh7TdCpRAzVEgfvEKrPbgYmejBSwVoT */

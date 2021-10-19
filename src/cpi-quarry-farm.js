@@ -154,8 +154,8 @@ function CPIQuarryFarm() {
         )}
         <hr />
        
-        <p>Token Account : DxkwfGuRuSchGLPoEcrmfQr9WL39ub8LK2TytumPetUR</p>
-        <p>Lp Token : HDzFXAYueYb5XL8y84kTMAuSGwnKzjMSobP9d1jAMqvJ</p> 
+        <p>Token Account : 5nuR8yDhnmiYBBroNTQzNpSN1DQvC34uqcZFQzt4hxra</p>
+        <p>Lp Token : CDj43f7YCPK5qhxyf629rNiW7CUnu1FWc4KUHwYdYvwv</p> 
         <br></br>
         <div className="logs">
           {logs.map((log, i) => (

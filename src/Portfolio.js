@@ -5,11 +5,12 @@ import Wallet from '@project-serum/sol-wallet-adapter';
 import { Connection, SystemProgram, Transaction, clusterApiUrl, PublicKey } from '@solana/web3.js';
 import { createPortfolioApi, createUserPortfolioApi, depositInPortfolioApi } from './Portfolio/cli/makeStepsPortfolio';
 import PortfolioComponent from "./component/PortfolioComponent";
-import { addAssetToPortfolioStep, createPortfolioStep, createUserPortfolioStep, depositPortfolioStep, depositIntoLPAPI, withdrawPortfolioStep ,createLpTokenAPI, stakeTokensAPI} from './new-portfolio/portfolio-steps';
+import { addAssetToPortfolioStep, createPortfolioStep, createUserPortfolioStep, depositPortfolioStep, depositIntoLPAPI, withdrawPortfolioStep ,createLpTokenAPI, stakeTokensAPI,withdrawFormQuarryAPI,claimRewardsAPI} from './new-portfolio/portfolio-steps';
 import { depositInPortfolio } from "./cli/makestepsPortfolioSwap"
 
 import InfoAccount from './component/InfoAccount';
 import { avalanch, raydium, usdc, usdcRaydiumPortfolio, usdt } from './new-portfolio/utils/stableCoins';
+import { claimRewardsCPI } from './quarry-farm/cpi-quarry-api';
 
 function toHex(buffer) {
   return Array.prototype.map
@@ -112,7 +113,8 @@ const [splmPrimary, setSplmPrimary] = useState(avalanch);
   const [stableSwapAsset1, setStableSwapAsset1] = useState("2tvr1qYn6YBgEf69HehoVCm9Rt3UrGibKNayvTia4VsT");
   const [authorityAsset1, setAuthorityAsset1] = useState("6q2MWgkQ23yrHeLUAnzKjWcjHokfeJFzJHYdzR7pFcyj"); 
   const [userPoolTokenAsset1, setUserPoolTokenAsset1] = useState("8tFe5nh6i1bu7gVQR7eAZxniXqZHAmcVctdguRfwoPXC"); 
-
+  const [rewarderKeyAsset1, setRewarderKeyAsset1] = useState("4cVS9W7ABJGN1ZaZAhqmCvuQCkEXxQqbmt7HpTzH9csU"); 
+  
   const [lpTokenAsset2, setLpTokenAsset2] = useState("5Ko5xmm9SZ44ogvdFKY5chweLJuPXer3DAbCfivihxJF");
   const [tokenAccountAAsset2, setTokenAccountAAsset2] = useState("5vnxQ41U3iCbH2trogRVgqMtMKQFB4jrZWtNVpr4tqkL"); 
   const [tokenAccountBAsset2, setTokenAccountBAsset2] = useState("4hZKXa2kC7ephhEr2Z4DcuMF3TkiK6afhVE2pJ34MWJA"); 
@@ -440,6 +442,52 @@ async function stakeTokens(){
   try {
     stakeTokensAPI(selectedWallet, connection,lpTokenAsset1).then(
         res => {
+            addLog("res ",res[0].signature);
+            setRewarderKeyAsset1(res[0].rewarderKey)
+            console.log(res);
+        }
+    )
+    .catch(
+            
+      err => {addLog("" + err);
+      throw(err);
+  }
+  )
+}
+catch (err) {
+    addLog("error : " + err);
+    throw(err);
+}
+}
+
+async function withdrawFormQuarry(){
+  addLog("... loading withdraw Form Quarry ... ");
+   
+  try {
+    withdrawFormQuarryAPI(selectedWallet, connection,lpTokenAsset1,userPoolTokenAsset1,rewarderKeyAsset1).then(
+        res => {
+            addLog("res ",res);
+            console.log(res);
+        }
+    )
+    .catch(
+            
+      err => {addLog("" + err);
+      throw(err);
+  }
+  )
+}
+catch (err) {
+    addLog("error : " + err);
+    throw(err);
+}
+}
+async function claimRewards(){
+  addLog("... loading withdraw Form Quarry ... ");
+   
+  try {
+    claimRewardsAPI(selectedWallet, connection,lpTokenAsset1,userPoolTokenAsset1,rewarderKeyAsset1).then(
+        res => {
             addLog("res ",res);
             console.log(res);
         }
@@ -641,6 +689,13 @@ catch (err) {
                 <button onClick={() => stakeTokens()} className="btn btn-primary">
                  Stake tokens
                 </button>
+                <br></br><br/>
+                <button onClick={() => withdrawFormQuarry()} className="btn btn-primary">
+                withdraw Form Quarry
+                </button><br/><br/>
+                <button onClick={() => claimRewards()} className="btn btn-primary">
+                Claim Rewards 
+                </button><br/>
                 <br></br>
                 <br></br>
                  *********************************************************************************************<br></br>
