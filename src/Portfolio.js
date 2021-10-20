@@ -113,7 +113,7 @@ const [splmPrimary, setSplmPrimary] = useState(avalanch);
   const [stableSwapAsset1, setStableSwapAsset1] = useState("2tvr1qYn6YBgEf69HehoVCm9Rt3UrGibKNayvTia4VsT");
   const [authorityAsset1, setAuthorityAsset1] = useState("6q2MWgkQ23yrHeLUAnzKjWcjHokfeJFzJHYdzR7pFcyj"); 
   const [userPoolTokenAsset1, setUserPoolTokenAsset1] = useState("8tFe5nh6i1bu7gVQR7eAZxniXqZHAmcVctdguRfwoPXC"); 
-  const [rewarderKeyAsset1, setRewarderKeyAsset1] = useState("4cVS9W7ABJGN1ZaZAhqmCvuQCkEXxQqbmt7HpTzH9csU"); 
+  const [rewarderKeyAsset1, setRewarderKeyAsset1] = useState("zEYB5UPXLNf7hbC5pUSUmEpfMVmqhLomJEq5qWU4dmu"); 
   
   const [lpTokenAsset2, setLpTokenAsset2] = useState("5Ko5xmm9SZ44ogvdFKY5chweLJuPXer3DAbCfivihxJF");
   const [tokenAccountAAsset2, setTokenAccountAAsset2] = useState("5vnxQ41U3iCbH2trogRVgqMtMKQFB4jrZWtNVpr4tqkL"); 
@@ -690,11 +690,11 @@ catch (err) {
                  Stake tokens
                 </button>
                 <br></br><br/>
-                <button onClick={() => withdrawFormQuarry()} className="btn btn-primary">
-                withdraw Form Quarry
-                </button><br/><br/>
                 <button onClick={() => claimRewards()} className="btn btn-primary">
                 Claim Rewards 
+                </button><br/><br/>
+                <button onClick={() => withdrawFormQuarry()} className="btn btn-primary">
+                withdraw Form Quarry
                 </button><br/>
                 <br></br>
                 <br></br>
