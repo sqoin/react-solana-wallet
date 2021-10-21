@@ -549,7 +549,7 @@ export async function withdrawPortfolioApi(myAccount, connection, portfolioAddre
 
 /************************************** saber ************************************************************ */
 
-export async function depositIntoLPToken(wallet, connection, asset1, PstableSwap1, PlpToken1, PuserPoolToken1, PtokenAccountA1, PtokenAccountB1, Pauthority1, asset2, PstableSwap2, PlpToken2, PuserPoolToken2, PtokenAccountA2, PtokenAccountB2, Pauthority2) {
+export async function depositIntoLPToken(wallet, connection, asset1, PstableSwap1, PlpToken1, PuserPoolToken1, PtokenAccountA1, PtokenAccountB1, Pauthority1, asset2) {
   const programId = new PublicKey("6HDDmMvR4LGyXke43as8FiPJW1hnWi4cCw98ShJWeuop")
 
   let createAccountProgramm = new Account([86, 26, 243, 72, 46, 135, 186, 23, 31, 215, 229, 43, 54, 89, 206, 222, 82, 6, 231, 212, 212, 226, 184, 211, 107, 147, 180, 138, 57, 108, 182, 46, 185, 33, 232, 144, 77, 70, 77, 145, 151, 152, 188, 19, 78, 73, 32, 89, 236, 171, 90, 44, 120, 71, 202, 142, 214, 179, 38, 85, 71, 103, 145, 193]);
@@ -563,21 +563,21 @@ export async function depositIntoLPToken(wallet, connection, asset1, PstableSwap
   console.log("authority =", Pauthority1);
   let mintAAsset1 = new Token(
     connection,
-    new PublicKey(asset1.minta),
+    new PublicKey(asset1.mintb),
     TOKEN_PROGRAM_ID,
     wallet
   );
   let mintBAsset1 = new Token(
     connection,
-    new PublicKey(asset1.mintb),
+    new PublicKey(asset2.mintb),
     TOKEN_PROGRAM_ID,
     wallet
   );
   // account asset 1
   let tokenAccountA = new PublicKey(PtokenAccountA1);
-  let userAccountA = new PublicKey(asset1.spluPRIMARY);
+  let userAccountA = new PublicKey(asset1.spluAsset1);
   let tokenAccountB = new PublicKey(PtokenAccountB1);
-  let userAccountB = new PublicKey(asset1.spluAsset1);
+  let userAccountB = new PublicKey(asset2.spluAsset1);
   // lp token  and user account pool asset 1
   let tokenPool = new Token(
     connection,
@@ -644,84 +644,7 @@ export async function depositIntoLPToken(wallet, connection, asset1, PstableSwap
   let signature = "";
   signature = await connection.sendRawTransaction(signed.serialize());
   await connection.confirmTransaction(signature, 'max');
-
-  /******************asset 2 ****************/
-
-  //token asset2
-  let PubstableSwapAsset2 = new PublicKey(PstableSwap2);
-  let authorityAsset2 = new PublicKey(Pauthority2);
-  console.log("authority2 =", Pauthority2);
-  let mintAAsset2 = new Token(
-    connection,
-    new PublicKey(asset2.minta),
-    TOKEN_PROGRAM_ID,
-    wallet
-  );
-  let mintBAsset2 = new Token(
-    connection,
-    new PublicKey(asset2.mintb),
-    TOKEN_PROGRAM_ID,
-    wallet
-  );
-  // account asset 2
-  let tokenAccountA2 = new PublicKey(PtokenAccountA2);
-  let userAccountA2 = new PublicKey(asset2.spluPRIMARY);
-  let tokenAccountB2 = new PublicKey(PtokenAccountB2);
-  let userAccountB2 = new PublicKey(asset2.spluAsset1);
-  // lp token  and user account pool asset 2
-  let tokenPool2 = new Token(
-    connection,
-    new PublicKey(PlpToken2),
-    TOKEN_PROGRAM_ID,
-    wallet);
-  let userPoolAccount2 = new PublicKey(PuserPoolToken2)
-  //instruction mint to and approve asset 2
-  let instruction12 = await mintAAsset2.mintToInstruction(userAccountA2, wallet, [], 7000000000);
-  let instruction22 = await mintBAsset2.mintToInstruction(userAccountB2, wallet, [], 7000000000);
-  let instruction32 = await mintAAsset2.approveInstruction(userAccountA2, authorityAsset2, wallet, [], 1000, connection);
-  let instruction42 = await mintBAsset2.approveInstruction(userAccountB2, authorityAsset2, wallet, [], 1000, connection);
-  // sign transaction mint to and approve asset 2
-  const transaction02 = new Transaction();
-  transaction02.add(instruction12, instruction22, instruction32, instruction42);
-  transaction02.recentBlockhash = (await connection.getRecentBlockhash()).blockhash;
-  transaction02.feePayer = wallet.publicKey;
-  let signed02 = await wallet.signTransaction(transaction02);
-  let signature02 = "";
-  signature02 = await connection.sendRawTransaction(signed02.serialize());
-  //confirm transaction mint to and approve for asset 2
-  await connection.confirmTransaction(signature02, 'max');
-  const keys2 = [
-    { pubkey: PubstableSwapAsset2, isSigner: false, isWritable: true },
-    { pubkey: authorityAsset2, isSigner: false, isWritable: true },
-    { pubkey: userAccountA2, isSigner: false, isWritable: true },
-    { pubkey: userAccountB2, isSigner: false, isWritable: true },
-    { pubkey: tokenAccountA2, isSigner: false, isWritable: true },
-    { pubkey: tokenAccountB2, isSigner: false, isWritable: true },
-    { pubkey: tokenPool2.publicKey, isSigner: false, isWritable: true },
-    { pubkey: userPoolAccount2, isSigner: false, isWritable: true },
-    { pubkey: TOKEN_PROGRAM_ID, isSigner: false, isWritable: false },
-    { pubkey: SYSVAR_CLOCK_PUBKEY, isSigner: false, isWritable: false },
-    { pubkey: programAddress, isSigner: false, isWritable: false },
-    { pubkey: createAccountProgramm.publicKey, isSigner: false, isWritable: false },
-    { pubkey: stableSwapProgramId, isSigner: false, isWritable: false },
-
-  ];
-  let data2 = Buffer.from([nonce, tokenAmountA, tokenAmountB, minimumPoolTokenAmount]);
-  //instruction asset2
-  const instructionDepositLP2 = new TransactionInstruction({
-    keys: keys2,
-    programId,
-    data: data2,
-  });
-  // sign transaction deposit into pool asset 2
-  const transaction2 = new Transaction();
-  transaction2.add(instructionDepositLP2);
-  transaction2.recentBlockhash = (await connection.getRecentBlockhash()).blockhash;
-  transaction2.feePayer = wallet.publicKey;
-  let signed2 = await wallet.signTransaction(transaction2);
-  let signature2 = "";
-  signature2 = await connection.sendRawTransaction(signed2.serialize());
-  let res = { "signatureAsset1": signature, "signatureAsset2": signature2 }
+  let res = { "signatureAsset1": signature}
   console.log(res)
   return res;
 
@@ -734,11 +657,7 @@ export async function createLpToken(wallet, connection, asset1, asset2) {
     [createAccountProgramm.publicKey.toBuffer()],
     stableSwapProgramId
   );
-  let createAccountProgramm2 = new Account();
-  let [authority2, nonce2] = await PublicKey.findProgramAddress(
-    [createAccountProgramm2.publicKey.toBuffer()],
-    stableSwapProgramId
-  );
+ 
   // pool token asset 1
   let retInstruction = await Token.createMintReturnInstruction(
     connection,
@@ -750,56 +669,29 @@ export async function createLpToken(wallet, connection, asset1, asset2) {
     TOKEN_PROGRAM_ID,
     TOKEN_PROGRAM_ID
   );
-  // pool token asset 2
-  let retInstructionAsset2 = await Token.createMintReturnInstruction(
-    connection,
-    wallet,
-    authority2,
-    null,
-    2,
-    TOKEN_PROGRAM_ID,
-    TOKEN_PROGRAM_ID,
-    TOKEN_PROGRAM_ID
-  );
+
   // splm asset 1
   let mintA = new Token(
-    connection,
-    new PublicKey(asset1.minta),
-    TOKEN_PROGRAM_ID,
-    wallet
-  );
-  let mintB = new Token(
     connection,
     new PublicKey(asset1.mintb),
     TOKEN_PROGRAM_ID,
     wallet
   );
-  // splm asset 2
-  let mintA2 = new Token(
-    connection,
-    new PublicKey(asset2.minta),
-    TOKEN_PROGRAM_ID,
-    wallet
-  );
-  let mintB2 = new Token(
+  let mintB = new Token(
     connection,
     new PublicKey(asset2.mintb),
     TOKEN_PROGRAM_ID,
     wallet
   );
+ 
   //splu asset1
-  let adminFeeAccountA = new PublicKey(asset1.spluPRIMARY);//userToken
-  let adminFeeAccountB = new PublicKey(asset1.spluAsset1);
-  //splu asset 2
-  let adminFeeAccountA2 = new PublicKey(asset2.spluPRIMARY);//userToken
-  let adminFeeAccountB2 = new PublicKey(asset2.spluAsset1);
+  let adminFeeAccountA = new PublicKey(asset1.spluAsset1);//userToken
+  let adminFeeAccountB = new PublicKey(asset2.spluAsset1);
+  
   //gost asset 1= tokenAccountA,B
   let retInstructioCreateAccountA = await mintA.createAccountOfInsctruction(authority);
   let retInstructioCreateAccountB = await mintB.createAccountOfInsctruction(authority);
-  //gost asset 2= tokenAccountA,B
-  let retInstructioCreateAccountA2 = await mintA2.createAccountOfInsctruction(authority2);
-  let retInstructioCreateAccountB2 = await mintB2.createAccountOfInsctruction(authority2);
-
+  
   // sign transaction create mint pool and create account a et b of asset 1
   const transaction1 = new Transaction();
 
@@ -811,28 +703,12 @@ export async function createLpToken(wallet, connection, asset1, asset2) {
   const signed1 = await wallet.signTransaction(transaction1);
   let signature1 = "";
   signature1 = await connection.sendRawTransaction(signed1.serialize());
-
-  // sign transaction and create account a et b of asset 2
-  const transaction12 = new Transaction();
-  transaction12.add(retInstructioCreateAccountA2[1], retInstructioCreateAccountA2[2], retInstructioCreateAccountB2[1], retInstructioCreateAccountB2[2]);
-  transaction12.recentBlockhash = (await connection.getRecentBlockhash()).blockhash;
-  transaction12.feePayer = wallet.publicKey;
-  transaction12.partialSign(retInstructioCreateAccountA2[0]);
-  transaction12.partialSign(retInstructioCreateAccountB2[0]);
-  const signed12 = await wallet.signTransaction(transaction12);
-  let signature12 = "";
-  signature12 = await connection.sendRawTransaction(signed12.serialize());
-  // confirm transaction create ACCOUNT A B for asset 1 , asset 2
-  if (signature1 != "" && signature12 != "") {
     await connection.confirmTransaction(signature1, 'max');
-    await connection.confirmTransaction(signature12, 'max');
-  }
+ 
   // instruction mint to asset 1 to tow gost
   let instruction1 = await mintA.mintToReturnInstruction(retInstructioCreateAccountA[0].publicKey, wallet, [], 10000000000);
   let instruction2 = await mintB.mintToReturnInstruction(retInstructioCreateAccountB[0].publicKey, wallet, [], 10000000000);
-  // instruction mint to asset 2 to tow gost
-  let instruction12 = await mintA2.mintToReturnInstruction(retInstructioCreateAccountA2[0].publicKey, wallet, [], 10000000000);
-  let instruction22 = await mintB2.mintToReturnInstruction(retInstructioCreateAccountB2[0].publicKey, wallet, [], 10000000000);
+  
   // sign transaction create mint pool and mint to  asset 1
   const transaction = new Transaction();
   let poolMint = retInstruction[1];
@@ -843,33 +719,19 @@ export async function createLpToken(wallet, connection, asset1, asset2) {
   let signed = await wallet.signTransaction(transaction);
   let signature = "";
   signature = await connection.sendRawTransaction(signed.serialize());
-  // sign transaction create mint pool and mint to  asset 2
-  const transaction01 = new Transaction();
-  let poolMint2 = retInstructionAsset2[1];
-  transaction01.add(retInstructionAsset2[2], retInstructionAsset2[3], instruction12, instruction22);
-  transaction01.recentBlockhash = (await connection.getRecentBlockhash()).blockhash;
-  transaction01.feePayer = wallet.publicKey;
-  transaction01.partialSign(retInstructionAsset2[0]);
-  let signed01 = await wallet.signTransaction(transaction01);
-  let signature01 = "";
-  signature01 = await connection.sendRawTransaction(signed01.serialize());
+  
   // confirm transaction create mint pool and mint to for asset 1 , asset 2
 
-  if (signature1 != "" && signature12 != "") {
     await connection.confirmTransaction(signature, 'max');
-    await connection.confirmTransaction(signature01, 'max');
-  }
+   
+
   console.log(poolMint.publicKey.toBase58());
   // createuser pooltoken  for asset 1
   let poolTokenAccount = await poolMint.createAccount(wallet.publicKey);
 
-  // createuser pooltoken  for asset 2
-  let poolTokenAccount2 = await poolMint2.createAccount(wallet.publicKey);
-
   let adminAccount = new Account();
-  let adminAccount2 = new Account();
+  
   console.log("admin1 ", adminAccount.publicKey.toBase58());
-  console.log("admin2 ", adminAccount2.publicKey.toBase58())
   // Pool configs
   const AMP_FACTOR = 100;
   const FEES: Fees = {
@@ -885,9 +747,7 @@ export async function createLpToken(wallet, connection, asset1, asset2) {
   // tow gost of asset 1
   let tokenAccountA = retInstructioCreateAccountA[0].publicKey;
   let tokenAccountB = retInstructioCreateAccountB[0].publicKey;
-  // tow gost of asset 2
-  let tokenAccountA2 = retInstructioCreateAccountA2[0].publicKey;
-  let tokenAccountB2 = retInstructioCreateAccountB2[0].publicKey
+ 
 
   //create stable swap of asset 1
   let stableSwap = await StableSwap.createStableSwap(
@@ -913,31 +773,8 @@ export async function createLpToken(wallet, connection, asset1, asset2) {
     FEES
   );
 
-  //create stable swap of asset 2
-  let stableSwap2 = await StableSwap.createStableSwap(
-    connection,
-    wallet,
-    createAccountProgramm2,
-    authority2,
-    adminAccount2.publicKey,
-    adminFeeAccountA2,
-    adminFeeAccountB2,
-    mintA2.publicKey,
-    tokenAccountA2,
-    mintB2.publicKey,
-    tokenAccountB2,
-    poolMint2.publicKey,
-    poolTokenAccount2,
-    mintA2.publicKey,
-    mintB2.publicKey,
-    stableSwapProgramId,
-    TOKEN_PROGRAM_ID,
-    nonce2,
-    AMP_FACTOR,
-    FEES
-  );
-
-  let ret = { "authority": authority.toBase58(), "nonce": nonce, "poolMint": poolMint.publicKey.toBase58(), "poolTokenAccount": poolTokenAccount.toBase58(), "tokenAccountA": tokenAccountA.toBase58(), "tokenAccountB": tokenAccountB.toBase58(), "stableSwap": stableSwap.stableSwap.toBase58(), "authority2": authority2.toBase58(), "nonce2": nonce2, "poolMint2": poolMint2.publicKey.toBase58(), "poolTokenAccount2": poolTokenAccount2.toBase58(), "tokenAccountA2": tokenAccountA2.toBase58(), "tokenAccountB2": tokenAccountB2.toBase58(), "stableSwap2": stableSwap2.stableSwap.toBase58() }
+ 
+  let ret = { "authority": authority.toBase58(), "nonce": nonce, "poolMint": poolMint.publicKey.toBase58(), "poolTokenAccount": poolTokenAccount.toBase58(), "tokenAccountA": tokenAccountA.toBase58(), "tokenAccountB": tokenAccountB.toBase58(), "stableSwap": stableSwap.stableSwap.toBase58()  }
 
 
   console.log(ret);
@@ -960,7 +797,7 @@ export async function stakeTokens(wallet, connection, lpTokenAsset1) {
   let provider = sdk.provider;
   //****************** create rewaod token *******************
   console.log("create reward token ");
-  /* const rewardsMintKP = new Account();
+ /*  const rewardsMintKP = new Account();
   let rewardsMint = rewardsMintKP.publicKey;
     console.log("reward token pk => " + rewardsMint);
     let token = new sToken({
@@ -1000,10 +837,10 @@ export async function stakeTokens(wallet, connection, lpTokenAsset1) {
     
     console.log("wrapper key after init => " + wrapperKey)
     let mintWrapperKey = wrapperKey;
-    await expectTX(tx, "Initialize mint").to.be.fulfilled;   */ 
-  let rewardsMint = new PublicKey("EfNGch4Hg6YDMCGDQTv5nvYdR7q791mF1v6NyyyX84Pa");
- let wrapperKey = new PublicKey("6BRdzBwrcVTzV6LGpgeMbwu8hDk9zBm8qbq1tnMd6BbP");
-   let token = new sToken({
+    await expectTX(tx, "Initialize mint").to.be.fulfilled;  */  
+  let rewardsMint = new PublicKey("6iFpGNH2q9AzYqk8jLcy7cktLrtpBUJk6FV3QuNkTQdB");
+let wrapperKey = new PublicKey("831HVYoUpuLZURndc9BUDUDqriqS7EJexdai6YosmnfW");
+    let token = new sToken({
     // required
     address: rewardsMint.toString(),
     decimals: 2,
@@ -1011,19 +848,19 @@ export async function stakeTokens(wallet, connection, lpTokenAsset1) {
   }); 
   console.log("reward token => " + token)
   let rewardToken = rewardsMint;
-  let rewardWrapper = wrapperKey; 
+  let rewardWrapper = wrapperKey;  
   //*******************************************************
   //*****************************create Rewarder **************************
    console.log("*********** create Rewarde ***********")
- /*   const { tx, key: theRewarderKey } = await mine.createRewarder({
+  /*  const { tx, key: theRewarderKey } = await mine.createRewarder({
    mintWrapper:rewardWrapper,
    authority: provider.wallet.publicKey,
  });
- await expectTX(tx, "Create new rewarder").to.be.fulfilled;   */ 
-
-  let theRewarderKey = new PublicKey("FjAtEW1WCyx4H9mSGc5LPsUSNnhHxBvuNvksN5hCxM8h");
+ await expectTX(tx, "Create new rewarder").to.be.fulfilled;   
+ */
+  let theRewarderKey = new PublicKey("BYcEafmvvgZXyph7HYPk6YNmdLEJKDQyh5byGtrRF3Ef");
   console.log("rewarderKey = ", theRewarderKey.toBase58());
-  let rewarderKey = theRewarderKey; 
+  let rewarderKey = theRewarderKey;  
   //*******************************************************
   //*****************************sync Rewarder **************************
   console.log("*********** sync Rewarder ***********")
@@ -1036,40 +873,40 @@ export async function stakeTokens(wallet, connection, lpTokenAsset1) {
    //*****************************create Quarry **************************
    console.log("*********** create Quarry  ***********")
   
-/*    const { tx: quarryTx } = await rewarder.createQuarry({
+   /*  const { tx: quarryTx } = await rewarder.createQuarry({
      token: stakeToken,
    });
-   await expectTX(quarryTx, "Create new quarry").to.be.fulfilled;  */ 
- 
-    rewarder.getQuarryKey(stakeToken).then(
+   await expectTX(quarryTx, "Create new quarry").to.be.fulfilled;  
+   */
+     rewarder.getQuarryKey(stakeToken).then(
     (res) => {
       console.log("quarry");
       console.log(res.toBase58());
       console.log("quarry");
     }
   )  ;
-  let quarryKey=new PublicKey("DRBARh13MCRXJembyku1gh78AoyDsbg4rPY3Mzp61NCp");  
+  let quarryKey=new PublicKey("6MKJjCt8SHuk6zPH7Ec4TQPtceKTTgavSJGJL2N3DiY1");   
  //*******************************************************
    //*****************************share rewarde **************************
    console.log("*********** create niner  ***********")
  let quarry = await rewarder.getQuarry(stakeToken);
-  /*   await expectTX(
+     /* await expectTX(
     quarry.setRewardsShare(rewardsShare),
     "set rewards share"
-  ).to.be.fulfilled;  
-  console.log("ok"); */
+  ).to.be.fulfilled; 
+  console.log("ok");   */
   //*******************************************************
    //*****************************create miner **************************
    console.log("*********** create niner  ***********")
 
 
   // create the miner
-  /* await expectTX((await quarry.createMiner()).tx, "create miner").to.be
+  /*  await expectTX((await quarry.createMiner()).tx, "create miner").to.be
     .fulfilled;  
  let minerAddr=(await quarry.getMinerAddress(wallet.publicKey)).toBase58()
-console.log("miner"+ minerAddr); */
-let minerKey=new PublicKey("FCNohmSFcbWpBicPSbfJPbXeQBeRH1w3SWdstZN1bopS");
-console.log("quarry rewardsRate => "+quarry.computeAnnualRewardsRate())  
+console.log("miner"+ minerAddr);  */
+let minerKey=new PublicKey("FeYJn1NdfTC7Tye3BNR4Xj4PNvqAa3qNgFq2gZ7mXfvv");
+console.log("quarry rewardsRate => "+quarry.computeAnnualRewardsRate())   
 //*******************************************************
    //*****************************white liste rewarder **************************
    console.log("*********** minter with allowance  ***********")
@@ -1080,8 +917,8 @@ console.log("quarry rewardsRate => "+quarry.computeAnnualRewardsRate())
     new u64(100_000_000_000000)
   ),
   "Minter add"
-).to.be.fulfilled;  */ 
- console.log("quarry rewardsRate => "+quarry.computeAnnualRewardsRate())
+).to.be.fulfilled;   */
+  console.log("quarry rewardsRate => "+quarry.computeAnnualRewardsRate())
     console.log("ok")  
 
     const minerActions = await quarry.getMinerActions(
@@ -1106,7 +943,7 @@ console.log("quarry rewardsRate => "+quarry.computeAnnualRewardsRate())
     console.log("userStake Accounts");
     
     
-    const userStakeTokenAccount = new PublicKey("8tFe5nh6i1bu7gVQR7eAZxniXqZHAmcVctdguRfwoPXC")
+    const userStakeTokenAccount = new PublicKey("Cf4SCqyop7QcCAe3qeWojb4rDNU8uDuFEW7v2XzEiTBy")
     console.log(userStakeTokenAccount.toBase58());  
 //*******************************************************
    //*****************************stake tokens **************************
@@ -1140,7 +977,7 @@ console.log("quarry rewardsRate => "+quarry.computeAnnualRewardsRate())
    let ret = [];
    ret.push({ "signature": tx, "rewarderKey": theRewarderKey.toBase58() })
    return ret; 
-  
+   
 }
 
 
@@ -1152,7 +989,7 @@ export async function withdrawFormQuarry(wallet, connection, lpTokenAsset1, user
   //lp token 
   const stakeTokenMint = new PublicKey(lpTokenAsset1);
   const userStakeTokenAccount = new PublicKey(userLpTokenAsset1)
-  const theRewarderKey = new PublicKey("FjAtEW1WCyx4H9mSGc5LPsUSNnhHxBvuNvksN5hCxM8h");
+  const theRewarderKey = new PublicKey("BYcEafmvvgZXyph7HYPk6YNmdLEJKDQyh5byGtrRF3Ef");
 
   console.log("************** withdraw Form Quarry ***********")
   const idl = require('./utils/test1.json')
@@ -1208,7 +1045,7 @@ export async function claimRewards(wallet, connection, lpTokenAsset1, userLpToke
   //lp token 
   const stakeTokenMint = new PublicKey(lpTokenAsset1);
   const userStakeTokenAccount = new PublicKey(userLpTokenAsset1)
-  const theRewarderKey = new PublicKey("FjAtEW1WCyx4H9mSGc5LPsUSNnhHxBvuNvksN5hCxM8h");
+  const theRewarderKey = new PublicKey("BYcEafmvvgZXyph7HYPk6YNmdLEJKDQyh5byGtrRF3Ef");
 
   console.log("**************claimRewards ***********")
   const idl = require('./utils/test1.json')
@@ -1265,5 +1102,104 @@ const tx = await minerActions.claim();
     console.log('Success claim rewards'); 
   
 }
-/************************************** end farm ************************************************************ */
+/********************************** end farm ****************************************************** */
+/********************************** Saber ****************************************************** */
+export async function withdrawFormSaber(wallet, connection, asset1,lpTokenAsset1, userLpTokenAsset1,tokenAccountAAsset1,tokenAccountBAsset1,authorityAsset1,stableSwapAsset1,asset2) {
+  let programId = new PublicKey("9xAv12XicxWwzqfp6KR4fEvT7uJHEjHbkB8iq2J8hidR");
+  let createAccountProgramm=new Account([86,  26, 243,  72,  46, 135, 186,  23,  31, 215, 229,43,  54,  89, 206, 222,  82,   6, 231, 212, 212, 226,184, 211, 107, 147, 180, 138,  57, 108, 182,  46, 185,33, 232, 144,  77,  70,  77, 145, 151, 152, 188,  19,78,  73,  32,  89, 236, 171,  90,  44, 120,  71, 202,142, 214, 179,  38,  85,  71, 103, 145, 193]);
+  let [programAddress, nonce] = await PublicKey.findProgramAddress(
+    [createAccountProgramm.publicKey.toBuffer()],
+    programId,
+   );  
+   const withdrawalAmount = 300000;
+   let lepToken=new Token(
+    connection,
+    new PublicKey(lpTokenAsset1),
+    TOKEN_PROGRAM_ID,
+    wallet);
 
+    const poolMintInfo = await lepToken.getMintInfo();
+    console.log(poolMintInfo);
+    const oldSupply = poolMintInfo.supply.toNumber();
+    console.log(oldSupply);
+    let mintA=new Token(
+      connection,
+      new PublicKey(asset1.mintb),
+      TOKEN_PROGRAM_ID,
+      wallet
+    );
+    let mintB=new Token(
+      connection,
+      new PublicKey(asset2.mintb),
+      TOKEN_PROGRAM_ID,
+      wallet
+    );
+    let userPoolAccount=new PublicKey(userLpTokenAsset1);
+    let tokenAccountA=new PublicKey(tokenAccountAAsset1);
+    let tokenAccountB=new PublicKey(tokenAccountBAsset1);
+    const oldSwapTokenA = await mintA.getAccountInfo(tokenAccountA);
+    const oldSwapTokenB = await mintB.getAccountInfo(tokenAccountB);
+    const oldPoolToken = await lepToken.getAccountInfo(userPoolAccount);
+    console.log(oldSwapTokenA);
+    console.log(oldSwapTokenB);
+    console.log(oldPoolToken);
+    let authority =new PublicKey(authorityAsset1);// saber swap
+    let userAccountA=new PublicKey(asset1.spluAsset1);//splu primary
+    let userAccountB=new PublicKey(asset2.spluAsset1); //splu Asset1
+   // Approving withdrawal from pool account
+   await lepToken.approve(
+    userPoolAccount,
+    authority,
+    wallet,
+    [],
+    withdrawalAmount,
+    connection
+  );
+  
+
+  let tokenSwap=new PublicKey(stableSwapAsset1);
+  let adminFeeAccountA=userAccountA;
+  let adminFeeAccountB=userAccountB;
+  let minimumTokenA=0;
+  let minimumTokenB=0;
+  let programIdSaber = new PublicKey("2J67FeJ4CGjtunyvh3BtBsgEbQwkdpYhSD3ALZPK8fUY");
+  
+  const keys = [
+    { pubkey: tokenSwap, isSigner: false, isWritable: false },
+    { pubkey: authority, isSigner: false, isWritable: false },
+    { pubkey: lepToken.publicKey, isSigner: false, isWritable: true },
+    { pubkey: userPoolAccount, isSigner: false, isWritable: true },
+    { pubkey: tokenAccountA, isSigner: false, isWritable: true },
+    { pubkey: tokenAccountB, isSigner: false, isWritable: true },
+    { pubkey: userAccountA, isSigner: false, isWritable: true },
+    { pubkey: userAccountB, isSigner: false, isWritable: true },
+    { pubkey: adminFeeAccountA, isSigner: false, isWritable: true },
+    { pubkey: adminFeeAccountB, isSigner: false, isWritable: true },
+    { pubkey: TOKEN_PROGRAM_ID, isSigner: false, isWritable: false },
+    { pubkey: programAddress, isSigner: false, isWritable: true },
+    { pubkey: createAccountProgramm.publicKey, isSigner: false, isWritable: false },
+    { pubkey: programIdSaber, isSigner: false, isWritable: false },
+  ];
+  const instruction = new TransactionInstruction({
+    keys,
+    programId,
+    data: Buffer.from([nonce,withdrawalAmount,minimumTokenA,minimumTokenB]), // All instructions are hellos
+  });
+  const transaction = new Transaction().add(instruction);
+  transaction.recentBlockhash = (
+    await connection.getRecentBlockhash()
+  ).blockhash;
+
+  transaction.feePayer = wallet.publicKey;
+
+
+  let signed = await wallet.signTransaction(transaction);
+
+  let signature = await connection.sendRawTransaction(signed.serialize());
+
+  let x = await connection.confirmTransaction(signature, 'max');
+  console.log("signature " + JSON.stringify(signature))
+  console.log("xxxx " + JSON.stringify(x))
+}
+
+/********************************** end Saber ****************************************************** */

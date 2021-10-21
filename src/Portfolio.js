@@ -5,7 +5,7 @@ import Wallet from '@project-serum/sol-wallet-adapter';
 import { Connection, SystemProgram, Transaction, clusterApiUrl, PublicKey } from '@solana/web3.js';
 import { createPortfolioApi, createUserPortfolioApi, depositInPortfolioApi } from './Portfolio/cli/makeStepsPortfolio';
 import PortfolioComponent from "./component/PortfolioComponent";
-import { addAssetToPortfolioStep, createPortfolioStep, createUserPortfolioStep, depositPortfolioStep, depositIntoLPAPI, withdrawPortfolioStep ,createLpTokenAPI, stakeTokensAPI,withdrawFormQuarryAPI,claimRewardsAPI} from './new-portfolio/portfolio-steps';
+import { addAssetToPortfolioStep, createPortfolioStep, createUserPortfolioStep, depositPortfolioStep, depositIntoLPAPI, withdrawPortfolioStep ,createLpTokenAPI, stakeTokensAPI,withdrawFormQuarryAPI,claimRewardsAPI,withdrawFormSaberAPI} from './new-portfolio/portfolio-steps';
 import { depositInPortfolio } from "./cli/makestepsPortfolioSwap"
 
 import InfoAccount from './component/InfoAccount';
@@ -107,21 +107,14 @@ const [splmPrimary, setSplmPrimary] = useState(avalanch);
   const [userPortfolioAccount, setUserPortfolioAccount] = useState("w6pkG4GVvZFqZ2wWZNiF2zQ8CDFoDrmjrYLjyNbs8LQ")
   const [amountDeposit, setAmountDeposit] = useState(10)
   const [infoUserPortfolioAccount, setInfoUserPortfolioAccount] = useState("")
-  const [lpTokenAsset1, setLpTokenAsset1] = useState("DRgVKnAJf7x1859reQHp74zK5nP5rf2hb5qzG45cnBZ9");
-  const [tokenAccountAAsset1, setTokenAccountAAsset1] = useState("2VoPnRkeGXLV7un2PxMSqDRpfjs17bVhqq8vXqwA58yW"); 
-  const [tokenAccountBAsset1, setTokenAccountBAsset1] = useState("97qA65cffytQU2CiFLPd2V7CNF8z62SyQXQQxxFLA1i2"); 
-  const [stableSwapAsset1, setStableSwapAsset1] = useState("2tvr1qYn6YBgEf69HehoVCm9Rt3UrGibKNayvTia4VsT");
-  const [authorityAsset1, setAuthorityAsset1] = useState("6q2MWgkQ23yrHeLUAnzKjWcjHokfeJFzJHYdzR7pFcyj"); 
-  const [userPoolTokenAsset1, setUserPoolTokenAsset1] = useState("8tFe5nh6i1bu7gVQR7eAZxniXqZHAmcVctdguRfwoPXC"); 
+  const [lpTokenAsset1, setLpTokenAsset1] = useState("ArQYnk2PWG1tY5KS8zgvFkDnq5RbCio8Aztzu1cP13oK");
+  const [tokenAccountAAsset1, setTokenAccountAAsset1] = useState("BZ4ZtkZhhP6emAWTaeT5VJDUb9m3Csu95DcbY2c7qo11"); 
+  const [tokenAccountBAsset1, setTokenAccountBAsset1] = useState("DAPGapDtHWLfEcYKjBsAuoeS9Q2d9MSuKc9oaLjufUXm"); 
+  const [stableSwapAsset1, setStableSwapAsset1] = useState("GNQngAfTpzFyh9o3nTZ7QBjGaMMsnPLrTLFX4WeY2TBt");
+  const [authorityAsset1, setAuthorityAsset1] = useState("5toBKqD2qUY9XAbg178Yq63jWKfezFUDtdGuyMUPUDS9"); 
+  const [userPoolTokenAsset1, setUserPoolTokenAsset1] = useState("Cf4SCqyop7QcCAe3qeWojb4rDNU8uDuFEW7v2XzEiTBy"); 
   const [rewarderKeyAsset1, setRewarderKeyAsset1] = useState("zEYB5UPXLNf7hbC5pUSUmEpfMVmqhLomJEq5qWU4dmu"); 
-  
-  const [lpTokenAsset2, setLpTokenAsset2] = useState("5Ko5xmm9SZ44ogvdFKY5chweLJuPXer3DAbCfivihxJF");
-  const [tokenAccountAAsset2, setTokenAccountAAsset2] = useState("5vnxQ41U3iCbH2trogRVgqMtMKQFB4jrZWtNVpr4tqkL"); 
-  const [tokenAccountBAsset2, setTokenAccountBAsset2] = useState("4hZKXa2kC7ephhEr2Z4DcuMF3TkiK6afhVE2pJ34MWJA"); 
-  const [stableSwapAsset2, setStableSwapAsset2] = useState("GoS3DCkRJ1BymzWAa5KK7hyjVufr3PbBgUkiK9YxNRQt");
-  const [authorityAsset2, setAuthorityAsset2] = useState("9JLp3xBV1zdZFoCpe8MWcacNmd59G3H4dob8xNb3hXgN"); 
-  const [userPoolTokenAsset2, setUserPoolTokenAsset2] = useState("7TCPTHU8wz1kJGwG7xPALV89AQxmVk2dqyKrZ5w3tHDw"); 
-const [enableTransaction,setEnableTransaction]=useState(false);
+  const [enableTransaction,setEnableTransaction]=useState(false);
 const [signatureAsset1, setSignatureAsset1] = useState("");
 const [signatureAsset2, setSignatureAsset2] = useState("");
   const [infoPortfolio, setInfoPortfolio] = useState("");
@@ -389,12 +382,6 @@ async function  createLpToken() {
     setTokenAccountBAsset1(res.tokenAccountB);
     setStableSwapAsset1(res.stableSwap)
 
-            setLpTokenAsset2(res.poolMint2);
-            setUserPoolTokenAsset2(res.poolTokenAccount2)
-        setAuthorityAsset2(res.authority2);
-        setTokenAccountAAsset2(res.tokenAccountA2);
-        setTokenAccountBAsset2(res.tokenAccountB2);
-        setStableSwapAsset2(res.stableSwap2)
         
 
         })
@@ -413,13 +400,12 @@ catch (err) {
 async function depositIntoLP() {
   addLog("... loading saber ... ");
   try {
-    depositIntoLPAPI(selectedWallet,connection,asset1Obj,stableSwapAsset1,lpTokenAsset1,userPoolTokenAsset1,tokenAccountAAsset1,tokenAccountBAsset1,authorityAsset1,asset2Obj,stableSwapAsset2,lpTokenAsset2,userPoolTokenAsset2,tokenAccountAAsset2,tokenAccountBAsset2,authorityAsset2).then(
+    depositIntoLPAPI(selectedWallet,connection,asset1Obj,stableSwapAsset1,lpTokenAsset1,userPoolTokenAsset1,tokenAccountAAsset1,tokenAccountBAsset1,authorityAsset1,asset2Obj).then(
         res => {
             addLog("res ",res);
             if (res){
               setEnableTransaction(true);
               setSignatureAsset1(res.signatureAsset1);
-              setSignatureAsset2(res.signatureAsset2);
 
             }
 
@@ -489,6 +475,30 @@ async function claimRewards(){
     claimRewardsAPI(selectedWallet, connection,lpTokenAsset1,userPoolTokenAsset1,rewarderKeyAsset1).then(
         res => {
             addLog("res ",res);
+            console.log(res);
+        }
+    )
+    .catch(
+            
+      err => {addLog("" + err);
+      throw(err);
+  }
+  )
+}
+catch (err) {
+    addLog("error : " + err);
+    throw(err);
+}
+}
+
+async function withdrawFormSaber(){
+  addLog("... loading withdraw Form saber ... ");
+   
+  try {
+ 
+  withdrawFormSaberAPI(selectedWallet, connection,asset1Obj,lpTokenAsset1,userPoolTokenAsset1,tokenAccountAAsset1,tokenAccountBAsset1,authorityAsset1,stableSwapAsset1,asset2Obj).then(
+        res => {
+            addLog("tx saber  ",res);
             console.log(res);
         }
     )
@@ -669,10 +679,9 @@ catch (err) {
                {/*  <button onClick={() => createStableSwap()} className="btn btn-primary">
                 create Stable Swap
                 </button>   */} <br></br>
-                <span>LP Token of asset 1 :</span><p>{lpTokenAsset1}</p><br/>
-                <span>LP Token of asset 2 :</span><p>{lpTokenAsset2}</p><br/>
+                <span>LP Token :</span><p>{lpTokenAsset1}</p><br/>
                 <br></br>
-                {enableTransaction ? (<><span>Signature Asset 1 :</span><p>{signatureAsset1}</p><br/><span>Signature Asset 2 :</span><p>{signatureAsset2}</p></>) : (<p>{null}</p>)}
+                {enableTransaction ? (<><span>Signature  :</span><p>{signatureAsset1}</p><br/></>) : (<p>{null}</p>)}
                  <button onClick={() => createLpToken()} className="btn btn-primary">
                  create Lp Token
                 </button>
@@ -695,7 +704,10 @@ catch (err) {
                 </button><br/><br/>
                 <button onClick={() => withdrawFormQuarry()} className="btn btn-primary">
                 withdraw Form Quarry
-                </button><br/>
+                </button><br/><br/>
+                <button onClick={() => withdrawFormSaber()} className="btn btn-primary">
+                withdraw Form Saber
+                </button>
                 <br></br>
                 <br></br>
                  *********************************************************************************************<br></br>
