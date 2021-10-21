@@ -41,7 +41,7 @@ const DAILY_REWARDS_RATE = new BN(1_000000 * web3.LAMPORTS_PER_SOL);
 const ANNUAL_REWARDS_RATE = DAILY_REWARDS_RATE.mul(new BN(365));
 const rewardsShare = DAILY_REWARDS_RATE.div(new BN(10));
 // Loaded token program's program id
-let programId: PublicKey = new PublicKey("Bc2EsggSWKXnkzaA1dznwriYB3dA6f2sXivFSw64BgE9");
+let programId: PublicKey = new PublicKey("EHnZgyjRrXX5SCL5Zgootwmxq3oqMFicThpi9LVsXBDH");
 let associatedProgramId: PublicKey;
 let portfolio: Portfolio;
 let UserPortfolioAccount: Account;

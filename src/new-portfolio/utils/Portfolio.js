@@ -573,7 +573,7 @@
       */
       async addAssetToPortfolio(
    
-       portfolio_address: Account,
+       portfolio_address: PublicKey,
        creator:Account,
        amountAsset : number ,
        addressAsset : Publickey| null ,
