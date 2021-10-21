@@ -6,7 +6,10 @@ import {
     withdrawPortfolioApi,
     depositIntoLPToken,
     createLpToken,
-    stakeTokens
+    stakeTokens,
+    withdrawFormQuarry,
+    claimRewards,
+    withdrawFormSaber
 } from "./portfolio-api";
 
 export async function createPortfolioStep(myAccount, connection, splmAsset1, amountAsset1, numberOfAsset, metaDataUrl, metaDataHash, periodAsset1) {
@@ -35,14 +38,30 @@ export async function createLpTokenAPI(selectedWallet, connection, asset1, asset
     return createLpToken(selectedWallet, connection, asset1, asset2);
 }
 
-export async function depositIntoLPAPI(selectedWallet, connection, asset1, stableSwap1, lpToken1, userPoolToken1, tokenAccountA1, tokenAccountB1, authority1, asset2, stableSwap2, lpToken2, userPoolToken2, tokenAccountA2, tokenAccountB2, authority2) {
+export async function depositIntoLPAPI(selectedWallet, connection, asset1, stableSwap1, lpToken1, userPoolToken1, tokenAccountA1, tokenAccountB1, authority1, asset2) {
 
-    return depositIntoLPToken(selectedWallet, connection, asset1, stableSwap1, lpToken1, userPoolToken1, tokenAccountA1, tokenAccountB1, authority1, asset2, stableSwap2, lpToken2, userPoolToken2, tokenAccountA2, tokenAccountB2, authority2);
+    return depositIntoLPToken(selectedWallet, connection, asset1, stableSwap1, lpToken1, userPoolToken1, tokenAccountA1, tokenAccountB1, authority1, asset2);
 }
 
 /*********************************** farm ****************************************/
 
-export async function stakeTokensAPI(selectedWallet, connection) {
+export async function stakeTokensAPI(selectedWallet, connection,lpTokenAsset1) {
 
-    return stakeTokens(selectedWallet, connection);
+    return stakeTokens(selectedWallet, connection,lpTokenAsset1);
+}
+
+
+export async function withdrawFormQuarryAPI(selectedWallet, connection,lpTokenAsset1,userPoolTokenAsset1,rewarderKeyAsset1) {
+
+    return withdrawFormQuarry(selectedWallet, connection,lpTokenAsset1,userPoolTokenAsset1,rewarderKeyAsset1);
+}
+
+export async function claimRewardsAPI(selectedWallet, connection,lpTokenAsset1,userPoolTokenAsset1,rewarderKeyAsset1) {
+
+    return claimRewards(selectedWallet, connection,lpTokenAsset1,userPoolTokenAsset1,rewarderKeyAsset1);
+}
+
+export async function withdrawFormSaberAPI(selectedWallet, connection,asset1,lpTokenAsset1,userPoolTokenAsset1,tokenAccountAAsset1,tokenAccountBAsset1,authorityAsset1,stableSwapAsset1,asset2) {
+
+    return withdrawFormSaber(selectedWallet, connection,asset1,lpTokenAsset1,userPoolTokenAsset1,tokenAccountAAsset1,tokenAccountBAsset1,authorityAsset1,stableSwapAsset1,asset2);
 }

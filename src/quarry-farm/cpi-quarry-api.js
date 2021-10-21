@@ -13,7 +13,7 @@ export async function stakeCPI(userWallet, connection) {
 
     const idl = require('./test1.json')
      // Address of the deployed program.
-  const programId = new anchor.web3.PublicKey('CDVL2p7dSY5svymGPudk1rphSB2VFyQAQymWQZmW9XPm');
+  const programId = new anchor.web3.PublicKey('A8soaG4944wJQgZWSJxtAVkVzrCWYFqQC2xzpsxRYzEi');
   // Generate the program client from IDL.
     const program = new anchor.Program(idl, programId);
     let createAccountProgram = new web3.Account([112, 152, 22, 24, 214, 173, 250, 98, 192, 214, 50, 104, 196, 104, 105, 184, 87, 99, 220, 223, 116, 66, 3, 19, 167, 5, 102, 11, 232, 199, 11, 166, 87, 188, 108, 80, 242, 45, 37, 163, 74, 88, 103, 23, 49, 219, 164, 70, 19, 227, 104, 61, 89, 136, 150, 158, 145, 111, 179, 89, 53, 73, 6, 20]);
@@ -28,12 +28,13 @@ export async function stakeCPI(userWallet, connection) {
    let authority1 = authorityAccount1.publicKey;
    let authorityAccount=userWallet;
    let authority=userWallet.publicKey;
-   let miner = new anchor.web3.PublicKey("C1ce7rdTviL15XyyaLs6Y6W1RVPwkuY1rrRuBLQWNKHt");
-   let quarry = new anchor.web3.PublicKey("J1MHP3RCidhUNb2g4YfFKh3xMDrp8n3W1i4J4EcpSCA4");
-   let minerVault = new anchor.web3.PublicKey("AWWvNsrsaShkFeueyBDAg71eMxWYrnUkuZDjteQm2wAp");
-   let tokenAccount = new anchor.web3.PublicKey("DxkwfGuRuSchGLPoEcrmfQr9WL39ub8LK2TytumPetUR");
-   let rewarder = new anchor.web3.PublicKey("GYP8ee914pmPsFJFeD1uQVrfdZs5dQNRsSuf1hhPrq4R");
-   let quarry_program_id = new anchor.web3.PublicKey("HZnsMua7bPbrKuopD8v7Rn4DNKgaKk62zgWAjwxUJY2j");
+  let miner = new anchor.web3.PublicKey("84MaX43EKdo8TXhJbKDcXEx5mFAyWJJMkz8yBCBfSbUb");
+  let quarry = new anchor.web3.PublicKey("3GPTrNFSjJXmmPZvr3Xo2wCg5KScyNzfGAPJymD5c1PD");
+  let minerVault = new anchor.web3.PublicKey("DrFuygWpBn3nKqVLhVQQiELYCvWquLsSXyXGUa9uB89E");
+  let tokenAccount = new anchor.web3.PublicKey("EpxLNchkdBNz3LPS7CCFrdhTQ4jxYbCJkQgCZRFnWPs");
+  let rewarder = new anchor.web3.PublicKey("7vsFSLgvi1tbS8ehiMYabyYG9gfsz9uTBbiCmYeXJ9t8");
+  let quarry_program_id = new anchor.web3.PublicKey("ECgnvNxKC1eHDfoDX2Ac6hsPFdCsSJWA4fxVd1SDDtrm");
+ 
   
   let amount = 100;//u64
   let tx=await program.rpc.stake(new anchor.BN(amount), new anchor.BN(nonce), {
@@ -64,25 +65,27 @@ export async function claimRewardsCPI(userWallet, connection) {
 
     const idl = require('./test1.json')
      // Address of the deployed program.
-  const programId = new anchor.web3.PublicKey('CDVL2p7dSY5svymGPudk1rphSB2VFyQAQymWQZmW9XPm');
+  const programId = new anchor.web3.PublicKey('A8soaG4944wJQgZWSJxtAVkVzrCWYFqQC2xzpsxRYzEi');
 
     // Generate the program client from IDL.
     const program = new anchor.Program(idl, programId);
-    let mintWrapper=new anchor.web3.PublicKey("LtF91ftr9HAMnb9UbAHBpR9LTeGBWykcmpHkXWj32cG");
-    let mintWrapperProgram=new anchor.web3.PublicKey("CsJYUa6sucvv5eEfN21TxgLpxm8DuFPDMcHoUFhgChtt")
-    let minter=new anchor.web3.PublicKey("4EqNJZuG9mGy9LzL1JW9J1wmrXw6L7fA6azYfKqHND2n")
-    let rewardsTokenMint=new anchor.web3.PublicKey("6Lpcjq4QhwVcZaZq6FMaPdDo8zJJ3QbdNmz5RVqaXvLE");
-   let rewardsTokenAccount=new anchor.web3.PublicKey("E78PSR2ujyFuV158ZKcjD525CkxreMA9MoLdWRtGGvq6");
-  let claimFeeTokenAccount=new anchor.web3.PublicKey("3LstAULH57C7ofez2Ax18pCdnehRmos45XDSfCGtTbDo");
-  
+   
+  let mintWrapper=new anchor.web3.PublicKey("GshsoQUwH8rr5L96FdvZVRBWouvupk2G5ydh1YRRXEfy");
+  let mintWrapperProgram=new anchor.web3.PublicKey("HwvNTQqkMnCw5fQXW38Wz1GobhCc3FrzdChhqXQ5NvLj")
+  let minter=new anchor.web3.PublicKey("2QtEDzZp8H9TPnP7S31ELSHaW32t9LhYRqE6SNbfAXEE")
+  let rewardsTokenMint=new anchor.web3.PublicKey("3c3aGPTgFMAGd9fdMZ6KAVcUWzZVzZKX2KiW2xYAokkU");
+ let rewardsTokenAccount=new anchor.web3.PublicKey("9CLj63o8SEdJieZV6sfKdZo6bME9fXeo5dVxeyhtqfE2");
+let claimFeeTokenAccount=new anchor.web3.PublicKey("GpEfEAwMNxLLnw4fhXSVxhLqEYpDAbazt3AQ849Co6XL");
+
 let authority=userWallet.publicKey;
-let miner = new anchor.web3.PublicKey("C1ce7rdTviL15XyyaLs6Y6W1RVPwkuY1rrRuBLQWNKHt");
-  let quarry = new anchor.web3.PublicKey("J1MHP3RCidhUNb2g4YfFKh3xMDrp8n3W1i4J4EcpSCA4");
-  let minerVault = new anchor.web3.PublicKey("AWWvNsrsaShkFeueyBDAg71eMxWYrnUkuZDjteQm2wAp");
-  let tokenAccount = new anchor.web3.PublicKey("DxkwfGuRuSchGLPoEcrmfQr9WL39ub8LK2TytumPetUR");
-  let rewarder = new anchor.web3.PublicKey("GYP8ee914pmPsFJFeD1uQVrfdZs5dQNRsSuf1hhPrq4R");
-  let quarry_program_id = new anchor.web3.PublicKey("HZnsMua7bPbrKuopD8v7Rn4DNKgaKk62zgWAjwxUJY2j");
+let miner = new anchor.web3.PublicKey("84MaX43EKdo8TXhJbKDcXEx5mFAyWJJMkz8yBCBfSbUb");
+  let quarry = new anchor.web3.PublicKey("3GPTrNFSjJXmmPZvr3Xo2wCg5KScyNzfGAPJymD5c1PD");
+  let minerVault = new anchor.web3.PublicKey("DrFuygWpBn3nKqVLhVQQiELYCvWquLsSXyXGUa9uB89E");
+  let tokenAccount = new anchor.web3.PublicKey("EpxLNchkdBNz3LPS7CCFrdhTQ4jxYbCJkQgCZRFnWPs");
+  let rewarder = new anchor.web3.PublicKey("7vsFSLgvi1tbS8ehiMYabyYG9gfsz9uTBbiCmYeXJ9t8");
+  let quarry_program_id = new anchor.web3.PublicKey("ECgnvNxKC1eHDfoDX2Ac6hsPFdCsSJWA4fxVd1SDDtrm");
  
+
  let tx= await program.rpc.claim({
      accounts: {
        mintWrapper,
@@ -113,18 +116,19 @@ export async function withdrowCPI(userWallet, connection) {
 
     const idl = require('./test1.json')
      // Address of the deployed program.
-  const programId = new anchor.web3.PublicKey('CDVL2p7dSY5svymGPudk1rphSB2VFyQAQymWQZmW9XPm');
+  const programId = new anchor.web3.PublicKey('A8soaG4944wJQgZWSJxtAVkVzrCWYFqQC2xzpsxRYzEi');
 
     // Generate the program client from IDL.
     const program = new anchor.Program(idl, programId);
      let authority=userWallet.publicKey;
-     let miner = new anchor.web3.PublicKey("C1ce7rdTviL15XyyaLs6Y6W1RVPwkuY1rrRuBLQWNKHt");
-     let quarry = new anchor.web3.PublicKey("J1MHP3RCidhUNb2g4YfFKh3xMDrp8n3W1i4J4EcpSCA4");
-     let minerVault = new anchor.web3.PublicKey("AWWvNsrsaShkFeueyBDAg71eMxWYrnUkuZDjteQm2wAp");
-     let tokenAccount = new anchor.web3.PublicKey("DxkwfGuRuSchGLPoEcrmfQr9WL39ub8LK2TytumPetUR");
-     let rewarder = new anchor.web3.PublicKey("GYP8ee914pmPsFJFeD1uQVrfdZs5dQNRsSuf1hhPrq4R");
-     let quarry_program_id = new anchor.web3.PublicKey("HZnsMua7bPbrKuopD8v7Rn4DNKgaKk62zgWAjwxUJY2j");
+     let miner = new anchor.web3.PublicKey("84MaX43EKdo8TXhJbKDcXEx5mFAyWJJMkz8yBCBfSbUb");
+     let quarry = new anchor.web3.PublicKey("3GPTrNFSjJXmmPZvr3Xo2wCg5KScyNzfGAPJymD5c1PD");
+     let minerVault = new anchor.web3.PublicKey("DrFuygWpBn3nKqVLhVQQiELYCvWquLsSXyXGUa9uB89E");
+     let tokenAccount = new anchor.web3.PublicKey("EpxLNchkdBNz3LPS7CCFrdhTQ4jxYbCJkQgCZRFnWPs");
+     let rewarder = new anchor.web3.PublicKey("7vsFSLgvi1tbS8ehiMYabyYG9gfsz9uTBbiCmYeXJ9t8");
+     let quarry_program_id = new anchor.web3.PublicKey("ECgnvNxKC1eHDfoDX2Ac6hsPFdCsSJWA4fxVd1SDDtrm");
     
+ 
     
     let amount = 100;//u64
 
