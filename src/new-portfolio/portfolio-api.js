@@ -837,10 +837,10 @@ export async function stakeTokens(wallet, connection, lpTokenAsset1) {
     
     console.log("wrapper key after init => " + wrapperKey)
     let mintWrapperKey = wrapperKey;
-    await expectTX(tx, "Initialize mint").to.be.fulfilled;  */  
-  let rewardsMint = new PublicKey("6iFpGNH2q9AzYqk8jLcy7cktLrtpBUJk6FV3QuNkTQdB");
-let wrapperKey = new PublicKey("831HVYoUpuLZURndc9BUDUDqriqS7EJexdai6YosmnfW");
-    let token = new sToken({
+    await expectTX(tx, "Initialize mint").to.be.fulfilled;   */  
+  let rewardsMint = new PublicKey("Fig3nS8bdu7MVwr1pbzHW1jptnjEXoKavU4tUtDNXdi7");
+let wrapperKey = new PublicKey("FTwmcNoVsSmfXdeWf2Kwjsiroh9AcN1wgP81qSF5nsDH");
+     let token = new sToken({
     // required
     address: rewardsMint.toString(),
     decimals: 2,
@@ -848,77 +848,77 @@ let wrapperKey = new PublicKey("831HVYoUpuLZURndc9BUDUDqriqS7EJexdai6YosmnfW");
   }); 
   console.log("reward token => " + token)
   let rewardToken = rewardsMint;
-  let rewardWrapper = wrapperKey;  
+  let rewardWrapper = wrapperKey;   
   //*******************************************************
   //*****************************create Rewarder **************************
    console.log("*********** create Rewarde ***********")
-  /*  const { tx, key: theRewarderKey } = await mine.createRewarder({
+ /*    const { tx, key: theRewarderKey } = await mine.createRewarder({
    mintWrapper:rewardWrapper,
    authority: provider.wallet.publicKey,
  });
- await expectTX(tx, "Create new rewarder").to.be.fulfilled;   
- */
-  let theRewarderKey = new PublicKey("BYcEafmvvgZXyph7HYPk6YNmdLEJKDQyh5byGtrRF3Ef");
+ await expectTX(tx, "Create new rewarder").to.be.fulfilled;   */ 
+ 
+  let theRewarderKey = new PublicKey("9z9q2RcDf5Cq6fY3yE5kH37BmU7wRyh9ZBhfGmNaQvrr");
   console.log("rewarderKey = ", theRewarderKey.toBase58());
-  let rewarderKey = theRewarderKey;  
+  let rewarderKey = theRewarderKey;   
   //*******************************************************
   //*****************************sync Rewarder **************************
   console.log("*********** sync Rewarder ***********")
   let rewarder = await mine.loadRewarderWrapper(rewarderKey);
-  /*  await expectTX(
+ /*    await expectTX(
     await rewarder.setAndSyncAnnualRewards(ANNUAL_REWARDS_RATE, [])
-  ).to.be.fulfilled;  */ 
+  ).to.be.fulfilled;   */
   console.log("ok sync ")
   //*******************************************************
    //*****************************create Quarry **************************
    console.log("*********** create Quarry  ***********")
   
-   /*  const { tx: quarryTx } = await rewarder.createQuarry({
+    /* const { tx: quarryTx } = await rewarder.createQuarry({
      token: stakeToken,
    });
-   await expectTX(quarryTx, "Create new quarry").to.be.fulfilled;  
-   */
-     rewarder.getQuarryKey(stakeToken).then(
+   await expectTX(quarryTx, "Create new quarry").to.be.fulfilled;  */ 
+   
+      rewarder.getQuarryKey(stakeToken).then(
     (res) => {
       console.log("quarry");
       console.log(res.toBase58());
       console.log("quarry");
     }
   )  ;
-  let quarryKey=new PublicKey("6MKJjCt8SHuk6zPH7Ec4TQPtceKTTgavSJGJL2N3DiY1");   
+  let quarryKey=new PublicKey("BCNusYYnNGCVBcKqy7MhGXGs3BqNr3kjDPbQbPjmRCbC");    
  //*******************************************************
    //*****************************share rewarde **************************
    console.log("*********** create niner  ***********")
- let quarry = await rewarder.getQuarry(stakeToken);
-     /* await expectTX(
+let quarry = await rewarder.getQuarry(stakeToken);
+/*      await expectTX(
     quarry.setRewardsShare(rewardsShare),
     "set rewards share"
   ).to.be.fulfilled; 
-  console.log("ok");   */
+  console.log("ok"); */   
   //*******************************************************
    //*****************************create miner **************************
    console.log("*********** create niner  ***********")
 
 
   // create the miner
-  /*  await expectTX((await quarry.createMiner()).tx, "create miner").to.be
+  /* await expectTX((await quarry.createMiner()).tx, "create miner").to.be
     .fulfilled;  
  let minerAddr=(await quarry.getMinerAddress(wallet.publicKey)).toBase58()
-console.log("miner"+ minerAddr);  */
-let minerKey=new PublicKey("FeYJn1NdfTC7Tye3BNR4Xj4PNvqAa3qNgFq2gZ7mXfvv");
+console.log("miner"+ minerAddr);   */
+let minerKey=new PublicKey("7xh8ryhYNtd5Y8QozXpWv5iN4JrugpHUrcBdYwvMH9sm");
 console.log("quarry rewardsRate => "+quarry.computeAnnualRewardsRate())   
 //*******************************************************
    //*****************************white liste rewarder **************************
    console.log("*********** minter with allowance  ***********")
-/* await expectTX(
+ /* await expectTX(
   mintWrapper.newMinterWithAllowance(
     rewardWrapper,
     rewarderKey,
     new u64(100_000_000_000000)
   ),
   "Minter add"
-).to.be.fulfilled;   */
-  console.log("quarry rewardsRate => "+quarry.computeAnnualRewardsRate())
+).to.be.fulfilled;  */  
+   console.log("quarry rewardsRate => "+quarry.computeAnnualRewardsRate())
     console.log("ok")  
 
     const minerActions = await quarry.getMinerActions(
@@ -977,7 +977,7 @@ console.log("quarry rewardsRate => "+quarry.computeAnnualRewardsRate())
    let ret = [];
    ret.push({ "signature": tx, "rewarderKey": theRewarderKey.toBase58() })
    return ret; 
-   
+    
 }
 
 
@@ -989,7 +989,7 @@ export async function withdrawFormQuarry(wallet, connection, lpTokenAsset1, user
   //lp token 
   const stakeTokenMint = new PublicKey(lpTokenAsset1);
   const userStakeTokenAccount = new PublicKey(userLpTokenAsset1)
-  const theRewarderKey = new PublicKey("BYcEafmvvgZXyph7HYPk6YNmdLEJKDQyh5byGtrRF3Ef");
+  const theRewarderKey = new PublicKey("9z9q2RcDf5Cq6fY3yE5kH37BmU7wRyh9ZBhfGmNaQvrr");
 
   console.log("************** withdraw Form Quarry ***********")
   const idl = require('./utils/test1.json')
@@ -1045,7 +1045,7 @@ export async function claimRewards(wallet, connection, lpTokenAsset1, userLpToke
   //lp token 
   const stakeTokenMint = new PublicKey(lpTokenAsset1);
   const userStakeTokenAccount = new PublicKey(userLpTokenAsset1)
-  const theRewarderKey = new PublicKey("BYcEafmvvgZXyph7HYPk6YNmdLEJKDQyh5byGtrRF3Ef");
+  const theRewarderKey = new PublicKey("9z9q2RcDf5Cq6fY3yE5kH37BmU7wRyh9ZBhfGmNaQvrr");
 
   console.log("**************claimRewards ***********")
   const idl = require('./utils/test1.json')
