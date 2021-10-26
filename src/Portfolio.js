@@ -34,10 +34,12 @@ function Portfolio() {
   const [amount, setAmount] = useState(10)
   const [amountWithdraw, setAmountWithdraw] = useState(100)
   const [amountAsset1, setAmountAsset1] = useState(2);
+  const [pourcentAsset1, setPourcentAsset1] = useState(5);
   const [periodAsset1, setPeriodAsset1] = useState(123);
   const [assetToSellInto1, setAssetToSellInto1] = useState("3hVBPDeLwJyEVY5swGKd1giWCgjKJtgoz35Ash9jKsoZ");
   const [asset1, setAsset1] = useState("D1FAA8qeo17WYgze53U3VEAVknVASCbVGBMszQ76fdK8");
   const [amountAsset2, setAmountAsset2] = useState(3);
+  const [pourcentAsset2, setPourcentAsset2] = useState(7);
   const [periodAsset2, setPeriodAsset2] = useState(4);
   const [assetToSellInto2, setAssetToSellInto2] = useState("3U4sUoPi7LzMPDxGcxQX4e1C5BZMg94peHBo6xASQbv7");
   const [asset2, setAsset2] = useState("HFdGgdFaRJEj8BLpyjZmzDexkaQhFqrLt2bFyMxvMDw9")
@@ -576,6 +578,9 @@ catch (err) {
         <span> asset to sell into </span>  <input type="text" onChange={(e) => setAssetToSellInto1(e.target.value)} value={assetToSellInto1} />
         <br />
         <br />
+        <span> pourcent asset </span>  <input type="number" onChange={(e) => setPourcentAsset1(e.target.value)} value={pourcentAsset1} />
+        <br />
+        <br />
         <span> metadata hash </span>  <input type="text" onChange={(e) => setMetaDataHash(e.target.value)} value={metaDataHash} />
         <br />
         <br />
@@ -607,6 +612,9 @@ catch (err) {
         <br />
         <br />
         <span> asset to sell into </span>  <input type="text" onChange={(e) => setAssetToSellInto2(e.target.value)} value={assetToSellInto2} />
+        <br />
+        <br />
+        <span> pourcent asset </span>  <input type="number" onChange={(e) => setPourcentAsset2(e.target.value)} value={pourcentAsset2} />
         <br />
         <br />
         <button onClick={() => AddAssetToPortfolioFunction()}>Add asset to portfolio</button>

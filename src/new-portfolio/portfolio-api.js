@@ -61,7 +61,7 @@ const createAccountProgram = new Account([86, 26, 243, 72, 46, 135, 186, 23, 31,
 const TOKEN_SWAP_PROGRAM_ID: PublicKey = new PublicKey(
   '5e2zZzHS8P1kkXQFVoBN6tVN15QBUHMDisy6mxVwVYSz',
 );
-export async function createPortfolioApi(myAccount, connection, splmAsset1str, amountAsset1, numberOfAsset, metaDataUrl, metaDataHashstr, periodAsset1): Promise<void> {
+export async function createPortfolioApi(myAccount, connection, splmAsset1str, amountAsset1, numberOfAsset, metaDataUrl, metaDataHashstr, periodAsset1 , pourcentAsset1): Promise<void> {
   console.log("start");
 
   portfolio = new Portfolio(
@@ -82,7 +82,7 @@ export async function createPortfolioApi(myAccount, connection, splmAsset1str, a
 
   portfolioAddress = await portfolio.createPortfolio(myAccount, metaDataUrl, metaDataHash,
     numberOfAsset,
-    amountAsset1, splmAsset1, periodAsset1, assetToSoldIntoAsset1 ,
+    amountAsset1, splmAsset1, periodAsset1, assetToSoldIntoAsset1 ,pourcentAsset1
   );
 
   console.log("************************************end info Portfolio Account ******************************")

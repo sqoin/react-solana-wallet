@@ -496,6 +496,7 @@
        addressAsset1 : Publickey| null ,
        periodAsset1 : number ,
        assetToSoldIntoAsset1 : Publickey| null,
+       pourcentAsset1 : number,
        ): Promise<Account> {
        // Allocate memory for the account
        const balanceNeeded = await Portfolio.getMinBalanceRentForExemptAccount(
@@ -530,6 +531,7 @@
                  addressAsset1,
                  periodAsset1,
                  assetToSoldIntoAsset1,
+                 pourcentAsset1
              ),
          );
                  console.log("creator : ", creator.publicKey.toString());
@@ -1137,6 +1139,7 @@
          addressAsset1: PublicKey| null,
          periodAsset1: number,
          assetToSoldIntoAsset1: PublicKey| null,
+         pourcentAsset1: number,
      ): TransactionInstruction {
  
        console.log ("creatorAccount : ",creator.toString() , "addressAsset1 : ",addressAsset1,"assetToSoldIntoAsset1 : ",assetToSoldIntoAsset1);
@@ -1158,7 +1161,7 @@
              BufferLayout.blob(128,'metaDataUrl'),
              BufferLayout.blob(16,'metaDataHash'),
              BufferLayout.u8('asset_data_len'),
-             BufferLayout.blob(numberOfAsset*66,'asset_data'),
+             BufferLayout.blob(numberOfAsset*67,'asset_data'),
          ]);
  
          console.log(JSON.stringify(metaDataUrl));
@@ -1174,6 +1177,7 @@
          assetData.push(addressAsset1.toBuffer());
          assetData.push(Buffer.from([periodAsset1]));
          assetData.push(assetToSoldIntoAsset1.toBuffer());
+         assetData.push(Buffer.from([pourcentAsset1]));
 
          console.log("assetData is ",assetData);
 
