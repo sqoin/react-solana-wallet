@@ -17,7 +17,8 @@ export async function createPortfolio(selectedWallet, connection, token, metaDat
     asset1, amountAsset1, periodAsset1, asset2, amountAsset2, periodAsset2, asset3, amountAsset3, periodAsset3,
     asset4, amountAsset4, periodAsset4, asset5, amountAsset5, periodAsset5, asset6, amountAsset6,
     periodAsset6, asset7, amountAsset7, periodAsset7, asset8, amountAsset8, periodAsset8, asset9, amountAsset9, periodAsset9): Promise<void> {
-    programId = new PublicKey("AX9kkGLpKn9H2bcHgP4YDi2QQCeQEfWjpi5W7EvM5doJ");
+   // programId = new PublicKey("AX9kkGLpKn9H2bcHgP4YDi2QQCeQEfWjpi5W7EvM5doJ");
+    programId = new PublicKey("DkkfzUvBVdYztDynBcXJoCA1ajANDfjENgE37hSpoakw");
     portfolio = new PortfolioAsset(
         connection,
         new PublicKey(token),
@@ -75,7 +76,8 @@ export async function createPortfolio(selectedWallet, connection, token, metaDat
 
 export async function createUserPortfolio(selectedWallet, connection, token, portfolioAddress, amountPortfolio): Promise<void> {
 
-    let programId = new PublicKey("AX9kkGLpKn9H2bcHgP4YDi2QQCeQEfWjpi5W7EvM5doJ");
+    //let programId = new PublicKey("AX9kkGLpKn9H2bcHgP4YDi2QQCeQEfWjpi5W7EvM5doJ");
+    let programId = new PublicKey("DkkfzUvBVdYztDynBcXJoCA1ajANDfjENgE37hSpoakw");
     let ownerPortfolio = selectedWallet;
     let portfolio_address = new PublicKey(portfolioAddress);
     portfolio = new PortfolioAsset(

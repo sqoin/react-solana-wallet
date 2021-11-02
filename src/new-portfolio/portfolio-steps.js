@@ -12,8 +12,8 @@ import {
     withdrawFormSaber
 } from "./portfolio-api";
 
-export async function createPortfolioStep(myAccount, connection, splmAsset1, amountAsset1, numberOfAsset, metaDataUrl, metaDataHash, periodAsset1) {
-    return createPortfolioApi(myAccount, connection, splmAsset1, amountAsset1, numberOfAsset, metaDataUrl, metaDataHash, periodAsset1)
+export async function createPortfolioStep(myAccount, connection, splmAsset1, amountAsset1, numberOfAsset, metaDataUrl, metaDataHash, periodAsset1, pourcentAsset1) {
+    return createPortfolioApi(myAccount, connection, splmAsset1, amountAsset1, numberOfAsset, metaDataUrl, metaDataHash, periodAsset1 , pourcentAsset1)
 }
 
 export async function addAssetToPortfolioStep(myAccount, connection, splmAssetstr, amountAsset, portfolioAddressStr, assetToSoldIntoAssetstr, periodAsset) {
