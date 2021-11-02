@@ -16,17 +16,7 @@
           "isSigner": false
         },
         {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
           "name": "programAddress",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "tokenProgram1",
           "isMut": false,
           "isSigner": false
         },
@@ -36,17 +26,7 @@
           "isSigner": false
         },
         {
-          "name": "tokenProgram2",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
           "name": "programPrincipal",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "tokenProgram3",
           "isMut": false,
           "isSigner": false
         },
@@ -262,6 +242,6 @@
     }
   ],
   "metadata": {
-    "address": "A8soaG4944wJQgZWSJxtAVkVzrCWYFqQC2xzpsxRYzEi"
+    "address": "2hjEh1nJ95V6Z4B568P13YuuKXZoB3AaMtqWnh9KMwKg"
   }
 }

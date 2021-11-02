@@ -95,18 +95,18 @@ const [splmPrimary, setSplmPrimary] = useState(avalanch);
   const [userPortfolioAccount, setUserPortfolioAccount] = useState("w6pkG4GVvZFqZ2wWZNiF2zQ8CDFoDrmjrYLjyNbs8LQ")
   const [amountDeposit, setAmountDeposit] = useState(10)
   const [infoUserPortfolioAccount, setInfoUserPortfolioAccount] = useState("")
-  const [lpTokenAsset1, setLpTokenAsset1] = useState("2FiWLuYx8tFSFq55z5RfFrT4Qj3Vw47fQ2hwTQNWoQAw");
-  const [tokenAccountAAsset1, setTokenAccountAAsset1] = useState("Dgy43DxZ3MT8FX3XcZGSaGo3R4LW9gUVTYjorbuQ9ajV"); 
-  const [tokenAccountBAsset1, setTokenAccountBAsset1] = useState("8UZxzspNarB2ybLvwSXQQ6fVttxvLVxrJqYnk7ZfDrSo"); 
-  const [stableSwapAsset1, setStableSwapAsset1] = useState("Dx6dfo9scbEftEaEGSVDFWq95JL7gwTUgwE3aruVdZa3");
-  const [authorityAsset1, setAuthorityAsset1] = useState("J1S4HcAH1YuFuWhhrwyT3AgdBBXpKNwA32uNfph6euEv"); 
-  const [userPoolTokenAsset1, setUserPoolTokenAsset1] = useState("C1N1DrrAYiqjsXanriYAMdSRpuNmnNm3JNqwX9kFWbRB"); 
-  const [rewarderKeyAsset1, setRewarderKeyAsset1] = useState(""); 
+  const [lpTokenAsset1, setLpTokenAsset1] = useState("DHK2XEeh1Zs3XEUe5eNqaAUzSZuZnECDyNkWVeSQKqFD");
+  const [tokenAccountAAsset1, setTokenAccountAAsset1] = useState("AGiNgjKbbErfvQNnoweF8wHH7g6v85WsEkKNYDbAUh5t"); 
+  const [tokenAccountBAsset1, setTokenAccountBAsset1] = useState("ESkhwfLwYwxnCBXSJHHmq7khNbvfAfxKtccyoTgJjnLr"); 
+  const [stableSwapAsset1, setStableSwapAsset1] = useState("41o3QRPTUywbxwwE2ZzF6MNAjag6ALmn3tKM1uxbKAsD");
+  const [authorityAsset1, setAuthorityAsset1] = useState("3h86wTgC7Kb5J1Yh1Sbn2ExVQw1Qxu9H9fsr6KiryJmd"); 
+  const [userPoolTokenAsset1, setUserPoolTokenAsset1] = useState("CPE8FF9XYfo7jNhdN67bnP7SaXpvao41NvJKj469yKoo"); 
+  const [rewarderKeyAsset1, setRewarderKeyAsset1] = useState("AK4BRnuspgt3NxbfjtQv6Q297awFW3i978i62bFndNaQ"); 
   const [enableTransaction,setEnableTransaction]=useState(false);
 const [signatureAsset1, setSignatureAsset1] = useState("");
 const [signatureAsset2, setSignatureAsset2] = useState("");
   const [infoPortfolio, setInfoPortfolio] = useState("");
-
+//nonve 255
   const network = "https://psytrbhymqlkfrhudd.dev.genesysgo.net:8899"
   const [providerUrl, setProviderUrl] = useState('https://www.sollet.io');
   const connection = useMemo(() => new Connection(network), [network]);
