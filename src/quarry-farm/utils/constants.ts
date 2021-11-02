@@ -14,11 +14,11 @@ export interface Programs {
 
 // See `Anchor.toml` for all addresses.
 export const QUARRY_ADDRESSES = {
- MintWrapper: new PublicKey("7fDhLGXxEqZrGD9qAj7887pwuxD6JgRZhb1u533B6yGr"),//dev
+ MintWrapper: new PublicKey("QMWoBmAyJLAsA1Lh9ugMTw2gciTihncciphzdNzdZYV"),//dev
  //MintWrapper: new PublicKey("55zRJtzxGNwD5uEv5PpWSbLn6m9hR5Zv4NJn1XDj7LXF"),//loc
-  Mine: new PublicKey("ECgnvNxKC1eHDfoDX2Ac6hsPFdCsSJWA4fxVd1SDDtrm"),//dev
+  Mine: new PublicKey("QMNeHCGYnLVDn1icRAfQZpjPLBNkfGbSKRB83G5d8KB"),//dev
 // Mine: new PublicKey("HmuXFgmm6z3tYDWQTiinHGt5kP2HnouGTEN5pqFQABGn"),//loc
-  Registry: new PublicKey("HBvVFWMXaLobdXvmchPtUcYWerkGN5aWLTsNSWoMqBm9"),//dev
+  Registry: new PublicKey("QREGBnEj9Sa5uR91AV8u3FxThgP5ZCvdZUW2bHAkfNc"),//dev
  //Registry: new PublicKey("8wvpEkXxX9ugxWyoVA6i6pLffN9AdVYaJAd1sFVeryPs")//loc
 };
 

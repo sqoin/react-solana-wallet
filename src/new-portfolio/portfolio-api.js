@@ -797,7 +797,7 @@ export async function stakeTokens(wallet, connection, lpTokenAsset1) {
   let provider = sdk.provider;
   //****************** create rewaod token *******************
   console.log("create reward token ");
-/*const rewardsMintKP = new Account();
+/* const rewardsMintKP = new Account();
   let rewardsMint = rewardsMintKP.publicKey;
     console.log("reward token pk => " + rewardsMint);
     let token = new sToken({
@@ -837,9 +837,9 @@ export async function stakeTokens(wallet, connection, lpTokenAsset1) {
     
     console.log("wrapper key after init => " + wrapperKey)
     let mintWrapperKey = wrapperKey;
-    await expectTX(tx, "Initialize mint").to.be.fulfilled;   */  
-let rewardsMint = new PublicKey("4NvFmgAbxZ6sjxvS4MoFeSzLRy2Vg3yi9XKpMFetL6Bs");
- let wrapperKey = new PublicKey("3ZZi7fXcUSgDkutoCNC5HdpCPoW7unqm5qQSQbW4JqAg");
+    await expectTX(tx, "Initialize mint").to.be.fulfilled;   */ 
+ let rewardsMint = new PublicKey("GzHPHVLcmw6RmWEGSwKZ4jfZ4LZwKvNR2jVXv3xq7Bd9");
+ let wrapperKey = new PublicKey("5rzdGEXVvkiUyce7um3PmCz6j4ARJBm5wVXYPDjQzwQu");
      let token = new sToken({
     // required
     address: rewardsMint.toString(),
@@ -848,36 +848,36 @@ let rewardsMint = new PublicKey("4NvFmgAbxZ6sjxvS4MoFeSzLRy2Vg3yi9XKpMFetL6Bs");
   }); 
   console.log("reward token => " + token)
   let rewardToken = rewardsMint;
-  let rewardWrapper = wrapperKey; 
+  let rewardWrapper = wrapperKey;  
   //*******************************************************
   //*****************************create Rewarder **************************
    console.log("*********** create Rewarde ***********")
- /*    const { tx, key: theRewarderKey } = await mine.createRewarder({
+  /*    const { tx, key: theRewarderKey } = await mine.createRewarder({
    mintWrapper:rewardWrapper,
    authority: provider.wallet.publicKey,
  });
- await expectTX(tx, "Create new rewarder").to.be.fulfilled;  */
+ await expectTX(tx, "Create new rewarder").to.be.fulfilled;   */
  
-let theRewarderKey = new PublicKey("FfSyc15789mYzkwrDLUSwrf5WBB2kxTAaQun8ULvt4RA");
+ let theRewarderKey = new PublicKey("2pBnaQEYXEjaWGJH75M9CtqbV91EDx9J1zZY9KZM2z3T");
   console.log("rewarderKey = ", theRewarderKey.toBase58());
-  let rewarderKey = theRewarderKey; 
+  let rewarderKey = theRewarderKey;  
   //*******************************************************
   //*****************************sync Rewarder **************************
   console.log("*********** sync Rewarder ***********")
   let rewarder = await mine.loadRewarderWrapper(rewarderKey);
-  /*  await expectTX(
+   /*  await expectTX(
     await rewarder.setAndSyncAnnualRewards(ANNUAL_REWARDS_RATE, [])
   ).to.be.fulfilled; 
-  console.log("ok sync ") */
+  console.log("ok sync ")  */
   //*******************************************************
    //*****************************create Quarry **************************
    console.log("*********** create Quarry  ***********")
   
-   /*  const { tx: quarryTx } = await rewarder.createQuarry({
+   /*   const { tx: quarryTx } = await rewarder.createQuarry({
      token: stakeToken,
    });
-   await expectTX(quarryTx, "Create new quarry").to.be.fulfilled;  */
-    
+   await expectTX(quarryTx, "Create new quarry").to.be.fulfilled;  
+    */ 
    rewarder.getQuarryKey(stakeToken).then(
     (res) => {
       console.log("quarry");
@@ -885,29 +885,29 @@ let theRewarderKey = new PublicKey("FfSyc15789mYzkwrDLUSwrf5WBB2kxTAaQun8ULvt4RA
       console.log("quarry");
     }
   )  ;
- let quarryKey=new PublicKey("Bo93ddT5unCuE1ygKgvB9FasGpToLuerj3TDpmrZ2Xv6"); 
+ let quarryKey=new PublicKey("9ygwsnDuso9CrsTGPZ2BJF3khVd5Cv63dBVWCRRp9gxd"); 
  //*******************************************************
    //*****************************share rewarde **************************
    console.log("*********** create niner  ***********")
-let quarry = await rewarder.getQuarry(stakeToken);
-/*  await expectTX(
+ let quarry = await rewarder.getQuarry(stakeToken);
+/*await expectTX(
     quarry.setRewardsShare(rewardsShare),
     "set rewards share"
   ).to.be.fulfilled; 
-  console.log("ok"); */
+  console.log("ok");  */
   //*******************************************************
    //*****************************create miner **************************
    console.log("*********** create niner  ***********")
 
 
   // create the miner
-  /* await expectTX((await quarry.createMiner()).tx, "create miner").to.be
+   /* await expectTX((await quarry.createMiner()).tx, "create miner").to.be
     .fulfilled;  
  let minerAddr=(await quarry.getMinerAddress(wallet.publicKey)).toBase58()
-console.log("miner"+ minerAddr);  */
-let minerKey=new PublicKey("4yrrGxL8QfULE17YADccvCugwNcDRjnBf7LEg1D6Ny4N");
+console.log("miner"+ minerAddr);   */
+ let minerKey=new PublicKey("8JEfPgAsigibtCAKsHiERbLWi4HfLgozCGeqeSd6ZEM9");
 console.log("quarry rewardsRate => "+quarry.computeAnnualRewardsRate())   
-//******************************************************* 
+ //******************************************************* 
    //*****************************white liste rewarder **************************
    console.log("*********** minter with allowance  ***********")
 /*  await expectTX(
@@ -917,7 +917,7 @@ console.log("quarry rewardsRate => "+quarry.computeAnnualRewardsRate())
     new u64(100_000_000_000000)
   ),
   "Minter add"
-).to.be.fulfilled;   */  
+).to.be.fulfilled;   */ 
    console.log("quarry rewardsRate => "+quarry.computeAnnualRewardsRate())
     console.log("ok")  
 
@@ -976,7 +976,7 @@ console.log("quarry rewardsRate => "+quarry.computeAnnualRewardsRate())
    console.log("quarry rewardsRate => "+quarry.computeAnnualRewardsRate())
    let ret = [];
    ret.push({ "signature": tx, "rewarderKey": theRewarderKey.toBase58() })
-   return ret;
+   return ret; 
     
 }
 

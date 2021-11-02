@@ -58,16 +58,16 @@ function Portfolio() {
 const [asset2Obj, setAsset2Obj] = useState({
     createAccountProgramm : "65HtXX63thUK1tptxaneP9ffHCLhizfttbwFze8Z8x8F",
     minta :avalanch,
-    mintb :raydium,
-    managerPRIMARY :"2RwSdPn6buiyq7QEvUBen3kychLcWzWXgGWoXzaAEUbb",
-    managerAsset1 :"HKaKzf1VCNBBivheFQABGLFbzVthCS5qD2ho5dPy8Zjv",
-    tokenPool :"94tkdNZnetJkyUbYziBsCzRUqkMpMVAcAKvHkS6hztFm",
-    feeAccount :"2wrmL8Q6KAHbXMbVY8j4uzyH8QsdzzTnaD9q3Dh4YzHa",
-    tokenAccountPool :"2m2SgJ821gtos4oMfKXPFdYFG3SWy1ka4Ltt5yxm9xWJ",
-    autority :"DPJJRVfywAD7xBgQAjgukko9UcwZb35gKjirTDetU53Q",
-    tokenSwap : "65HtXX63thUK1tptxaneP9ffHCLhizfttbwFze8Z8x8F",
+    mintb :"5gAMUf7tSNZFoKmNDy5HLRD6PYPx52iFVgHvg1cxaqEL",
+    managerPRIMARY :"7ij39XNnC5JqGcVhYCLDF7mNVHJQz9VQXqMudR5AhgQv",
+    managerAsset1 :"Go4vPYzgQ6DJFGJ9B9mzom83D5t14rjP5ncM739WjjYi",
+    tokenPool :"DQmBvE1yjnDDAsnP8iCxBEqwKq4yLEU9qQWtX5b72FpZ",
+    feeAccount :"ETc6XeaQFRwPw8boD8ccbpkfHjpwEA2hxsN2f6uKsNL1",
+    tokenAccountPool :"EcehTfLyp3QPhiseqycPXLsKTSYrmZneVZxoSLX37EMo",
+    autority :"AZtg93rgxJwc4oPjX9MhKxioc9tuLkePdcjtEeLDFu9r",
+    tokenSwap : "2LzAQ8jJ8KfS9wWQnuhtXwd1ETArbBFtoM2YXSCwmzdN",
     spluPRIMARY  : "Dkqz2HsXovLDuPrbz1wffNLJnnemEnq3c8adTEniCnPT",
-    spluAsset1 : "Gf4Johh55ngCafXPR95sGSgwEtPHCXpebzeWFs7PeEGc",
+    spluAsset1 : "6QmWpTsm5ds3bQfp9kKMtPtFHuWNNjz6sD1TX22V952D",
 })
 const [asset3Obj, setAsset3Obj] = useState({
   createAccountProgramm : "65HtXX63thUK1tptxaneP9ffHCLhizfttbwFze8Z8x8F",
@@ -83,20 +83,6 @@ const [asset3Obj, setAsset3Obj] = useState({
   spluPRIMARY  : "CEnv2giFo1B9mDzWLsByvLujVWKXZox4dfdtBvjSqAJf",
   spluAsset1 : "8fosPW2dgZBUGoLH8KpYZupd6L13BnZcLX73RB5zp4Mq",
 })
-const [assetSaber, setAsset4Obj] = useState({
-  //createAccountProgramm : "8RfDxCrS4yCpHwuj131AJbYTL4QquzCB6TXrs3Hj7vun",
-   minta :"8pCUffRGL85UVwgeCDxRxNEcmrYxk5NNU6YC2q7N5gUf",
-   mintb :"8FReymwGe4TDD6dtFXQaLS91jzu7r7NppRSQRquNyG1k",
-   managerPRIMARY :"5iBVsTVQPJddN1buoe1H9a8FrjjhT4xr9tGmhj3nc2kH",//tokenAccountA
-    managerAsset1 :"CjeKi3dMU3bSQmXyiLRx2ZHGfvCUKLpe9ov1eYGwpC8m",//tokenAccountB
-    tokenPool :"FVoFxQgGohwpUawFfdEUkUqeLkHUQbantMZuhBVDCTcs",
-    //feeAccount :"EzbYEZe1d8iT5T6wkAF126aDwcprkSwBfMaAVtHwo2mv",
-    tokenAccountPool :"8bt21zybbFFBgwwapyY8uREtquHvAVt8ZuDyEiNwUdfS",
-  autority :"AVzeFZfHvNEECBkC2yYx2MF1ygPqZLuA8Ah4rjiuQjqK",
-  tokenSwap : "68zM78i1wcLwuLHhrbohhCTrKHQoNutXA2GE6zgB9Awp",
-  spluPRIMARY  : "FbTKne3ckqiyWyVPuCPjGnDJ4RGQLhvXrxZrh8NmbcUg",//userAccountA
-  spluAsset1 : "CJ2CZ1ofTYLX19gzzPkq42vw1z8HBNwqB6pbyWTme3Rz",//userAccountB
-})
 
 
 
@@ -107,13 +93,13 @@ const [splmPrimary, setSplmPrimary] = useState(avalanch);
   const [userPortfolioAccount, setUserPortfolioAccount] = useState("w6pkG4GVvZFqZ2wWZNiF2zQ8CDFoDrmjrYLjyNbs8LQ")
   const [amountDeposit, setAmountDeposit] = useState(10)
   const [infoUserPortfolioAccount, setInfoUserPortfolioAccount] = useState("")
-  const [lpTokenAsset1, setLpTokenAsset1] = useState("ArQYnk2PWG1tY5KS8zgvFkDnq5RbCio8Aztzu1cP13oK");
-  const [tokenAccountAAsset1, setTokenAccountAAsset1] = useState("BZ4ZtkZhhP6emAWTaeT5VJDUb9m3Csu95DcbY2c7qo11"); 
-  const [tokenAccountBAsset1, setTokenAccountBAsset1] = useState("DAPGapDtHWLfEcYKjBsAuoeS9Q2d9MSuKc9oaLjufUXm"); 
-  const [stableSwapAsset1, setStableSwapAsset1] = useState("GNQngAfTpzFyh9o3nTZ7QBjGaMMsnPLrTLFX4WeY2TBt");
-  const [authorityAsset1, setAuthorityAsset1] = useState("5toBKqD2qUY9XAbg178Yq63jWKfezFUDtdGuyMUPUDS9"); 
-  const [userPoolTokenAsset1, setUserPoolTokenAsset1] = useState("Cf4SCqyop7QcCAe3qeWojb4rDNU8uDuFEW7v2XzEiTBy"); 
-  const [rewarderKeyAsset1, setRewarderKeyAsset1] = useState("zEYB5UPXLNf7hbC5pUSUmEpfMVmqhLomJEq5qWU4dmu"); 
+  const [lpTokenAsset1, setLpTokenAsset1] = useState("2FiWLuYx8tFSFq55z5RfFrT4Qj3Vw47fQ2hwTQNWoQAw");
+  const [tokenAccountAAsset1, setTokenAccountAAsset1] = useState("Dgy43DxZ3MT8FX3XcZGSaGo3R4LW9gUVTYjorbuQ9ajV"); 
+  const [tokenAccountBAsset1, setTokenAccountBAsset1] = useState("8UZxzspNarB2ybLvwSXQQ6fVttxvLVxrJqYnk7ZfDrSo"); 
+  const [stableSwapAsset1, setStableSwapAsset1] = useState("Dx6dfo9scbEftEaEGSVDFWq95JL7gwTUgwE3aruVdZa3");
+  const [authorityAsset1, setAuthorityAsset1] = useState("J1S4HcAH1YuFuWhhrwyT3AgdBBXpKNwA32uNfph6euEv"); 
+  const [userPoolTokenAsset1, setUserPoolTokenAsset1] = useState("C1N1DrrAYiqjsXanriYAMdSRpuNmnNm3JNqwX9kFWbRB"); 
+  const [rewarderKeyAsset1, setRewarderKeyAsset1] = useState(""); 
   const [enableTransaction,setEnableTransaction]=useState(false);
 const [signatureAsset1, setSignatureAsset1] = useState("");
 const [signatureAsset2, setSignatureAsset2] = useState("");
